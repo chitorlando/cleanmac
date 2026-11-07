@@ -23,17 +23,6 @@
         }
       }
     },
-    "Large Files" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Archivos grandes"
-          }
-        }
-      }
-    },
     "Login Items" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {
