@@ -1,0 +1,10 @@
+import Foundation
+
+/// Moves items to the Trash so every cleanup can be undone.
+public struct TrashItemRemover: ItemRemoving {
+    public init() {}
+
+    public func remove(_ url: URL) throws {
+        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+    }
+}
