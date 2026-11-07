@@ -27,6 +27,7 @@ let package = Package(
         .executableTarget(
             name: "CleanMacApp",
             dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature"],
+            resources: [.process("Resources")],
             linkerSettings: [
                 .unsafeFlags([
                     "-Xlinker", "-sectcreate",
