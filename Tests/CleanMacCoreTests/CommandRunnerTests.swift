@@ -2,6 +2,7 @@
 import Foundation
 import Testing
 
+@Suite(.timeLimit(.minutes(1)))
 struct CommandRunnerTests {
     private let shell = URL(filePath: "/bin/sh")
 
@@ -25,5 +26,61 @@ struct CommandRunnerTests {
         await #expect(throws: (any Error).self) {
             try await CommandRunner().run(URL(filePath: "/nonexistent/tool"), arguments: [])
         }
+    }
+
+    @Test func drainsLargeErrorOutputWithoutStalling() async {
+        let script = "head -c 150000 /dev/zero | tr '\\0' x >&2; exit 3"
+
+        await #expect {
+            try await CommandRunner().run(shell, arguments: ["-c", script])
+        } throws: { error in
+            let failure = error as? CommandFailure
+            return failure?.status == 3 && failure?.message.count == 150_000
+        }
+    }
+
+    @Test func terminatesTheCommandWhenCancelled() async {
+        let runner = CommandRunner()
+        let task = Task {
+            try await runner.run(shell, arguments: ["-c", "sleep 30"])
+        }
+        try? await Task.sleep(for: .milliseconds(200))
+        let start = ContinuousClock.now
+
+        task.cancel()
+
+        await #expect(throws: CancellationError.self) { try await task.value }
+        #expect(ContinuousClock.now - start < .seconds(5))
+    }
+
+    @Test func doesNotLaunchWhenAlreadyCancelled() async {
+        let marker = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        let task = Task { [shell] in
+            withUnsafeCurrentTask { $0?.cancel() }
+            try await CommandRunner().run(shell, arguments: ["-c", "touch \"$0\"", marker.path])
+        }
+
+        await #expect(throws: CancellationError.self) { try await task.value }
+        #expect(!FileManager.default.fileExists(atPath: marker.path))
+    }
+
+    @Test func returnsStandardOutput() async throws {
+        let output = try await CommandRunner().run(shell, arguments: ["-c", "printf 'one\\ntwo\\n'"])
+
+        #expect(output == "one\ntwo\n")
+    }
+
+    @Test func drainsLargeStandardOutput() async throws {
+        let output = try await CommandRunner().run(shell, arguments: ["-c", "head -c 150000 /dev/zero | tr '\\0' y"])
+
+        #expect(output.count == 150_000)
+    }
+
+    @Test func drainsBothStreamsAtOnce() async throws {
+        let script = "head -c 150000 /dev/zero | tr '\\0' e >&2; head -c 150000 /dev/zero | tr '\\0' o"
+
+        let output = try await CommandRunner().run(shell, arguments: ["-c", script])
+
+        #expect(output.count == 150_000)
     }
 }

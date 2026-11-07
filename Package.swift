@@ -29,6 +29,16 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "LargeFilesFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
+            name: "MaintenanceFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "UninstallerFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
@@ -39,7 +49,10 @@ let package = Package(
         ),
         .executableTarget(
             name: "CleanMacApp",
-            dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature"],
+            dependencies: [
+                "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
+                "LargeFilesFeature", "MaintenanceFeature"
+            ],
             resources: [.process("Resources")],
             linkerSettings: [
                 .unsafeFlags([
@@ -54,6 +67,14 @@ let package = Package(
         .testTarget(
             name: "SystemJunkFeatureTests",
             dependencies: ["SystemJunkFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "LargeFilesFeatureTests",
+            dependencies: ["LargeFilesFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "MaintenanceFeatureTests",
+            dependencies: ["MaintenanceFeature", "CleanMacCore"]
         ),
         .testTarget(
             name: "UninstallerFeatureTests",

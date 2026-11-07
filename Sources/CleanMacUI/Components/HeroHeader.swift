@@ -1,7 +1,13 @@
 import SwiftUI
 
 /// Large icon, title and subtitle that introduce a feature.
+///
+/// Title and subtitle wrap instead of truncating. They never get narrower than
+/// `minimumTextWidth`: measured at a width near zero, wrapped text would report a
+/// minimum height of thousands of points and the window could not fit on screen.
 public struct HeroHeader: View {
+    private static let minimumTextWidth: CGFloat = 320
+
     private let symbolName: String
     private let title: String
     private let subtitle: String
@@ -26,6 +32,7 @@ public struct HeroHeader: View {
                 .font(.system(size: 34, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(minWidth: Self.minimumTextWidth)
                 .accessibilityAddTraits(.isHeader)
 
             Text(subtitle)
@@ -33,7 +40,7 @@ public struct HeroHeader: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 460)
+                .frame(minWidth: Self.minimumTextWidth, maxWidth: 460)
         }
     }
 }
