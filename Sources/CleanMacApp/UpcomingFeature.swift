@@ -5,6 +5,7 @@ import Foundation
 struct UpcomingFeature: Identifiable {
     let title: String
     let symbolName: String
+    let section: FeatureSection
 
     var id: String { title }
 }
@@ -13,31 +14,38 @@ extension UpcomingFeature {
     static let roadmap: [UpcomingFeature] = [
         UpcomingFeature(
             title: String(localized: "Uninstaller", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "app.badge.checkmark"
+            symbolName: "app.badge.checkmark",
+            section: .applications
         ),
         UpcomingFeature(
             title: String(localized: "Large Files", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "doc.richtext"
+            symbolName: "doc.richtext",
+            section: .files
         ),
         UpcomingFeature(
             title: String(localized: "Disk Map", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "chart.pie.fill"
+            symbolName: "chart.pie.fill",
+            section: .files
         ),
         UpcomingFeature(
             title: String(localized: "Duplicates", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "doc.on.doc.fill"
+            symbolName: "doc.on.doc.fill",
+            section: .files
         ),
         UpcomingFeature(
             title: String(localized: "Privacy", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "hand.raised.fill"
+            symbolName: "hand.raised.fill",
+            section: .cleanup
         ),
         UpcomingFeature(
             title: String(localized: "Login Items", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "power"
+            symbolName: "power",
+            section: .performance
         ),
         UpcomingFeature(
             title: String(localized: "Maintenance", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "wrench.and.screwdriver.fill"
+            symbolName: "wrench.and.screwdriver.fill",
+            section: .performance
         ),
         UpcomingFeature(
             title: String(
@@ -45,7 +53,8 @@ extension UpcomingFeature {
                 bundle: .module,
                 comment: "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk."
             ),
-            symbolName: "gauge.with.dots.needle.67percent"
+            symbolName: "gauge.with.dots.needle.67percent",
+            section: .performance
         )
     ]
 }
