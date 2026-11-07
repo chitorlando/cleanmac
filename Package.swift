@@ -23,6 +23,7 @@ let package = Package(
             name: "SystemJunkFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"]
         ),
+        .target(name: "MaintenanceFeature", dependencies: ["CleanMacCore"]),
         .executableTarget(
             name: "CleanMacApp",
             dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature"],
@@ -39,6 +40,10 @@ let package = Package(
         .testTarget(
             name: "SystemJunkFeatureTests",
             dependencies: ["SystemJunkFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "MaintenanceFeatureTests",
+            dependencies: ["MaintenanceFeature", "CleanMacCore"]
         )
     ]
 )
