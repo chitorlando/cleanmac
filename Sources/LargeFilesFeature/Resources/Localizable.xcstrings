@@ -347,13 +347,13 @@
         }
       }
     },
-    "Nothing in your home folder takes up more than 50 MB." : {
-      "comment" : "Message shown when a complete scan found no large files.",
+    "Nothing in your home folder takes up more than %@." : {
+      "comment" : "Message shown when a complete scan found no large files. The argument is the smallest size looked for, such as “50 MB”.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nada en tu carpeta de inicio ocupa más de 50 MB."
+            "value" : "Nada en tu carpeta de inicio ocupa más de %@."
           }
         }
       }

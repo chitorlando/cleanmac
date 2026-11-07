@@ -78,6 +78,13 @@ struct LargeFilesViewModelTests {
         #expect(!viewModel.wasStoppedEarly)
     }
 
+    @Test func exposesTheMinimumSizeTheScannerLooksFor() {
+        let scanner = StubLargeFileScanner(events: [], criteria: LargeFileCriteria(minimumSize: 200_000_000))
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+
+        #expect(viewModel.minimumSize == 200_000_000)
+    }
+
     @Test func stoppingTheScanReviewsThePartialResults() async {
         let viewModel = makeViewModel(events: [.progress(scannedFiles: 500), .found(trip)], finishes: false)
 

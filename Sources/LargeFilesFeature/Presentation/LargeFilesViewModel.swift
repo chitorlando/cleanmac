@@ -41,6 +41,9 @@ public final class LargeFilesViewModel {
 
     // MARK: Derived state
 
+    /// Smallest size a file must have to be found, as the scanner looks for it.
+    public var minimumSize: Int64 { scanner.criteria.minimumSize }
+
     public var foundCount: Int { files.count }
     public var foundSize: Int64 { files.map(\.item).totalSize }
 
