@@ -1,10 +1,11 @@
 import Foundation
 
-/// Runs a command-line tool as a subprocess and waits for it without blocking any thread.
-public struct CommandRunner: Sendable {
+/// Runs a command-line tool as a subprocess without blocking any thread.
+/// Standard error is drained while the tool runs, so a chatty tool never stalls on a full pipe,
+/// and cancelling the task terminates the tool.
+public struct CommandRunner: CommandRunning {
     public init() {}
 
-    /// Throws `CommandFailure` with the tool's standard error when it exits with a non-zero status.
     public func run(_ executable: URL, arguments: [String]) async throws {
         let process = Process()
         process.executableURL = executable
@@ -13,25 +14,42 @@ public struct CommandRunner: Sendable {
         process.standardOutput = FileHandle.nullDevice
         let errorPipe = Pipe()
         process.standardError = errorPipe
-        let errorOutput = errorPipe.fileHandleForReading
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, any Error>) in
-            process.terminationHandler = { finished in
-                let status = finished.terminationStatus
-                guard status != 0 else {
-                    continuation.resume()
-                    return
-                }
-                let data = errorOutput.readDataToEndOfFile()
-                let message = String(decoding: data, as: UTF8.self)
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                continuation.resume(throwing: CommandFailure(status: status, message: message))
-            }
-            do {
-                try process.run()
-            } catch {
-                continuation.resume(throwing: error)
-            }
+        let (terminations, continuation) = AsyncStream.makeStream(of: Int32.self)
+        process.terminationHandler = { finished in
+            continuation.yield(finished.terminationStatus)
+            continuation.finish()
         }
+        let launchable = LaunchableProcess(process)
+
+        try await withTaskCancellationHandler {
+            try launchable.launch()
+            async let errorOutput = Self.readAll(errorPipe.fileHandleForReading)
+            var status: Int32 = 0
+            for await terminationStatus in terminations {
+                status = terminationStatus
+            }
+            let message = await errorOutput
+            try Task.checkCancellation()
+            guard status == 0 else {
+                throw CommandFailure(status: status, message: message)
+            }
+        } onCancel: {
+            launchable.terminate()
+        }
+    }
+
+    /// Reads until the tool closes the stream and returns the text, trimmed.
+    private static func readAll(_ handle: FileHandle) async -> String {
+        var bytes: [UInt8] = []
+        do {
+            for try await byte in handle.bytes {
+                bytes.append(byte)
+            }
+        } catch {
+            // Keep whatever was read before the stream failed.
+        }
+        return String(decoding: bytes, as: UTF8.self)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
