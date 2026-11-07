@@ -1,5 +1,6 @@
 import CleanMacCore
 import Foundation
+import SystemJunkFeature
 
 /// In-memory file tree: each folder maps to its children.
 struct FakeDirectoryReader: DirectoryReading {
@@ -15,4 +16,12 @@ struct FakeSizeCalculator: SizeCalculating {
     let sizes: [URL: Int64]
 
     func size(of url: URL) -> Int64 { sizes[url] ?? 0 }
+}
+
+/// Returns fixed items for one category.
+struct StubJunkScanner: JunkScanner {
+    let category: JunkCategory
+    let items: [CleanableItem]
+
+    func scan() async -> [CleanableItem] { items }
 }
