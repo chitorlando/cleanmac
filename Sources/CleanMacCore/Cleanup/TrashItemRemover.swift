@@ -4,7 +4,8 @@ import Foundation
 public struct TrashItemRemover: ItemRemoving {
     public init() {}
 
-    public func remove(_ url: URL) throws {
+    @concurrent
+    public func remove(_ url: URL) async throws {
         try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 }

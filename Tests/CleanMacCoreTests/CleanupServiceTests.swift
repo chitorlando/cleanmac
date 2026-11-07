@@ -11,7 +11,7 @@ struct CleanupServiceTests {
     private struct StubRemover: ItemRemoving {
         let failing: Set<URL>
 
-        func remove(_ url: URL) throws {
+        func remove(_ url: URL) async throws {
             if failing.contains(url) { throw DeniedError() }
         }
     }

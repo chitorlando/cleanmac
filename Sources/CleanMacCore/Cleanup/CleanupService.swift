@@ -14,7 +14,7 @@ public struct CleanupService: Sendable {
         for item in items {
             guard !Task.isCancelled else { break }
             do {
-                try remover.remove(item.url)
+                try await remover.remove(item.url)
                 report.recordSuccess(item)
             } catch {
                 report.recordFailure(item, error: error)
