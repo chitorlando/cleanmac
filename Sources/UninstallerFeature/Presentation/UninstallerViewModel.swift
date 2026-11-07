@@ -111,6 +111,7 @@ public final class UninstallerViewModel {
         phase = .uninstalling
         let task = Task {
             let report = await cleanupService.clean(items)
+            guard !Task.isCancelled else { return }
             phase = .finished(report)
         }
         activeTask = task

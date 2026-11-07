@@ -231,6 +231,25 @@ struct UninstallerViewModelTests {
         #expect(remover.removed.isEmpty)
     }
 
+    @Test func restartingDuringAnUninstallIgnoresItsResult() async {
+        let gated = GatedRemover()
+        let viewModel = UninstallerViewModel(
+            scanner: StubAppScanner(events: [.discovered(count: 1), .analyzed(notes)]),
+            runningApps: FakeRunningApps(),
+            cleanupService: CleanupService(remover: gated)
+        )
+        await viewModel.startLoading().value
+        viewModel.toggle(notes)
+
+        let uninstall = viewModel.uninstall()
+        await gated.waitUntilRemoving()
+        await viewModel.startLoading().value
+        await gated.open()
+        await uninstall?.value
+
+        #expect(viewModel.phase == .browsing)
+    }
+
     @Test func doneLoadsTheListAgain() async {
         let viewModel = await loadedViewModel()
         viewModel.toggle(notes)
