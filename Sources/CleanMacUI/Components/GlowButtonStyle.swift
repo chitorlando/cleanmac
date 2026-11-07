@@ -39,8 +39,8 @@ public struct GlowButtonStyle: ButtonStyle {
             label
                 .padding(.horizontal, 32)
                 .padding(.vertical, 14)
-                .background(theme.gradient, in: .capsule)
-                .overlay(Capsule().strokeBorder(.white.opacity(0.25), lineWidth: 1))
+                .background(theme.gradient, in: .pill)
+                .overlay(Capsule.pill.strokeBorder(.white.opacity(0.25), lineWidth: 1))
         }
     }
 }
