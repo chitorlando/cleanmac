@@ -17,8 +17,8 @@ public struct StatusBadge: View {
             .lineLimit(1)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
-            .background(color.opacity(0.16), in: .capsule)
-            .overlay(Capsule().strokeBorder(color.opacity(0.35), lineWidth: 1))
+            .background(color.opacity(0.16), in: .pill)
+            .overlay(Capsule.pill.strokeBorder(color.opacity(0.35), lineWidth: 1))
             .fixedSize()
     }
 }

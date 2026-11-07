@@ -94,6 +94,28 @@
         }
       }
     },
+    "Applications" : {
+      "comment" : "Sidebar section with features that manage apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicaciones"
+          }
+        }
+      }
+    },
+    "Cleanup" : {
+      "comment" : "Sidebar section with features that remove junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpieza"
+          }
+        }
+      }
+    },
     "Clear Search" : {
       "comment" : "Button that empties a search field.",
       "localizations" : {
@@ -112,6 +134,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listo"
+          }
+        }
+      }
+    },
+    "Files" : {
+      "comment" : "Sidebar section with features that find large or repeated files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos"
           }
         }
       }
@@ -145,6 +178,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Parcialmente seleccionado"
+          }
+        }
+      }
+    },
+    "Performance" : {
+      "comment" : "Sidebar section with features that keep the Mac running smoothly.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rendimiento"
           }
         }
       }

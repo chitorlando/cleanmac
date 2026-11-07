@@ -10,6 +10,7 @@ public final class UninstallerModule: FeatureModule {
     public let title = String(localized: "Uninstaller", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "app.badge.checkmark"
     public let theme = FeatureTheme.uninstaller
+    public let section = FeatureSection.applications
 
     private let viewModel: UninstallerViewModel
 

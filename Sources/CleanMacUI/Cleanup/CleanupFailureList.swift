@@ -3,7 +3,10 @@ import SwiftUI
 
 /// Items that could not be removed and why.
 public struct CleanupFailureList: View {
+    private static let maxListHeight: CGFloat = 120
+
     private let failures: [CleanupFailure]
+    @State private var listHeight: CGFloat = 0
 
     public init(failures: [CleanupFailure]) {
         self.failures = failures
@@ -24,17 +27,24 @@ public struct CleanupFailureList: View {
                 .font(.headline)
                 .foregroundStyle(.yellow)
 
+                // Hugs short lists and only scrolls once they outgrow the maximum height.
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 6) {
-                        ForEach(failures, id: \.item.id) { failure in
-                            Text(verbatim: "\(failure.item.name): \(failure.reason)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                    }
+                    reasons
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { listHeight = $0 }
                 }
-                .frame(maxHeight: 120)
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(height: min(listHeight, Self.maxListHeight))
+            }
+        }
+    }
+
+    private var reasons: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(failures, id: \.item.id) { failure in
+                Text(verbatim: "\(failure.item.name): \(failure.reason)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }

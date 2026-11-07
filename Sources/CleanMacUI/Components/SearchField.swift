@@ -31,8 +31,8 @@ public struct SearchField: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .background(Palette.cardFill, in: .capsule)
-        .overlay(Capsule().strokeBorder(borderStyle, lineWidth: 1))
+        .background(Palette.cardFill, in: .pill)
+        .overlay(Capsule.pill.strokeBorder(borderStyle, lineWidth: 1))
         .tint(theme.primary)
         .animation(.snappy(duration: 0.15), value: isFocused)
     }
