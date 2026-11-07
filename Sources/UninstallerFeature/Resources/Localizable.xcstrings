@@ -12,6 +12,61 @@
         }
       }
     },
+    "Name" : {
+      "comment" : "Sort option that orders apps alphabetically.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "No apps found" : {
+      "comment" : "Shown when the scan finds no installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron apps"
+          }
+        }
+      }
+    },
+    "No apps match “%@”" : {
+      "comment" : "Shown when the search finds no app. The argument is the search text.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna app coincide con «%@»"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "comment" : "Badge on an app that is currently running.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abierta"
+          }
+        }
+      }
+    },
+    "Quit this app to uninstall it." : {
+      "comment" : "Tooltip of the badge on a running app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra esta app para desinstalarla."
+          }
+        }
+      }
+    },
     "Remove apps completely, together with the preferences, caches and support files they leave behind." : {
       "comment" : "Introduction of the uninstaller feature.",
       "localizations" : {
@@ -19,6 +74,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elimina apps por completo, junto con las preferencias, cachés y archivos de soporte que dejan atrás."
+          }
+        }
+      }
+    },
+    "Search apps" : {
+      "comment" : "Placeholder of the field that filters installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar apps"
+          }
+        }
+      }
+    },
+    "Select All" : {
+      "comment" : "Label of the checkbox that selects every listed app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar todo"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "comment" : "Sort option that orders apps by size, largest first.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        }
+      }
+    },
+    "Sort by" : {
+      "comment" : "Label of the menu that changes the order of the app list.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar por"
           }
         }
       }
