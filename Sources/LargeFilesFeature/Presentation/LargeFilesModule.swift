@@ -10,6 +10,7 @@ public final class LargeFilesModule: FeatureModule {
     public let title = String(localized: "Large Files", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "doc.richtext"
     public let theme = FeatureTheme.largeFiles
+    public let section = FeatureSection.files
 
     private let viewModel: LargeFilesViewModel
 

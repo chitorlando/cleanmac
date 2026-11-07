@@ -1,28 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Cleanup" : {
-      "comment" : "Sidebar section with the available features.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limpieza"
-          }
-        }
-      }
-    },
-    "Coming Soon" : {
-      "comment" : "Sidebar section with features not implemented yet.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Próximamente"
-          }
-        }
-      }
-    },
     "Disk Map" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {
@@ -85,6 +63,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "Soon" : {
+      "comment" : "Badge on sidebar features that are not available yet.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto"
           }
         }
       }
