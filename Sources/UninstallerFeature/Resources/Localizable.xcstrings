@@ -1,0 +1,421 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Analyzing installed apps…" : {
+      "comment" : "Status shown while the installed apps are measured.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizando las apps instaladas…"
+          }
+        }
+      }
+    },
+    "Another installed copy of this app uses this item too, so it isn’t selected automatically. Select it only if you are removing every copy." : {
+      "comment" : "Explains why a shared file is not selected when the app is.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra copia instalada de esta app también usa este elemento, por eso no se marca automáticamente. Márcalo solo si vas a eliminar todas las copias."
+          }
+        }
+      }
+    },
+    "App Scripts" : {
+      "comment" : "Group of an app's scripts folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scripts de la app"
+          }
+        }
+      }
+    },
+    "Application" : {
+      "comment" : "Group that contains the app itself.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicación"
+          }
+        }
+      }
+    },
+    "Caches" : {
+      "comment" : "Group of an app's cache files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cachés"
+          }
+        }
+      }
+    },
+    "Containers" : {
+      "comment" : "Group of an app's sandbox containers.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenedores"
+          }
+        }
+      }
+    },
+    "Group Containers" : {
+      "comment" : "Group of containers an app shares with its extensions.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenedores de grupo"
+          }
+        }
+      }
+    },
+    "Launch Agents" : {
+      "comment" : "Group of background helpers that start at login.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agentes de inicio"
+          }
+        }
+      }
+    },
+    "Logs" : {
+      "comment" : "Group of an app's log files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "comment" : "Sort option that orders apps alphabetically.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "No apps found" : {
+      "comment" : "Shown when the scan finds no installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron apps"
+          }
+        }
+      }
+    },
+    "No apps match “%@”" : {
+      "comment" : "Shown when the search finds no app. The argument is the search text.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna app coincide con «%@»"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "comment" : "Badge on an app that is currently running.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abierta"
+          }
+        }
+      }
+    },
+    "Preferences" : {
+      "comment" : "Group of an app's preference files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
+          }
+        }
+      }
+    },
+    "Quit App" : {
+      "comment" : "Button that asks a running app to quit.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de la app"
+          }
+        }
+      }
+    },
+    "Quit this app to uninstall it." : {
+      "comment" : "Tooltip of the badge on a running app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cierra esta app para desinstalarla."
+          }
+        }
+      }
+    },
+    "Remove apps completely, together with the preferences, caches and support files they leave behind." : {
+      "comment" : "Introduction of the uninstaller feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina apps por completo, junto con las preferencias, cachés y archivos de soporte que dejan atrás."
+          }
+        }
+      }
+    },
+    "Saved State" : {
+      "comment" : "Group of files that restore an app's windows.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado guardado"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that reloads the list of installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a analizar"
+          }
+        }
+      }
+    },
+    "Search apps" : {
+      "comment" : "Placeholder of the field that filters installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar apps"
+          }
+        }
+      }
+    },
+    "Select All" : {
+      "comment" : "Label of the checkbox that selects every listed app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar todo"
+          }
+        }
+      }
+    },
+    "Select an app to see its files." : {
+      "comment" : "Shown in the detail pane when no app is focused.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una app para ver sus archivos."
+          }
+        }
+      }
+    },
+    "Shared with another copy" : {
+      "comment" : "Badge on a file that another copy of the same app also uses.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartido con otra copia"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "comment" : "Sort option that orders apps by size, largest first.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        }
+      }
+    },
+    "Sort by" : {
+      "comment" : "Label of the menu that changes the order of the app list.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar por"
+          }
+        }
+      }
+    },
+    "Support Files" : {
+      "comment" : "Group of files an app keeps in Application Support.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos de soporte"
+          }
+        }
+      }
+    },
+    "This app is open. Quit it to uninstall it." : {
+      "comment" : "Notice shown on the details of a running app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta app está abierta. Ciérrala para desinstalarla."
+          }
+        }
+      }
+    },
+    "Uninstall" : {
+      "comment" : "Disabled uninstall button shown while nothing is selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalar"
+          }
+        }
+      }
+    },
+    "Uninstall %@" : {
+      "comment" : "Button that moves the selected apps and files to the Trash. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalar %@"
+          }
+        }
+      }
+    },
+    "Uninstaller" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalador"
+          }
+        }
+      }
+    },
+    "Version %@" : {
+      "comment" : "App version in the detail header, as in “Version 2.1”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión %@"
+          }
+        }
+      }
+    },
+    "View Applications" : {
+      "comment" : "Button that lists the installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver aplicaciones"
+          }
+        }
+      }
+    },
+    "Web Data" : {
+      "comment" : "Group of an app's cookies and web storage.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos web"
+          }
+        }
+      }
+    },
+    "apps analyzed" : {
+      "comment" : "Caption below the number of apps analyzed so far.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apps analizadas"
+          }
+        }
+      }
+    },
+    "of %lld apps" : {
+      "comment" : "Caption below the number of apps analyzed so far, as in “12 of 52 apps”. The argument is the total.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "of %lld app"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "of %lld apps"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "de %lld app"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "de %lld apps"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -1,0 +1,459 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld tasks finished successfully." : {
+      "comment" : "Subtitle after every maintenance task succeeded. The argument is how many tasks ran.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld task finished successfully."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tasks finished successfully."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tarea completada correctamente."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tareas completadas correctamente."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld tasks need your attention. See the details below." : {
+      "comment" : "Subtitle after some maintenance tasks failed. The argument is how many failed.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld task needs your attention. See the details below."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tasks need your attention. See the details below."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tarea necesita tu atención. Consulta los detalles abajo."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld tareas necesitan tu atención. Consulta los detalles abajo."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "App list refreshed." : {
+      "comment" : "Result of a successful maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de apps actualizada."
+          }
+        }
+      }
+    },
+    "CleanMac couldn’t read the result of this task." : {
+      "comment" : "Result of a maintenance task whose outcome could not be determined.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac no pudo leer el resultado de esta tarea."
+          }
+        }
+      }
+    },
+    "Clears saved website addresses. Helps when sites fail to load or show an old version." : {
+      "comment" : "Description of the Flush DNS Cache maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borra las direcciones de sitios web guardadas. Ayuda cuando una web no carga o muestra una versión antigua."
+          }
+        }
+      }
+    },
+    "Clears the thumbnail cache. Fixes previews and icons that look outdated or broken." : {
+      "comment" : "Description of the Reset Quick Look maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borra la caché de miniaturas. Corrige previsualizaciones e iconos desactualizados o dañados."
+          }
+        }
+      }
+    },
+    "DNS cache cleared." : {
+      "comment" : "Result of a successful maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caché DNS vaciada."
+          }
+        }
+      }
+    },
+    "Failed: %@" : {
+      "comment" : "Result of a failed maintenance task. The argument is the error reported by the system tool, usually in English.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
+          }
+        }
+      }
+    },
+    "Flush DNS Cache" : {
+      "comment" : "Maintenance task title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciar caché DNS"
+          }
+        }
+      }
+    },
+    "Free Up Memory" : {
+      "comment" : "Maintenance task title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liberar memoria"
+          }
+        }
+      }
+    },
+    "If macOS asks, enter your administrator password." : {
+      "comment" : "Hint shown while maintenance tasks that need the administrator password run.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si macOS lo pide, introduce tu contraseña de administrador."
+          }
+        }
+      }
+    },
+    "Maintenance" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenimiento"
+          }
+        }
+      }
+    },
+    "Maintenance complete" : {
+      "comment" : "Title after every maintenance task succeeded.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenimiento completado"
+          }
+        }
+      }
+    },
+    "Not run: maintenance was cancelled." : {
+      "comment" : "Result of a maintenance task skipped because the run was cancelled.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ejecutó: se canceló el mantenimiento."
+          }
+        }
+      }
+    },
+    "Not run: the administrator password wasn’t entered." : {
+      "comment" : "Result of a maintenance task skipped because the user dismissed the password prompt.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ejecutó: no se introdujo la contraseña de administrador."
+          }
+        }
+      }
+    },
+    "Rebuild Launch Services" : {
+      "comment" : "Maintenance task title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruir Launch Services"
+          }
+        }
+      }
+    },
+    "Rebuilds the search index when Spotlight misses files. It can take hours, and searches may be incomplete until it finishes." : {
+      "comment" : "Description of the Reindex Spotlight maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruye el índice de búsqueda cuando Spotlight no encuentra archivos. Puede tardar horas y, hasta que termine, las búsquedas pueden salir incompletas."
+          }
+        }
+      }
+    },
+    "Refreshes the list of installed apps. Fixes duplicates in “Open With” and files that open in the wrong app." : {
+      "comment" : "Description of the Rebuild Launch Services maintenance task. “Open With” is the Finder menu.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza la lista de apps instaladas. Corrige duplicados en «Abrir con» y archivos que se abren con la app equivocada."
+          }
+        }
+      }
+    },
+    "Reindex Spotlight" : {
+      "comment" : "Maintenance task title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reindexar Spotlight"
+          }
+        }
+      }
+    },
+    "Releases memory that apps no longer use. Apps may feel slower for a moment while they reload what they need." : {
+      "comment" : "Description of the Free Up Memory maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera la memoria que las apps ya no usan. Las apps pueden ir más lentas un momento mientras recargan lo que necesitan."
+          }
+        }
+      }
+    },
+    "Requires password" : {
+      "comment" : "Badge on maintenance tasks that ask for the administrator password.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requiere contraseña"
+          }
+        }
+      }
+    },
+    "Reset Quick Look" : {
+      "comment" : "Maintenance task title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restablecer Vista Rápida"
+          }
+        }
+      }
+    },
+    "Run %lld Tasks" : {
+      "comment" : "Button that runs the chosen maintenance tasks. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Run %lld Task"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Run %lld Tasks"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ejecutar %lld tarea"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Ejecutar %lld tareas"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Run Tasks" : {
+      "comment" : "Disabled button shown before any maintenance task is chosen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutar tareas"
+          }
+        }
+      }
+    },
+    "Run routine tasks that fix common glitches and keep macOS responsive." : {
+      "comment" : "Introduction of the maintenance feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta tareas rutinarias que corrigen fallos habituales y mantienen macOS ágil."
+          }
+        }
+      }
+    },
+    "Running maintenance…" : {
+      "comment" : "Status shown while maintenance tasks run.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecutando mantenimiento…"
+          }
+        }
+      }
+    },
+    "Select all" : {
+      "comment" : "Checkbox that chooses every maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar todo"
+          }
+        }
+      }
+    },
+    "Some tasks didn’t complete" : {
+      "comment" : "Title after one or more maintenance tasks failed.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas tareas no se completaron"
+          }
+        }
+      }
+    },
+    "Spotlight is rebuilding its index in the background. Searches may be incomplete for a while." : {
+      "comment" : "Result of a successful Spotlight reindex, which keeps working after CleanMac finishes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight está reconstruyendo su índice en segundo plano. Las búsquedas pueden salir incompletas durante un tiempo."
+          }
+        }
+      }
+    },
+    "The task failed without giving a reason." : {
+      "comment" : "Result of a maintenance task whose tool failed without an error message.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tarea falló sin indicar el motivo."
+          }
+        }
+      }
+    },
+    "Thumbnail cache cleared." : {
+      "comment" : "Result of a successful maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caché de miniaturas vaciada."
+          }
+        }
+      }
+    },
+    "Unused memory released." : {
+      "comment" : "Result of a successful maintenance task.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memoria sin usar liberada."
+          }
+        }
+      }
+    },
+    "You’ll be asked for your administrator password once." : {
+      "comment" : "Notice shown when the chosen maintenance tasks need the administrator password.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se te pedirá la contraseña de administrador una sola vez."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

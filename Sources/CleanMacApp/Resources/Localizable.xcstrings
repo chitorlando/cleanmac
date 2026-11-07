@@ -34,17 +34,6 @@
         }
       }
     },
-    "Maintenance" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mantenimiento"
-          }
-        }
-      }
-    },
     "Monitor" : {
       "comment" : "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk.",
       "localizations" : {
@@ -74,17 +63,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronto"
-          }
-        }
-      }
-    },
-    "Uninstaller" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desinstalador"
           }
         }
       }
