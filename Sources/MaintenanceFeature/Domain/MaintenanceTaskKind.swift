@@ -12,6 +12,8 @@ public enum MaintenanceTaskKind: String, CaseIterable, Identifiable, Sendable {
         "/System/Library/Frameworks/CoreServices.framework/Frameworks/"
         + "LaunchServices.framework/Support/lsregister"
 
+    private static let spotlightUtility = "/usr/bin/mdutil"
+
     public var id: String { rawValue }
 
     public var privilege: MaintenancePrivilege {
@@ -22,7 +24,7 @@ public enum MaintenanceTaskKind: String, CaseIterable, Identifiable, Sendable {
     }
 
     /// Commands to run in order; the task fails at the first one that fails.
-    public var commands: [ShellCommand] {
+    public func commands(in environment: MaintenanceEnvironment) -> [ShellCommand] {
         switch self {
         case .flushDNS:
             [
@@ -32,7 +34,7 @@ public enum MaintenanceTaskKind: String, CaseIterable, Identifiable, Sendable {
         case .freeMemory:
             [ShellCommand("/usr/sbin/purge")]
         case .reindexSpotlight:
-            [ShellCommand("/usr/bin/mdutil", "-E", "/")]
+            [ShellCommand(Self.spotlightUtility, ["-E"] + environment.spotlightVolumes.map(\.path))]
         case .rebuildLaunchServices:
             // Drops stale records, then re-registers every app in the local, system and user domains.
             [ShellCommand(Self.launchServicesRegister, "-gc", "-r", "-f", "-all", "local,system,user")]

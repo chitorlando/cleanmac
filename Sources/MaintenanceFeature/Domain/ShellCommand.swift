@@ -5,9 +5,13 @@ public struct ShellCommand: Hashable, Sendable {
     public let executable: URL
     public let arguments: [String]
 
-    public init(_ executablePath: String, _ arguments: String...) {
+    public init(_ executablePath: String, _ arguments: [String]) {
         self.executable = URL(filePath: executablePath)
         self.arguments = arguments
+    }
+
+    public init(_ executablePath: String, _ arguments: String...) {
+        self.init(executablePath, arguments)
     }
 
     /// The command as one line for a POSIX shell, with every word quoted as needed.

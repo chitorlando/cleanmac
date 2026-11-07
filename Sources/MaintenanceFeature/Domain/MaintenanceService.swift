@@ -7,13 +7,16 @@ import Foundation
 public struct MaintenanceService: Sendable {
     private let runner: any CommandRunning
     private let privilegedRunner: any PrivilegedCommandRunning
+    private let environment: MaintenanceEnvironment
 
     public init(
         runner: any CommandRunning = CommandRunner(),
-        privilegedRunner: any PrivilegedCommandRunning = PrivilegedCommandRunner()
+        privilegedRunner: any PrivilegedCommandRunning = PrivilegedCommandRunner(),
+        environment: MaintenanceEnvironment = MaintenanceEnvironmentReader().read()
     ) {
         self.runner = runner
         self.privilegedRunner = privilegedRunner
+        self.environment = environment
     }
 
     @concurrent
@@ -46,7 +49,7 @@ public struct MaintenanceService: Sendable {
     private func runAsUser(_ task: MaintenanceTaskKind) async -> MaintenanceOutcome {
         guard !Task.isCancelled else { return .failed(.cancelled) }
         do {
-            for command in task.commands {
+            for command in task.commands(in: environment) {
                 try await runner.run(command.executable, arguments: command.arguments)
             }
             return .succeeded
@@ -65,7 +68,7 @@ public struct MaintenanceService: Sendable {
             outcomes = Array(repeating: .failed(.cancelled), count: tasks.count)
         } else {
             do {
-                outcomes = try await privilegedRunner.run(tasks.map(\.commands))
+                outcomes = try await privilegedRunner.run(tasks.map { $0.commands(in: environment) })
             } catch {
                 outcomes = Array(repeating: .failed(MaintenanceError(error)), count: tasks.count)
             }
