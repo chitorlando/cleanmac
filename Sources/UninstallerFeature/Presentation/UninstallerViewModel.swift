@@ -19,6 +19,8 @@ public final class UninstallerViewModel {
     public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
     public var query = AppListQuery()
     public var focusedAppID: InstalledApp.ID?
+    /// Items of running apps, updated whenever the running apps are refreshed.
+    private var lockedItemIDs: Set<CleanableItem.ID> = []
 
     private let scanner: any InstalledAppScanning
     private let runningApps: any RunningAppsProviding
@@ -75,6 +77,7 @@ public final class UninstallerViewModel {
         selection = ItemSelection()
         sharedLeftovers = .none
         runningAppIDs = []
+        lockedItemIDs = []
         discoveredCount = nil
         analyzedCount = 0
         phase = .loading
@@ -177,10 +180,6 @@ public final class UninstallerViewModel {
         visibleApps.filter { !isRunning($0) }
     }
 
-    private var lockedItemIDs: Set<CleanableItem.ID> {
-        Set(apps.filter(isRunning).flatMap(\.allItems).map(\.id))
-    }
-
     private func load() async {
         for await event in scanner.scan() {
             guard !Task.isCancelled else { return }
@@ -204,6 +203,8 @@ public final class UninstallerViewModel {
     private func refreshRunningApps() {
         let runningURLs = runningApps.runningAppURLs()
         runningAppIDs = Set(apps.map(\.id).filter { runningURLs.contains($0.standardizedFileURL) })
-        selection.deselect(apps.filter(isRunning).flatMap(\.allItems))
+        let lockedItems = apps.filter(isRunning).flatMap(\.allItems)
+        lockedItemIDs = Set(lockedItems.map(\.id))
+        selection.deselect(lockedItems)
     }
 }
