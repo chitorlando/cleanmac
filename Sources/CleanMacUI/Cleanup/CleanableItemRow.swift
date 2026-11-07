@@ -27,7 +27,12 @@ public struct CleanableItemRow: View {
 
     public var body: some View {
         HStack(spacing: 12) {
-            TriStateCheckbox(state: isSelected ? .checked : .unchecked, tint: tint, action: onToggle)
+            TriStateCheckbox(
+                state: isSelected ? .checked : .unchecked,
+                tint: tint,
+                label: Text(verbatim: item.name),
+                action: onToggle
+            )
                 .disabled(!isToggleEnabled)
 
             VStack(alignment: .leading, spacing: 1) {
@@ -49,9 +54,14 @@ public struct CleanableItemRow: View {
                 Image(systemName: "magnifyingglass")
             }
             .buttonStyle(.borderless)
-            .help(Text("Show in Finder", bundle: .module, comment: "Tooltip of the button that reveals an item in Finder."))
+            .help(revealLabel)
+            .accessibilityLabel(revealLabel)
         }
         .padding(.leading, 4)
+    }
+
+    private var revealLabel: Text {
+        Text("Show in Finder", bundle: .module, comment: "Tooltip of the button that reveals an item in Finder.")
     }
 
     private var parentPath: String {
