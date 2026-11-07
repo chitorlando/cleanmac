@@ -1,8 +1,10 @@
 import SwiftUI
 
 /// Progress ring with a live value in the center, a status line and an optional stop button.
+///
+/// When the total amount of work is unknown, the ring spins instead of filling up.
 public struct ScanProgressView: View {
-    private let progress: Double
+    private let progress: Double?
     private let value: String
     private let caption: Text
     private let status: Text
@@ -10,12 +12,13 @@ public struct ScanProgressView: View {
     private let onCancel: (() -> Void)?
 
     /// - Parameters:
+    ///   - progress: Fraction of the work done, from 0 to 1, or `nil` when the total is unknown.
     ///   - value: Live figure shown inside the ring, such as the size found so far.
     ///   - caption: Short text below the value, such as “found”.
     ///   - status: What is happening, such as “Analyzing your Mac…”.
     ///   - onCancel: Shows a stop button when present.
     public init(
-        progress: Double,
+        progress: Double?,
         value: String,
         caption: Text,
         status: Text,
@@ -33,7 +36,7 @@ public struct ScanProgressView: View {
     public var body: some View {
         VStack(spacing: 36) {
             ZStack {
-                ProgressRing(progress: progress, theme: theme)
+                ring
                 VStack(spacing: 4) {
                     Text(verbatim: value)
                         .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -58,5 +61,14 @@ public struct ScanProgressView: View {
             }
         }
         .animation(.smooth, value: value)
+    }
+
+    @ViewBuilder
+    private var ring: some View {
+        if let progress {
+            ProgressRing(progress: progress, theme: theme)
+        } else {
+            IndeterminateProgressRing(theme: theme)
+        }
     }
 }
