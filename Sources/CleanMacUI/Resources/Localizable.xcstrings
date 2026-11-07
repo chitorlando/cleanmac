@@ -94,6 +94,17 @@
         }
       }
     },
+    "Clear Search" : {
+      "comment" : "Button that empties a search field.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar búsqueda"
+          }
+        }
+      }
+    },
     "Done" : {
       "comment" : "Button that closes a result screen.",
       "localizations" : {
