@@ -60,13 +60,19 @@ struct JunkCategoryCard: View {
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isExpanded ? "Ocultar elementos" : "Mostrar elementos")
+        .accessibilityLabel(expandButtonLabel)
+    }
+
+    private var expandButtonLabel: Text {
+        isExpanded
+            ? Text("Hide items", bundle: .module, comment: "Accessibility label of the button that collapses a category.")
+            : Text("Show items", bundle: .module, comment: "Accessibility label of the button that expands a category.")
     }
 
     private var itemList: some View {
         LazyVStack(spacing: 8) {
             ForEach(result.items) { item in
-                JunkItemRow(
+                CleanableItemRow(
                     item: item,
                     isSelected: viewModel.isSelected(item),
                     tint: theme.primary
