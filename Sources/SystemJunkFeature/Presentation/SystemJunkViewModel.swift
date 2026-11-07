@@ -35,13 +35,16 @@ public final class SystemJunkViewModel {
 
     // MARK: Actions
 
-    public func startScan() {
+    @discardableResult
+    public func startScan() -> Task<Void, Never> {
         activeTask?.cancel()
         results = []
         selection = ItemSelection()
         scannedCategoryCount = 0
         phase = .scanning
-        activeTask = Task { await runScan() }
+        let task = Task { await runScan() }
+        activeTask = task
+        return task
     }
 
     public func cancelScan() {
@@ -49,14 +52,18 @@ public final class SystemJunkViewModel {
         phase = .idle
     }
 
-    public func clean() {
+    @discardableResult
+    public func clean() -> Task<Void, Never>? {
         let items = selectedItems
-        guard !items.isEmpty else { return }
+        guard !items.isEmpty else { return nil }
         phase = .cleaning
-        activeTask = Task {
+        let task = Task {
             let report = await cleanupService.clean(items)
+            guard !Task.isCancelled else { return }
             phase = .finished(report)
         }
+        activeTask = task
+        return task
     }
 
     public func reset() {
