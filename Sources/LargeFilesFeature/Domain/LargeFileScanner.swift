@@ -1,7 +1,7 @@
 import Foundation
 
 /// Walks a folder in the background and reports the files that match the criteria as they're found.
-public struct LargeFileScanner: Sendable {
+public struct LargeFileScanner: LargeFileScanning {
     public static let defaultProgressInterval = 500
 
     private let root: URL
