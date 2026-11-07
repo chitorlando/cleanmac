@@ -13,6 +13,8 @@ public final class LargeFilesViewModel {
     public private(set) var phase: LargeFilesPhase = .intro
     public private(set) var files: [LargeFile] = []
     public private(set) var scannedFileCount = 0
+    /// The user stopped the scan, so the list only has the files found until then.
+    public private(set) var wasStoppedEarly = false
     public private(set) var selection = ItemSelection()
     public var filter = LargeFileFilter()
     public var sortOrder = LargeFileSortOrder.size
@@ -68,17 +70,21 @@ public final class LargeFilesViewModel {
         files = []
         selection = ItemSelection()
         scannedFileCount = 0
+        wasStoppedEarly = false
         phase = .scanning
         let task = Task { await scan() }
         activeTask = task
         return task
     }
 
-    public func cancelScan() {
+    /// Stops the scan and reviews the files found so far.
+    ///
+    /// Walking the home folder can take minutes, so the partial results are kept.
+    public func stopScan() {
+        guard phase == .scanning else { return }
         activeTask?.cancel()
-        files = []
-        scannedFileCount = 0
-        phase = .intro
+        wasStoppedEarly = true
+        phase = .review
     }
 
     /// Moves the selected files to the Trash.

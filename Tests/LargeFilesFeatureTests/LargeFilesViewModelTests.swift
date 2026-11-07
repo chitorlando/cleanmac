@@ -59,7 +59,7 @@ struct LargeFilesViewModelTests {
         #expect(viewModel.phase == .scanning)
         #expect(viewModel.scannedFileCount == 500)
         #expect(viewModel.files == [trip])
-        viewModel.cancelScan()
+        viewModel.stopScan()
         await task.value
     }
 
@@ -72,15 +72,52 @@ struct LargeFilesViewModelTests {
         #expect(viewModel.foundSize == 2_360_000_000)
     }
 
-    @Test func cancellingTheScanReturnsToTheIntro() async {
-        let viewModel = makeViewModel(events: [.found(trip)], finishes: false)
+    @Test func aCompleteScanIsNotMarkedAsStopped() async {
+        let viewModel = await scannedViewModel()
+
+        #expect(!viewModel.wasStoppedEarly)
+    }
+
+    @Test func stoppingTheScanReviewsThePartialResults() async {
+        let viewModel = makeViewModel(events: [.progress(scannedFiles: 500), .found(trip)], finishes: false)
 
         let task = viewModel.startScan()
-        viewModel.cancelScan()
+        while viewModel.foundCount == 0 {
+            await Task.yield()
+        }
+        viewModel.stopScan()
         await task.value
 
-        #expect(viewModel.phase == .intro)
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.wasStoppedEarly)
+        #expect(viewModel.files == [trip])
+        #expect(viewModel.scannedFileCount == 500)
+    }
+
+    @Test func stoppingIsIgnoredWhenNotScanning() async {
+        let viewModel = await scannedViewModel()
+        viewModel.toggle(trip)
+        await viewModel.remove()?.value
+
+        viewModel.stopScan()
+
+        #expect(!viewModel.wasStoppedEarly)
+        #expect(report(of: viewModel) != nil)
+    }
+
+    @Test func scanningAgainClearsTheStoppedWarning() async {
+        let viewModel = makeViewModel(events: [.found(trip)], finishes: false)
+        let firstScan = viewModel.startScan()
+        viewModel.stopScan()
+        await firstScan.value
+
+        let secondScan = viewModel.startScan()
+
+        #expect(!viewModel.wasStoppedEarly)
+        #expect(viewModel.phase == .scanning)
         #expect(viewModel.files.isEmpty)
+        viewModel.stopScan()
+        await secondScan.value
     }
 
     // MARK: Filters and order
