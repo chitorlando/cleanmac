@@ -24,12 +24,15 @@ public struct HeroHeader: View {
 
             Text(title)
                 .font(.system(size: 34, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
 
             Text(subtitle)
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 460)
         }
     }

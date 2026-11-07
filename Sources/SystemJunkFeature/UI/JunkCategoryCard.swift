@@ -7,6 +7,7 @@ struct JunkCategoryCard: View {
     let viewModel: SystemJunkViewModel
     let theme: FeatureTheme
     @Binding var isExpanded: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         GlassCard {
@@ -53,7 +54,7 @@ struct JunkCategoryCard: View {
 
     private var expandButton: some View {
         Button {
-            withAnimation(.snappy) { isExpanded.toggle() }
+            withAnimation(reduceMotion ? nil : .snappy) { isExpanded.toggle() }
         } label: {
             Image(systemName: "chevron.down")
                 .rotationEffect(.degrees(isExpanded ? 180 : 0))
