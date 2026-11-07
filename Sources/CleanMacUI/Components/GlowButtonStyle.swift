@@ -10,6 +10,7 @@ public struct GlowButtonStyle: ButtonStyle {
     private let theme: FeatureTheme
     private let shape: Shape
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     public init(theme: FeatureTheme, shape: Shape) {
         self.theme = theme
@@ -21,7 +22,8 @@ public struct GlowButtonStyle: ButtonStyle {
             .font(.system(.title3, design: .rounded, weight: .semibold))
             .foregroundStyle(.white)
             .shadow(color: theme.primary.opacity(isEnabled ? 0.55 : 0), radius: 22)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.95 : 1)
+            .brightness(configuration.isPressed && reduceMotion ? -0.12 : 0)
             .opacity(isEnabled ? 1 : 0.4)
             .animation(.snappy(duration: 0.2), value: configuration.isPressed)
             .contentShape(.rect)

@@ -10,6 +10,7 @@ public struct ScanProgressView: View {
     private let status: Text
     private let theme: FeatureTheme
     private let onCancel: (() -> Void)?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// - Parameters:
     ///   - progress: Fraction of the work done, from 0 to 1, or `nil` when the total is unknown.
@@ -40,7 +41,7 @@ public struct ScanProgressView: View {
                 VStack(spacing: 4) {
                     Text(verbatim: value)
                         .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .contentTransition(.numericText())
+                        .contentTransition(reduceMotion ? .opacity : .numericText())
                     caption
                         .foregroundStyle(.secondary)
                 }
