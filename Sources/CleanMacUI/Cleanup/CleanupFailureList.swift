@@ -1,12 +1,15 @@
 import CleanMacCore
-import CleanMacUI
 import SwiftUI
 
 /// Items that could not be removed and why.
-struct JunkFailureList: View {
-    let failures: [CleanupFailure]
+public struct CleanupFailureList: View {
+    private let failures: [CleanupFailure]
 
-    var body: some View {
+    public init(failures: [CleanupFailure]) {
+        self.failures = failures
+    }
+
+    public var body: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 8) {
                 Label {

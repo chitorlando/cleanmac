@@ -18,11 +18,7 @@ struct JunkAllCleanView: View {
                 ),
                 theme: theme
             )
-            Button(action: onDone) {
-                Text("Done", bundle: .module, comment: "Button that closes a result screen.")
-            }
-            .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
-            .keyboardShortcut(.defaultAction)
+            DoneButton(theme: theme, action: onDone)
         }
     }
 }

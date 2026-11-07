@@ -1,14 +1,19 @@
 import CleanMacCore
-import CleanMacUI
 import SwiftUI
 
-/// Result of a cleanup.
-struct JunkFinishedView: View {
-    let report: CleanupReport
-    let theme: FeatureTheme
-    let onDone: () -> Void
+/// Result of a cleanup: space freed, items moved and anything that failed.
+public struct CleanupCompletionView: View {
+    private let report: CleanupReport
+    private let theme: FeatureTheme
+    private let onDone: () -> Void
 
-    var body: some View {
+    public init(report: CleanupReport, theme: FeatureTheme, onDone: @escaping () -> Void) {
+        self.report = report
+        self.theme = theme
+        self.onDone = onDone
+    }
+
+    public var body: some View {
         VStack(spacing: 40) {
             HeroHeader(
                 symbolName: "checkmark.seal.fill",
@@ -17,13 +22,9 @@ struct JunkFinishedView: View {
                 theme: theme
             )
             if !report.failures.isEmpty {
-                JunkFailureList(failures: report.failures)
+                CleanupFailureList(failures: report.failures)
             }
-            Button(action: onDone) {
-                Text("Done", bundle: .module, comment: "Button that closes a result screen.")
-            }
-            .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
-            .keyboardShortcut(.defaultAction)
+            DoneButton(theme: theme, action: onDone)
         }
         .frame(maxWidth: 560)
     }

@@ -1,22 +1,38 @@
 import AppKit
 import CleanMacCore
-import CleanMacUI
 import SwiftUI
 
-/// A single file or folder inside a category.
-struct JunkItemRow: View {
-    let item: CleanableItem
-    let isSelected: Bool
-    let tint: Color
-    let onToggle: () -> Void
+/// A single file or folder that can be selected for removal.
+public struct CleanableItemRow: View {
+    private let item: CleanableItem
+    private let isSelected: Bool
+    private let isToggleEnabled: Bool
+    private let tint: Color
+    private let onToggle: () -> Void
 
-    var body: some View {
+    /// - Parameter isToggleEnabled: `false` keeps the item visible but prevents changing its selection.
+    public init(
+        item: CleanableItem,
+        isSelected: Bool,
+        isToggleEnabled: Bool = true,
+        tint: Color,
+        onToggle: @escaping () -> Void
+    ) {
+        self.item = item
+        self.isSelected = isSelected
+        self.isToggleEnabled = isToggleEnabled
+        self.tint = tint
+        self.onToggle = onToggle
+    }
+
+    public var body: some View {
         HStack(spacing: 12) {
             TriStateCheckbox(state: isSelected ? .checked : .unchecked, tint: tint, action: onToggle)
+                .disabled(!isToggleEnabled)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(item.name).lineLimit(1)
-                Text(parentPath)
+                Text(verbatim: item.name).lineLimit(1)
+                Text(verbatim: parentPath)
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .lineLimit(1)

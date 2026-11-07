@@ -24,19 +24,15 @@ struct SystemJunkView: View {
         case .idle:
             JunkIdleView(theme: theme) { viewModel.startScan() }
         case .scanning:
-            JunkScanningView(
-                theme: theme,
-                progress: viewModel.scanProgress,
-                foundSize: viewModel.foundSize
-            ) { viewModel.cancelScan() }
+            JunkScanningView(viewModel: viewModel, theme: theme)
         case .review where viewModel.results.isEmpty:
             JunkAllCleanView(theme: theme) { viewModel.reset() }
         case .review:
             JunkReviewView(viewModel: viewModel, theme: theme)
         case .cleaning:
-            JunkCleaningView(theme: theme)
+            BusyView(theme: theme)
         case .finished(let report):
-            JunkFinishedView(report: report, theme: theme) { viewModel.reset() }
+            CleanupCompletionView(report: report, theme: theme) { viewModel.reset() }
         }
     }
 }

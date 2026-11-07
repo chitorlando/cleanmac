@@ -72,7 +72,7 @@ struct JunkCategoryCard: View {
     private var itemList: some View {
         LazyVStack(spacing: 8) {
             ForEach(result.items) { item in
-                JunkItemRow(
+                CleanableItemRow(
                     item: item,
                     isSelected: viewModel.isSelected(item),
                     tint: theme.primary

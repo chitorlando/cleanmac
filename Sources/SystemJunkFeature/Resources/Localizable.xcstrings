@@ -1,99 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@ freed" : {
-      "comment" : "Title after a cleanup. The argument is a size, such as “1.2 GB”.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ liberados"
-          }
-        }
-      }
-    },
-    "%lld items couldn’t be moved" : {
-      "comment" : "Title of the list of items that failed to move to the Trash.",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld item couldn’t be moved"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld items couldn’t be moved"
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld elemento no se pudo mover"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld elementos no se pudieron mover"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "%lld items moved to the Trash. Empty it to reclaim the disk space." : {
-      "comment" : "Summary after a cleanup. The argument is the number of items removed.",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld item moved to the Trash. Empty it to reclaim the disk space."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld items moved to the Trash. Empty it to reclaim the disk space."
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld elemento movido a la Papelera. Vacíala para recuperar el espacio en disco."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld elementos movidos a la Papelera. Vacíala para recuperar el espacio en disco."
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "Activity and diagnostic history kept by apps." : {
       "comment" : "Description of the user logs junk category.",
       "localizations" : {
@@ -160,17 +67,6 @@
         }
       }
     },
-    "Done" : {
-      "comment" : "Button that closes a result screen.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listo"
-          }
-        }
-      }
-    },
     "Free up space by removing caches, logs and development leftovers you no longer need." : {
       "comment" : "Introduction of the system junk feature.",
       "localizations" : {
@@ -204,17 +100,6 @@
         }
       }
     },
-    "Moving to the Trash…" : {
-      "comment" : "Status shown while cleaning.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Moviendo a la Papelera…"
-          }
-        }
-      }
-    },
     "Scan" : {
       "comment" : "Button that starts looking for junk.",
       "localizations" : {
@@ -237,17 +122,6 @@
         }
       }
     },
-    "Show in Finder" : {
-      "comment" : "Tooltip of the button that reveals an item in Finder.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar en Finder"
-          }
-        }
-      }
-    },
     "Show items" : {
       "comment" : "Accessibility label of the button that expands a category.",
       "localizations" : {
@@ -266,17 +140,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cachés de simuladores"
-          }
-        }
-      }
-    },
-    "Stop" : {
-      "comment" : "Button that cancels the scan.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detener"
           }
         }
       }
