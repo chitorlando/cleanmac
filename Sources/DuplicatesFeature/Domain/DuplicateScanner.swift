@@ -5,6 +5,7 @@ import Foundation
 ///
 /// Files are compared in three passes, each more expensive and on fewer files:
 /// same size, same first 64 KB, and finally the same SHA-256 of the whole file.
+/// The copies of each group found are then checked for APFS clones, which share their data.
 public struct DuplicateScanner: DuplicateScanning {
     /// Smaller files take long to compare and free little space.
     public static let defaultMinimumSize: Int64 = 1_000_000
@@ -13,6 +14,7 @@ public struct DuplicateScanner: DuplicateScanning {
     private let root: URL
     private let walker: any FileWalking
     private let metadataReader: any FileMetadataReading
+    private let cloneInfoReader: any CloneInfoReading
     private let matcher: ContentMatcher
     private let minimumSize: Int64
     private let progressInterval: Int
@@ -22,12 +24,14 @@ public struct DuplicateScanner: DuplicateScanning {
         walker: any FileWalking,
         hasher: any FileHashing = SHA256FileHasher(),
         metadataReader: any FileMetadataReading = LocalFileMetadataReader(),
+        cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader(),
         minimumSize: Int64 = defaultMinimumSize,
         progressInterval: Int = defaultProgressInterval
     ) {
         self.root = root
         self.walker = walker
         self.metadataReader = metadataReader
+        self.cloneInfoReader = cloneInfoReader
         self.matcher = ContentMatcher(hasher: hasher)
         self.minimumSize = minimumSize
         self.progressInterval = max(1, progressInterval)
@@ -58,7 +62,7 @@ public struct DuplicateScanner: DuplicateScanning {
                 continuation.yield(.progress(progress))
             }
             guard !Task.isCancelled else { return }
-            groups.forEach { continuation.yield(.found($0)) }
+            groups.forEach { continuation.yield(.found($0.withCloneInfo(from: cloneInfoReader))) }
         }
     }
 

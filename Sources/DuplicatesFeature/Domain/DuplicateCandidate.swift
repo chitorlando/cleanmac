@@ -8,7 +8,8 @@ struct DuplicateCandidate: Sendable {
     var file: DuplicateFile {
         DuplicateFile(
             item: CleanableItem(url: record.url, size: record.size),
-            creationDate: metadata.creationDate
+            creationDate: metadata.creationDate,
+            cloneInfo: nil
         )
     }
 

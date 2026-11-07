@@ -1,3 +1,4 @@
+import Darwin
 import Foundation
 
 /// A uniquely named folder in the temporary directory, removed when the test ends.
@@ -29,6 +30,24 @@ final class TemporaryFolder {
         let url = root.appending(path: path)
         try FileManager.default.linkItem(at: existing, to: url)
         return url
+    }
+
+    /// Makes an APFS clone of `existing` at `path` with `clonefile(2)`: a new file that shares its data.
+    @discardableResult
+    func makeClone(_ path: String, of existing: URL) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        guard clonefile(existing.path, url.path, 0) == 0 else {
+            throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO)
+        }
+        return url
+    }
+
+    /// Overwrites the first bytes of the file at `url` without replacing the file.
+    func overwriteStart(of url: URL, with data: Data) throws {
+        let handle = try FileHandle(forWritingTo: url)
+        defer { try? handle.close() }
+        try handle.write(contentsOf: data)
     }
 }
 

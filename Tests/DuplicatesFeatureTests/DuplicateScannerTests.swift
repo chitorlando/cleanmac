@@ -6,10 +6,15 @@ import Testing
 struct DuplicateScannerTests {
     private static let fileSize = 200_000
 
-    private func scan(_ folder: TemporaryFolder, minimumSize: Int64 = 100_000) async -> [DuplicateScanEvent] {
+    private func scan(
+        _ folder: TemporaryFolder,
+        minimumSize: Int64 = 100_000,
+        cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()
+    ) async -> [DuplicateScanEvent] {
         let scanner = DuplicateScanner(
             root: folder.root,
             walker: FileSystemWalker(excludedDirectories: []),
+            cloneInfoReader: cloneInfoReader,
             minimumSize: minimumSize
         )
         var events: [DuplicateScanEvent] = []
@@ -76,6 +81,35 @@ struct DuplicateScannerTests {
         try folder.makeHardLink("link.bin", to: original)
 
         #expect(groups(await scan(folder)).isEmpty)
+    }
+
+    @Test func countsClonesOfEachOtherAsOnePhysicalCopy() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        let original = try folder.write(content, to: "Documents/photo.heic")
+        try folder.makeClone("Desktop/photo.heic", of: original)
+        try folder.write(content, to: "Downloads/photo.heic")
+
+        let group = try #require(groups(await scan(folder)).first)
+
+        #expect(group.files.count == 3)
+        #expect(group.physicalCopies.count == 2)
+        #expect(group.recoverableSize == group.fileSize)
+        let clonedFolders = group.files.filter(\.isClone).map { $0.item.url.deletingLastPathComponent().lastPathComponent }
+        #expect(Set(clonedFolders) == ["Documents", "Desktop"])
+    }
+
+    @Test func doesNotCountSpaceWhenTheVolumeCannotTellHowDataIsShared() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        try folder.write(content, to: "a.bin")
+        try folder.write(content, to: "b.bin")
+
+        let group = try #require(groups(await scan(folder, cloneInfoReader: StubCloneInfoReader())).first)
+
+        #expect(group.files.count == 2)
+        #expect(group.files.allSatisfy { $0.cloneInfo == nil })
+        #expect(group.recoverableSize == 0)
     }
 
     @Test func reportsScannedFilesAndHashedBytes() async throws {

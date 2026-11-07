@@ -5,11 +5,21 @@ import Foundation
 public struct DuplicateFile: Identifiable, Hashable, Sendable {
     public let item: CleanableItem
     public let creationDate: Date?
+    /// How the copy shares its data with other files, or `nil` when its volume couldn't tell.
+    public let cloneInfo: CloneInfo?
 
     public var id: CleanableItem.ID { item.id }
 
-    public init(item: CleanableItem, creationDate: Date?) {
+    /// Shares all of its data with another file, so removing it alone frees no space.
+    public var isClone: Bool { (cloneInfo?.cloneCount ?? 1) > 1 }
+
+    public init(item: CleanableItem, creationDate: Date?, cloneInfo: CloneInfo?) {
         self.item = item
         self.creationDate = creationDate
+        self.cloneInfo = cloneInfo
+    }
+
+    func withCloneInfo(_ cloneInfo: CloneInfo?) -> DuplicateFile {
+        DuplicateFile(item: item, creationDate: creationDate, cloneInfo: cloneInfo)
     }
 }
