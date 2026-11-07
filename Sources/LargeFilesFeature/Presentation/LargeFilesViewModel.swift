@@ -52,6 +52,11 @@ public final class LargeFilesViewModel {
         sortOrder.sorted(filter.apply(to: files, now: now(), calendar: calendar))
     }
 
+    /// Kinds shown in the filter column: those of the files found, plus the chosen ones.
+    public var kindOptions: [FileKind] {
+        filter.kindOptions(for: files)
+    }
+
     public var filterCounts: LargeFileFilterCounts {
         LargeFileFilterCounts(files: files, filter: filter, now: now(), calendar: calendar)
     }

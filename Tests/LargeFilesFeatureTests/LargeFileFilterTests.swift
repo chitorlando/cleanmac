@@ -45,6 +45,20 @@ struct LargeFileFilterTests {
         #expect(names(LargeFileFilter(searchText: term)).count == 1)
     }
 
+    @Test func offersOnlyTheKindsOfTheFilesInCatalogOrder() {
+        #expect(LargeFileFilter().kindOptions(for: files) == [.archive, .diskImage, .video, .audio])
+    }
+
+    @Test func keepsOfferingChosenKindsThatHaveNoFiles() {
+        let filter = LargeFileFilter(kinds: [.image, .video])
+
+        #expect(filter.kindOptions(for: [backup]) == [.archive, .video, .image])
+    }
+
+    @Test func offersNoKindWithoutFiles() {
+        #expect(LargeFileFilter().kindOptions(for: []).isEmpty)
+    }
+
     @Test func combinesEveryCondition() {
         let filter = LargeFileFilter(kinds: [.audio, .diskImage], sizeBucket: .from50MBTo100MB, searchText: "old")
         #expect(names(filter) == ["old.dmg"])

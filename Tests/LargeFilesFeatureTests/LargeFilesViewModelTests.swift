@@ -175,6 +175,23 @@ struct LargeFilesViewModelTests {
         #expect(counts.count(of: .from100MBTo1GB) == 0)
     }
 
+    @Test func offersTheKindsOfTheFilesFoundAndTheChosenOnes() async {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.kindOptions == [.archive, .video, .audio])
+
+        viewModel.filter.kinds = [.image]
+        #expect(viewModel.kindOptions == [.archive, .video, .audio, .image])
+    }
+
+    @Test func stopsOfferingKindsWhoseFilesWereRemoved() async {
+        let viewModel = await scannedViewModel()
+        viewModel.toggle(song)
+
+        await viewModel.remove()?.value
+
+        #expect(viewModel.kindOptions == [.archive, .video])
+    }
+
     // MARK: Selection
 
     @Test func selectsNothingAfterTheScan() async {
