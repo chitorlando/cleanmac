@@ -7,7 +7,7 @@ import SwiftUI
 @MainActor
 public final class SystemJunkModule: FeatureModule {
     public let id = "system-junk"
-    public let title = "Basura del sistema"
+    public let title = String(localized: "System Junk", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "trash.fill"
     public let theme = FeatureTheme.systemJunk
 

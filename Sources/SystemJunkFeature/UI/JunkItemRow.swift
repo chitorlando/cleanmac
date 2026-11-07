@@ -33,7 +33,7 @@ struct JunkItemRow: View {
                 Image(systemName: "magnifyingglass")
             }
             .buttonStyle(.borderless)
-            .help("Mostrar en Finder")
+            .help(Text("Show in Finder", bundle: .module, comment: "Tooltip of the button that reveals an item in Finder."))
         }
         .padding(.leading, 4)
     }

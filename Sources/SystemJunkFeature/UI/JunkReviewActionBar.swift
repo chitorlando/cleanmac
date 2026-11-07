@@ -11,14 +11,24 @@ struct JunkReviewActionBar: View {
 
     var body: some View {
         HStack {
-            Button("Volver a escanear", action: onRescan)
-                .buttonStyle(.borderless)
-                .foregroundStyle(.secondary)
+            Button(action: onRescan) {
+                Text("Scan Again", bundle: .module, comment: "Button that repeats the junk scan.")
+            }
+            .buttonStyle(.borderless)
+            .foregroundStyle(.secondary)
+
             Spacer()
-            Button("Limpiar \(selectedSize.formattedByteCount)", action: onClean)
-                .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
-                .disabled(!canClean)
-                .keyboardShortcut(.defaultAction)
+
+            Button(action: onClean) {
+                Text(
+                    "Clean \(selectedSize.formattedByteCount)",
+                    bundle: .module,
+                    comment: "Button that removes the selected junk. The argument is a size, such as “1.2 GB”."
+                )
+            }
+            .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
+            .disabled(!canClean)
+            .keyboardShortcut(.defaultAction)
         }
     }
 }

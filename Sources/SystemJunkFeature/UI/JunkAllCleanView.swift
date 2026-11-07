@@ -10,13 +10,19 @@ struct JunkAllCleanView: View {
         VStack(spacing: 40) {
             HeroHeader(
                 symbolName: "sparkles",
-                title: "Todo limpio",
-                subtitle: "No hemos encontrado basura que eliminar.",
+                title: String(localized: "All Clean", bundle: .module, comment: "Title shown when no junk was found."),
+                subtitle: String(
+                    localized: "We didn’t find any junk to remove.",
+                    bundle: .module,
+                    comment: "Message shown when no junk was found."
+                ),
                 theme: theme
             )
-            Button("Listo", action: onDone)
-                .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
-                .keyboardShortcut(.defaultAction)
+            Button(action: onDone) {
+                Text("Done", bundle: .module, comment: "Button that closes a result screen.")
+            }
+            .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
+            .keyboardShortcut(.defaultAction)
         }
     }
 }

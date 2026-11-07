@@ -10,7 +10,7 @@ struct JunkCleaningView: View {
             ProgressView()
                 .controlSize(.large)
                 .tint(theme.primary)
-            Text("Moviendo a la Papelera…")
+            Text("Moving to the Trash…", bundle: .module, comment: "Status shown while cleaning.")
                 .font(.title3.weight(.medium))
         }
     }
