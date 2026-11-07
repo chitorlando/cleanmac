@@ -1,0 +1,102 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Analyzing installed apps…" : {
+      "comment" : "Status shown while the installed apps are measured.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizando las apps instaladas…"
+          }
+        }
+      }
+    },
+    "Remove apps completely, together with the preferences, caches and support files they leave behind." : {
+      "comment" : "Introduction of the uninstaller feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina apps por completo, junto con las preferencias, cachés y archivos de soporte que dejan atrás."
+          }
+        }
+      }
+    },
+    "Uninstaller" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desinstalador"
+          }
+        }
+      }
+    },
+    "View Applications" : {
+      "comment" : "Button that lists the installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver aplicaciones"
+          }
+        }
+      }
+    },
+    "apps analyzed" : {
+      "comment" : "Caption below the number of apps analyzed so far.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apps analizadas"
+          }
+        }
+      }
+    },
+    "of %lld apps" : {
+      "comment" : "Caption below the number of apps analyzed so far, as in “12 of 52 apps”. The argument is the total.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "of %lld app"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "of %lld apps"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "de %lld app"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "de %lld apps"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

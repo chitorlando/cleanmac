@@ -30,7 +30,8 @@ let package = Package(
         ),
         .target(
             name: "UninstallerFeature",
-            dependencies: ["CleanMacCore"]
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "CleanMacApp",
