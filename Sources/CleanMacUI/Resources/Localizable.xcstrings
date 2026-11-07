@@ -1,0 +1,187 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ freed" : {
+      "comment" : "Title after a cleanup. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ liberados"
+          }
+        }
+      }
+    },
+    "%lld items couldn’t be moved" : {
+      "comment" : "Title of the list of items that failed to move to the Trash.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item couldn’t be moved"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items couldn’t be moved"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento no se pudo mover"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos no se pudieron mover"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld items moved to the Trash. Empty it to reclaim the disk space." : {
+      "comment" : "Summary after a cleanup. The argument is the number of items removed.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item moved to the Trash. Empty it to reclaim the disk space."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items moved to the Trash. Empty it to reclaim the disk space."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento movido a la Papelera. Vacíala para recuperar el espacio en disco."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos movidos a la Papelera. Vacíala para recuperar el espacio en disco."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Clear Search" : {
+      "comment" : "Button that empties a search field.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar búsqueda"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Button that closes a result screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
+          }
+        }
+      }
+    },
+    "Moving to the Trash…" : {
+      "comment" : "Status shown while items are moved to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moviendo a la Papelera…"
+          }
+        }
+      }
+    },
+    "Not selected" : {
+      "comment" : "Accessibility value of an unchecked checkbox.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No seleccionado"
+          }
+        }
+      }
+    },
+    "Partially selected" : {
+      "comment" : "Accessibility value of a checkbox whose group is partly selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parcialmente seleccionado"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "comment" : "Accessibility value of a checked checkbox.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionado"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Tooltip of the button that reveals an item in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Stop" : {
+      "comment" : "Button that cancels a scan in progress.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

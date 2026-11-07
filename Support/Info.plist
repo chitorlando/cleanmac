@@ -3,15 +3,22 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleDevelopmentRegion</key>
-    <string>es</string>
+    <string>en</string>
     <key>CFBundleDisplayName</key>
     <string>CleanMac</string>
     <key>CFBundleExecutable</key>
     <string>CleanMac</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
     <string>io.github.cleanmac</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>es</string>
+    </array>
     <key>CFBundleName</key>
     <string>CleanMac</string>
     <key>CFBundlePackageType</key>
@@ -27,6 +34,6 @@
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>Software libre bajo licencia MIT.</string>
+    <string>Free software under the MIT License.</string>
 </dict>
 </plist>

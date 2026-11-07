@@ -1,7 +1,6 @@
 import CleanMacCore
-import CleanMacUI
 
-extension CheckState {
+public extension CheckState {
     /// Maps the domain selection state to its checkbox representation.
     init(_ state: ItemSelection.State) {
         switch state {
