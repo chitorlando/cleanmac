@@ -33,6 +33,10 @@ let package = Package(
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
         ),
+        .target(
+            name: "DuplicatesFeature",
+            dependencies: ["CleanMacCore"]
+        ),
         .executableTarget(
             name: "CleanMacApp",
             dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature"],
@@ -54,6 +58,10 @@ let package = Package(
         .testTarget(
             name: "LargeFilesFeatureTests",
             dependencies: ["LargeFilesFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "DuplicatesFeatureTests",
+            dependencies: ["DuplicatesFeature", "CleanMacCore"]
         ),
         .testTarget(name: "LocalizationTests")
     ]
