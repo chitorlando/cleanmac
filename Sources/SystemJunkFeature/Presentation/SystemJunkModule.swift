@@ -10,6 +10,7 @@ public final class SystemJunkModule: FeatureModule {
     public let title = String(localized: "System Junk", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "trash.fill"
     public let theme = FeatureTheme.systemJunk
+    public let section = FeatureSection.cleanup
 
     private let viewModel: SystemJunkViewModel
 
