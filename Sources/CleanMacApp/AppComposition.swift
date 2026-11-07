@@ -1,4 +1,5 @@
 import CleanMacUI
+import LargeFilesFeature
 import MaintenanceFeature
 import SystemJunkFeature
 import UninstallerFeature
@@ -9,7 +10,9 @@ enum AppComposition {
     static func makeModules() -> [any FeatureModule] {
         [
             SystemJunkModule.live(),
-            UninstallerModule.live()
+            UninstallerModule.live(),
+            LargeFilesModule.live(),
+            MaintenanceModule.live()
         ]
     }
 }
