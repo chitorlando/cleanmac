@@ -4,6 +4,7 @@ import Foundation
 ///
 /// Symbolic links (such as `/Applications/Safari.app`, which points into a system
 /// cryptex) and items protected by System Integrity Protection are skipped.
+/// URLs are returned standardized so they compare equal to those reported by `NSWorkspace`.
 public struct FileSystemAppLocator: AppBundleLocating {
     private static let appExtension = "app"
 
@@ -13,7 +14,8 @@ public struct FileSystemAppLocator: AppBundleLocating {
         var seenPaths: Set<String> = []
         var apps: [URL] = []
         for folder in folders where FileManager.default.fileExists(atPath: folder.path) {
-            for app in applications(in: folder) where seenPaths.insert(app.standardizedFileURL.path).inserted {
+            for app in applications(in: folder).map(\.standardizedFileURL)
+            where seenPaths.insert(app.path).inserted {
                 apps.append(app)
             }
         }

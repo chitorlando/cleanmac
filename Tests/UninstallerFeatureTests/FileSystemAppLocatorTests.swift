@@ -53,4 +53,15 @@ struct FileSystemAppLocatorTests {
 
         #expect(names == ["Only.app"])
     }
+
+    @Test func returnsStandardizedURLs() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        try folder.makeFolder("Applications/Vendor/Deep/Nested.app/Contents")
+
+        let apps = FileSystemAppLocator().applications(in: [folder.root.appending(path: "Applications")])
+
+        #expect(apps.count == 1)
+        #expect(apps.allSatisfy { $0 == $0.standardizedFileURL })
+    }
 }
