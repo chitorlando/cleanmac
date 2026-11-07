@@ -4,7 +4,7 @@ import Foundation
 /// Runs the chosen maintenance tasks in order, continuing past individual failures.
 /// Administrator tasks share one password prompt: they run together as a single batch
 /// when the first of them comes up, and each one still gets its own outcome.
-public struct MaintenanceService: Sendable {
+public struct MaintenanceService: MaintenanceRunning {
     private let runner: any CommandRunning
     private let privilegedRunner: any PrivilegedCommandRunning
     private let environment: MaintenanceEnvironment
