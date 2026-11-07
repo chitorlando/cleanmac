@@ -9,6 +9,8 @@ public enum MaintenanceError: Error, Equatable, Sendable {
     case cancelled
     /// A command failed; the message is what the tool reported.
     case failed(message: String)
+    /// The administrator batch ran but its results could not be read.
+    case unreadableResult
 
     init(_ error: any Error) {
         switch error {

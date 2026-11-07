@@ -28,7 +28,7 @@ struct MaintenanceServiceTests {
 
         let report = await service.run([.flushDNS, .resetQuickLook, .freeMemory, .reindexSpotlight])
 
-        let expected = [MaintenanceTaskKind.flushDNS, .freeMemory, .reindexSpotlight].flatMap(\.commands)
+        let expected = [MaintenanceTaskKind.flushDNS, .freeMemory, .reindexSpotlight].map(\.commands)
         #expect(await privileged.batches == [expected])
         #expect(report.results.map(\.task) == [.flushDNS, .resetQuickLook, .freeMemory, .reindexSpotlight])
     }
@@ -51,7 +51,16 @@ struct MaintenanceServiceTests {
         #expect(outcomes(report) == [.failed(.failed(message: "busy")), .succeeded])
     }
 
-    @Test func failsEveryAdministratorTaskWhenThePromptIsDismissed() async {
+    @Test func givesEachAdministratorTaskItsOwnOutcome() async {
+        let privileged = SpyPrivilegedCommandRunner(outcomes: [.failed(.failed(message: "busy")), .succeeded])
+        let service = MaintenanceService(runner: SpyCommandRunner(), privilegedRunner: privileged)
+
+        let report = await service.run([.flushDNS, .resetQuickLook, .freeMemory])
+
+        #expect(outcomes(report) == [.failed(.failed(message: "busy")), .succeeded, .succeeded])
+    }
+
+    @Test func sharesTheErrorWhenTheBatchCannotRun() async {
         let privileged = SpyPrivilegedCommandRunner(throwing: MaintenanceError.authorizationCancelled)
         let service = MaintenanceService(runner: SpyCommandRunner(), privilegedRunner: privileged)
 
