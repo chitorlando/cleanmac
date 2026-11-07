@@ -18,7 +18,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "CleanMacCore"),
-        .target(name: "CleanMacUI"),
+        .target(name: "CleanMacUI", resources: [.process("Resources")]),
         .target(
             name: "SystemJunkFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"]
