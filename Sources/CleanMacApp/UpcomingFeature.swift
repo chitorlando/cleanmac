@@ -12,10 +12,6 @@ struct UpcomingFeature: Identifiable {
 extension UpcomingFeature {
     static let roadmap: [UpcomingFeature] = [
         UpcomingFeature(
-            title: String(localized: "Uninstaller", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "app.badge.checkmark"
-        ),
-        UpcomingFeature(
             title: String(localized: "Large Files", bundle: .module, comment: "Upcoming feature name in the sidebar."),
             symbolName: "doc.richtext"
         ),
