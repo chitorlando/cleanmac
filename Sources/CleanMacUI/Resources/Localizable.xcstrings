@@ -149,6 +149,17 @@
         }
       }
     },
+    "Progress" : {
+      "comment" : "Accessibility label of a progress ring.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso"
+          }
+        }
+      }
+    },
     "Selected" : {
       "comment" : "Accessibility value of a checked checkbox.",
       "localizations" : {

@@ -16,5 +16,6 @@ public struct SidebarIcon: View {
             .foregroundStyle(.white)
             .frame(width: 24, height: 24)
             .background(theme.gradient, in: .rect(cornerRadius: 6))
+            .accessibilityHidden(true)
     }
 }

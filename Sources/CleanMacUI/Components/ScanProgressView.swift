@@ -41,6 +41,7 @@ public struct ScanProgressView: View {
                     caption
                         .foregroundStyle(.secondary)
                 }
+                .accessibilityElement(children: .combine)
             }
             .frame(width: 220, height: 220)
 
