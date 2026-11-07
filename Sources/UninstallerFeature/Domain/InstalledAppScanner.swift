@@ -3,7 +3,7 @@ import Foundation
 
 /// Finds installed apps and their leftovers, then measures every app in parallel,
 /// reporting each one as soon as it is ready.
-public struct InstalledAppScanner: Sendable {
+public struct InstalledAppScanner: InstalledAppScanning {
     private let applicationFolders: [URL]
     private let locator: any AppBundleLocating
     private let infoReader: any AppInfoReading
