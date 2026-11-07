@@ -23,5 +23,8 @@ public struct ProgressRing: View {
                 .shadow(color: theme.primary.opacity(0.5), radius: 12)
                 .animation(.smooth, value: progress)
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Progress", bundle: .module, comment: "Accessibility label of a progress ring."))
+        .accessibilityValue(Text(min(max(progress, 0), 1), format: .percent.precision(.fractionLength(0))))
     }
 }

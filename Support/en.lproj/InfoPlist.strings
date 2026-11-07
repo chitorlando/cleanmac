@@ -1,0 +1,5 @@
+/* Copyright line shown in the About window. */
+"NSHumanReadableCopyright" = "Free software under the MIT License.";
+
+/* Explains why CleanMac asks to control Finder: moving protected apps to the Trash. */
+"NSAppleEventsUsageDescription" = "CleanMac uses Finder to move protected apps to the Trash, so you can still restore them with Put Back.";

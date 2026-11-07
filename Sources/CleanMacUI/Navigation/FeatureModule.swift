@@ -10,6 +10,7 @@ public protocol FeatureModule: AnyObject {
     var title: String { get }
     var symbolName: String { get }
     var theme: FeatureTheme { get }
+    var section: FeatureSection { get }
 
     func makeView() -> AnyView
 }

@@ -1,22 +1,55 @@
 import CleanMacUI
+import Foundation
 
 /// A planned feature shown in the sidebar until it is implemented.
 struct UpcomingFeature: Identifiable {
     let title: String
     let symbolName: String
+    let section: FeatureSection
 
     var id: String { title }
 }
 
 extension UpcomingFeature {
     static let roadmap: [UpcomingFeature] = [
-        UpcomingFeature(title: "Desinstalador", symbolName: "app.badge.checkmark"),
-        UpcomingFeature(title: "Archivos grandes", symbolName: "doc.richtext"),
-        UpcomingFeature(title: "Mapa del disco", symbolName: "chart.pie.fill"),
-        UpcomingFeature(title: "Duplicados", symbolName: "doc.on.doc.fill"),
-        UpcomingFeature(title: "Privacidad", symbolName: "hand.raised.fill"),
-        UpcomingFeature(title: "Ítems de inicio", symbolName: "power"),
-        UpcomingFeature(title: "Mantenimiento", symbolName: "wrench.and.screwdriver.fill"),
-        UpcomingFeature(title: "Monitor", symbolName: "gauge.with.dots.needle.67percent")
+        UpcomingFeature(
+            title: String(localized: "Large Files", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "doc.richtext",
+            section: .files
+        ),
+        UpcomingFeature(
+            title: String(localized: "Disk Map", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "chart.pie.fill",
+            section: .files
+        ),
+        UpcomingFeature(
+            title: String(localized: "Duplicates", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "doc.on.doc.fill",
+            section: .files
+        ),
+        UpcomingFeature(
+            title: String(localized: "Privacy", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "hand.raised.fill",
+            section: .cleanup
+        ),
+        UpcomingFeature(
+            title: String(localized: "Login Items", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "power",
+            section: .performance
+        ),
+        UpcomingFeature(
+            title: String(localized: "Maintenance", bundle: .module, comment: "Upcoming feature name in the sidebar."),
+            symbolName: "wrench.and.screwdriver.fill",
+            section: .performance
+        ),
+        UpcomingFeature(
+            title: String(
+                localized: "Monitor",
+                bundle: .module,
+                comment: "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk."
+            ),
+            symbolName: "gauge.with.dots.needle.67percent",
+            section: .performance
+        )
     ]
 }

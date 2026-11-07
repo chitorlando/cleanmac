@@ -25,6 +25,26 @@ public extension FeatureTheme {
         secondary: Color(red: 0.05, green: 0.52, blue: 0.70)
     )
 
+    static let uninstaller = FeatureTheme(
+        primary: Color(red: 0.36, green: 0.62, blue: 1.00),
+        secondary: Color(red: 0.50, green: 0.30, blue: 0.92)
+    )
+
+    static let largeFiles = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.56, blue: 0.30),
+        secondary: Color(red: 0.88, green: 0.24, blue: 0.56)
+    )
+
+    static let maintenance = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.75, blue: 0.25),
+        secondary: Color(red: 0.94, green: 0.50, blue: 0.12)
+    )
+
+    static let duplicates = FeatureTheme(
+        primary: Color(red: 0.80, green: 0.48, blue: 1.00),
+        secondary: Color(red: 0.84, green: 0.24, blue: 0.72)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)

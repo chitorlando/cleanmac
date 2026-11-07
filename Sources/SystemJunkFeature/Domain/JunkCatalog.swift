@@ -38,36 +38,56 @@ public enum JunkCatalog {
 public extension JunkCategory {
     static let userCaches = JunkCategory(
         id: "user-caches",
-        title: "Cachés de usuario",
-        summary: "Archivos temporales que las apps vuelven a generar cuando los necesitan.",
+        title: String(localized: "User Caches", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Temporary files apps recreate when they need them.",
+            bundle: .module,
+            comment: "Description of the user caches junk category."
+        ),
         symbolName: "archivebox.fill"
     )
 
     static let userLogs = JunkCategory(
         id: "user-logs",
-        title: "Registros de usuario",
-        summary: "Historiales de actividad y diagnóstico de las apps.",
+        title: String(localized: "User Logs", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Activity and diagnostic history kept by apps.",
+            bundle: .module,
+            comment: "Description of the user logs junk category."
+        ),
         symbolName: "doc.text.fill"
     )
 
     static let xcodeDerivedData = JunkCategory(
         id: "xcode-derived-data",
-        title: "Datos derivados de Xcode",
-        summary: "Compilaciones intermedias. Xcode las recrea en la siguiente compilación.",
+        title: String(localized: "Xcode Derived Data", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Intermediate build files. Xcode recreates them on the next build.",
+            bundle: .module,
+            comment: "Description of the Xcode derived data junk category."
+        ),
         symbolName: "hammer.fill"
     )
 
     static let deviceSupport = JunkCategory(
         id: "device-support",
-        title: "Soporte de dispositivos",
-        summary: "Símbolos de depuración de versiones antiguas de iOS, watchOS y tvOS.",
+        title: String(localized: "Device Support", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Debug symbols for older iOS, watchOS and tvOS versions.",
+            bundle: .module,
+            comment: "Description of the device support junk category."
+        ),
         symbolName: "iphone.gen3"
     )
 
     static let simulatorCaches = JunkCategory(
         id: "simulator-caches",
-        title: "Cachés de simuladores",
-        summary: "Datos temporales de los simuladores de Xcode.",
+        title: String(localized: "Simulator Caches", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Temporary data from the Xcode simulators.",
+            bundle: .module,
+            comment: "Description of the simulator caches junk category."
+        ),
         symbolName: "macbook.and.iphone"
     )
 }

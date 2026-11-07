@@ -20,14 +20,19 @@ public struct HeroHeader: View {
                 .font(.system(size: 72, weight: .semibold))
                 .foregroundStyle(theme.gradient)
                 .shadow(color: theme.primary.opacity(0.6), radius: 24)
+                .accessibilityHidden(true)
 
             Text(title)
                 .font(.system(size: 34, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
 
             Text(subtitle)
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 460)
         }
     }

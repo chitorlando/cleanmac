@@ -1,0 +1,94 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Disk Map" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapa del disco"
+          }
+        }
+      }
+    },
+    "Duplicates" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicados"
+          }
+        }
+      }
+    },
+    "Large Files" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos grandes"
+          }
+        }
+      }
+    },
+    "Login Items" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ítems de inicio"
+          }
+        }
+      }
+    },
+    "Maintenance" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenimiento"
+          }
+        }
+      }
+    },
+    "Monitor" : {
+      "comment" : "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Upcoming feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "Soon" : {
+      "comment" : "Badge on sidebar features that are not available yet.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

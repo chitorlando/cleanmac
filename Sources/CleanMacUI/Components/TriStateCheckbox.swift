@@ -4,11 +4,15 @@ import SwiftUI
 public struct TriStateCheckbox: View {
     private let state: CheckState
     private let tint: Color
+    private let label: Text
     private let action: () -> Void
+    @Environment(\.isEnabled) private var isEnabled
 
-    public init(state: CheckState, tint: Color, action: @escaping () -> Void) {
+    /// - Parameter label: What the checkbox selects, read by VoiceOver, such as the item's name.
+    public init(state: CheckState, tint: Color, label: Text, action: @escaping () -> Void) {
         self.state = state
         self.tint = tint
+        self.label = label
         self.action = action
     }
 
@@ -16,11 +20,19 @@ public struct TriStateCheckbox: View {
         Button(action: action) {
             Image(systemName: symbolName)
                 .font(.title3)
-                .foregroundStyle(state == .unchecked ? Color.secondary : tint)
+                .foregroundStyle(symbolColor)
+                .opacity(isEnabled ? 1 : 0.4)
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)
+        .accessibilityAddTraits(.isToggle)
+    }
+
+    /// Gray when unchecked or disabled, so a disabled checkbox never looks active.
+    private var symbolColor: Color {
+        isEnabled && state != .unchecked ? tint : .secondary
     }
 
     private var symbolName: String {
@@ -31,11 +43,11 @@ public struct TriStateCheckbox: View {
         }
     }
 
-    private var accessibilityValue: String {
+    private var accessibilityValue: Text {
         switch state {
-        case .checked: "Seleccionado"
-        case .mixed: "Parcialmente seleccionado"
-        case .unchecked: "No seleccionado"
+        case .checked: Text("Selected", bundle: .module)
+        case .mixed: Text("Partially selected", bundle: .module)
+        case .unchecked: Text("Not selected", bundle: .module)
         }
     }
 }

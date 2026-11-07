@@ -1,0 +1,248 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Activity and diagnostic history kept by apps." : {
+      "comment" : "Description of the user logs junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historiales de actividad y diagnóstico de las apps."
+          }
+        }
+      }
+    },
+    "All Clean" : {
+      "comment" : "Title shown when no junk was found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo limpio"
+          }
+        }
+      }
+    },
+    "Analyzing your Mac…" : {
+      "comment" : "Status shown while scanning.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizando tu Mac…"
+          }
+        }
+      }
+    },
+    "Clean %@" : {
+      "comment" : "Button that removes the selected junk. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpiar %@"
+          }
+        }
+      }
+    },
+    "Debug symbols for older iOS, watchOS and tvOS versions." : {
+      "comment" : "Description of the device support junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Símbolos de depuración de versiones antiguas de iOS, watchOS y tvOS."
+          }
+        }
+      }
+    },
+    "Device Support" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soporte de dispositivos"
+          }
+        }
+      }
+    },
+    "Free up space by removing caches, logs and development leftovers you no longer need." : {
+      "comment" : "Introduction of the system junk feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera espacio eliminando cachés, registros y restos de desarrollo que ya no necesitas."
+          }
+        }
+      }
+    },
+    "Hide items" : {
+      "comment" : "Accessibility label of the button that collapses a category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar elementos"
+          }
+        }
+      }
+    },
+    "Intermediate build files. Xcode recreates them on the next build." : {
+      "comment" : "Description of the Xcode derived data junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compilaciones intermedias. Xcode las recrea en la siguiente compilación."
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "Button that starts looking for junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that repeats the junk scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Show items" : {
+      "comment" : "Accessibility label of the button that expands a category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar elementos"
+          }
+        }
+      }
+    },
+    "Simulator Caches" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cachés de simuladores"
+          }
+        }
+      }
+    },
+    "System Junk" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Basura del sistema"
+          }
+        }
+      }
+    },
+    "Temporary data from the Xcode simulators." : {
+      "comment" : "Description of the simulator caches junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos temporales de los simuladores de Xcode."
+          }
+        }
+      }
+    },
+    "Temporary files apps recreate when they need them." : {
+      "comment" : "Description of the user caches junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos temporales que las apps vuelven a generar cuando los necesitan."
+          }
+        }
+      }
+    },
+    "User Caches" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cachés de usuario"
+          }
+        }
+      }
+    },
+    "User Logs" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registros de usuario"
+          }
+        }
+      }
+    },
+    "We didn’t find any junk to remove." : {
+      "comment" : "Message shown when no junk was found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hemos encontrado basura que eliminar."
+          }
+        }
+      }
+    },
+    "Xcode Derived Data" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos derivados de Xcode"
+          }
+        }
+      }
+    },
+    "found" : {
+      "comment" : "Caption below the amount of junk found so far, as in “1.2 GB found”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "encontrados"
+          }
+        }
+      }
+    },
+    "of junk found. Review what you want to clean." : {
+      "comment" : "Shown below the total size of junk found, as in “1.2 GB of junk found”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de basura encontrada. Revisa lo que quieres limpiar."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

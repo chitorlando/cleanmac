@@ -7,6 +7,7 @@ struct JunkCategoryCard: View {
     let viewModel: SystemJunkViewModel
     let theme: FeatureTheme
     @Binding var isExpanded: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         GlassCard {
@@ -24,13 +25,15 @@ struct JunkCategoryCard: View {
         HStack(spacing: 14) {
             TriStateCheckbox(
                 state: CheckState(viewModel.selectionState(of: result)),
-                tint: theme.primary
+                tint: theme.primary,
+                label: Text(result.category.title)
             ) { viewModel.toggle(result) }
 
             Image(systemName: result.category.symbolName)
                 .font(.title2)
                 .foregroundStyle(theme.gradient)
                 .frame(width: 32)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(result.category.title).font(.headline)
@@ -51,7 +54,7 @@ struct JunkCategoryCard: View {
 
     private var expandButton: some View {
         Button {
-            withAnimation(.snappy) { isExpanded.toggle() }
+            withAnimation(reduceMotion ? nil : .snappy) { isExpanded.toggle() }
         } label: {
             Image(systemName: "chevron.down")
                 .rotationEffect(.degrees(isExpanded ? 180 : 0))
@@ -60,13 +63,19 @@ struct JunkCategoryCard: View {
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(isExpanded ? "Ocultar elementos" : "Mostrar elementos")
+        .accessibilityLabel(expandButtonLabel)
+    }
+
+    private var expandButtonLabel: Text {
+        isExpanded
+            ? Text("Hide items", bundle: .module, comment: "Accessibility label of the button that collapses a category.")
+            : Text("Show items", bundle: .module, comment: "Accessibility label of the button that expands a category.")
     }
 
     private var itemList: some View {
         LazyVStack(spacing: 8) {
             ForEach(result.items) { item in
-                JunkItemRow(
+                CleanableItemRow(
                     item: item,
                     isSelected: viewModel.isSelected(item),
                     tint: theme.primary
