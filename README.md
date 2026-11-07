@@ -1,5 +1,7 @@
 # CleanMac
 
+[![CI](https://github.com/chitorlando/cleanmac/actions/workflows/ci.yml/badge.svg)](https://github.com/chitorlando/cleanmac/actions/workflows/ci.yml)
+
 **Mantenimiento y limpieza para macOS. Libre, nativo y de código abierto.**
 
 CleanMac es una alternativa gratuita a las suites comerciales de limpieza para Mac.
@@ -60,6 +62,9 @@ make run             # compila y lanza la app
 make test            # ejecuta los tests
 ./scripts/make-app-icon.sh  # regenera el icono de la app
 ```
+
+Cada pull request se compila y se prueba en GitHub Actions ([`ci.yml`](.github/workflows/ci.yml)):
+compilación limpia, tests, String Catalogs sincronizados (`make strings`) y empaquetado de la app.
 
 ### Arquitectura
 
