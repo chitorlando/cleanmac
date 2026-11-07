@@ -1,4 +1,4 @@
-.PHONY: build test app run install clean
+.PHONY: build test app run install strings clean
 
 build:
 	swift build
@@ -15,6 +15,9 @@ run:
 install: app
 	rm -rf /Applications/CleanMac.app
 	cp -R build/CleanMac.app /Applications/
+
+strings:
+	./scripts/sync-strings.sh
 
 clean:
 	rm -rf .build build

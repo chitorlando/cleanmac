@@ -31,11 +31,11 @@ public struct TriStateCheckbox: View {
         }
     }
 
-    private var accessibilityValue: String {
+    private var accessibilityValue: Text {
         switch state {
-        case .checked: "Seleccionado"
-        case .mixed: "Parcialmente seleccionado"
-        case .unchecked: "No seleccionado"
+        case .checked: Text("Selected", bundle: .module)
+        case .mixed: Text("Partially selected", bundle: .module)
+        case .unchecked: Text("Not selected", bundle: .module)
         }
     }
 }

@@ -1,0 +1,39 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Not selected" : {
+      "comment" : "Accessibility value of an unchecked checkbox.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No seleccionado"
+          }
+        }
+      }
+    },
+    "Partially selected" : {
+      "comment" : "Accessibility value of a checkbox whose group is partly selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parcialmente seleccionado"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "comment" : "Accessibility value of a checked checkbox.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionado"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
