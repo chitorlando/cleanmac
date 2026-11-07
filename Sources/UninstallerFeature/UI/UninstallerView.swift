@@ -7,14 +7,12 @@ struct UninstallerView: View {
     let theme: FeatureTheme
 
     var body: some View {
-        ZStack {
-            FeatureBackground(theme: theme)
+        FeatureScreen(theme: theme) {
             content
                 .padding(32)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                .phaseTransition()
         }
-        .environment(\.colorScheme, .dark)
         .animation(.smooth(duration: 0.35), value: viewModel.phase)
     }
 
