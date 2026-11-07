@@ -4,11 +4,14 @@ import SwiftUI
 public struct TriStateCheckbox: View {
     private let state: CheckState
     private let tint: Color
+    private let label: Text
     private let action: () -> Void
 
-    public init(state: CheckState, tint: Color, action: @escaping () -> Void) {
+    /// - Parameter label: What the checkbox selects, read by VoiceOver, such as the item's name.
+    public init(state: CheckState, tint: Color, label: Text, action: @escaping () -> Void) {
         self.state = state
         self.tint = tint
+        self.label = label
         self.action = action
     }
 
@@ -20,7 +23,9 @@ public struct TriStateCheckbox: View {
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)
+        .accessibilityAddTraits(.isToggle)
     }
 
     private var symbolName: String {

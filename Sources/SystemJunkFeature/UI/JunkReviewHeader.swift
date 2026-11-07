@@ -11,8 +11,12 @@ struct JunkReviewHeader: View {
             Text(foundSize.formattedByteCount)
                 .font(.system(size: 44, weight: .bold, design: .rounded))
                 .foregroundStyle(theme.gradient)
-            Text("de basura encontrada. Revisa lo que quieres limpiar.")
-                .foregroundStyle(.secondary)
+            Text(
+                "of junk found. Review what you want to clean.",
+                bundle: .module,
+                comment: "Shown below the total size of junk found, as in “1.2 GB of junk found”."
+            )
+            .foregroundStyle(.secondary)
         }
     }
 }

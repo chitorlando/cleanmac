@@ -58,6 +58,7 @@ Es opcional: sin ese permiso la app simplemente omite esas carpetas.
 open Package.swift   # abre el proyecto en Xcode
 make run             # compila y lanza la app
 make test            # ejecuta los tests
+./scripts/make-app-icon.sh  # regenera el icono de la app
 ```
 
 ### Arquitectura
@@ -81,6 +82,31 @@ y se registra en un único sitio, `AppComposition`. Añadir una función no obli
 - **Componentes pequeños.** Una vista o un tipo por archivo, con una sola responsabilidad.
 - **Concurrencia segura.** Swift 6 en modo estricto. El trabajo pesado nunca bloquea la interfaz.
 - **Sin dependencias externas.** Solo frameworks de Apple.
+
+## Idiomas
+
+CleanMac está disponible en **inglés** y **español**. La app sigue el idioma de macOS
+y, si prefieres usarla en un idioma distinto al del sistema, puedes elegirlo solo para ella en
+Ajustes del Sistema > General > Idioma y región > Aplicaciones.
+
+### Añadir y traducir textos
+
+El inglés es el idioma base: los textos se escriben en inglés en el código y cada módulo
+guarda sus traducciones en un String Catalog, `Sources/<Módulo>/Resources/Localizable.xcstrings`.
+
+1. Escribe el texto en inglés indicando el bundle del módulo y un comentario para quien traduzca:
+   - En las vistas: `Text("Scan", bundle: .module, comment: "…")`. `Button`, `Section` y `Label`
+     se escriben con su variante de etiqueta personalizada para poder pasar `bundle: .module`.
+   - Fuera de las vistas: `String(localized: "Scan", bundle: .module, comment: "…")`.
+2. Ejecuta `make strings`. Compila el proyecto, añade las claves nuevas al catálogo de cada módulo
+   y marca como `stale` las que ya no se usan.
+3. Abre el catálogo en Xcode, o edita su JSON, y escribe la traducción `es` de cada clave nueva.
+   Si el texto lleva un número, usa variaciones plurales (`one` y `other`) en inglés y en español.
+4. Ejecuta `make strings` otra vez y borra las claves `stale` que queden.
+
+`make test` incluye una comprobación de cobertura (`LocalizationTests`): falla si alguna clave
+no tiene traducción al español, si queda alguna clave `stale` o si el español usa plurales
+y el inglés no.
 
 ## Contribuir
 

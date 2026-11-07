@@ -12,15 +12,24 @@ struct JunkReviewView: View {
         VStack(spacing: 24) {
             JunkReviewHeader(foundSize: viewModel.foundSize, theme: theme)
             categoryList
-            JunkReviewActionBar(
-                selectedSize: viewModel.selectedSize,
-                canClean: viewModel.hasSelection,
+            ActionBar(
+                secondaryTitle: Text("Scan Again", bundle: .module, comment: "Button that repeats the junk scan."),
+                primaryTitle: cleanTitle,
+                isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
-                onRescan: { viewModel.startScan() },
-                onClean: { viewModel.clean() }
+                onSecondary: { viewModel.startScan() },
+                onPrimary: { viewModel.clean() }
             )
         }
         .frame(maxWidth: 760)
+    }
+
+    private var cleanTitle: Text {
+        Text(
+            "Clean \(viewModel.selectedSize.formattedByteCount)",
+            bundle: .module,
+            comment: "Button that removes the selected junk. The argument is a size, such as “1.2 GB”."
+        )
     }
 
     private var categoryList: some View {
