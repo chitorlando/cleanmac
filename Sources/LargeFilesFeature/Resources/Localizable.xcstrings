@@ -1,40 +1,40 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "%lld files analyzed": {
-      "comment": "Status shown while scanning. The argument is the number of files looked at so far.",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld file analyzed"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld files analyzed" : {
+      "comment" : "Status shown while scanning. The argument is the number of files looked at so far.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld file analyzed"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld files analyzed"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld files analyzed"
                 }
               }
             }
           }
         },
-        "es": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld archivo analizado"
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivo analizado"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld archivos analizados"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivos analizados"
                 }
               }
             }
@@ -42,499 +42,499 @@
         }
       }
     },
-    "1 to 6 months": {
-      "comment": "Last use filter: files last used between 1 and 6 months ago.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 1 a 6 meses"
+    "1 to 6 months" : {
+      "comment" : "Last use filter: files last used between 1 and 6 months ago.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 1 a 6 meses"
           }
         }
       }
     },
-    "100 MB to 1 GB": {
-      "comment": "Size filter: files from 100 MB up to 1 GB.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 100 MB a 1 GB"
+    "100 MB to 1 GB" : {
+      "comment" : "Size filter: files from 100 MB up to 1 GB.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 100 MB a 1 GB"
           }
         }
       }
     },
-    "50 to 100 MB": {
-      "comment": "Size filter: files from 50 MB up to 100 MB.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 50 a 100 MB"
+    "50 to 100 MB" : {
+      "comment" : "Size filter: files from 50 MB up to 100 MB.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 50 a 100 MB"
           }
         }
       }
     },
-    "6 to 12 months": {
-      "comment": "Last use filter: files last used between 6 and 12 months ago.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "De 6 a 12 meses"
+    "6 to 12 months" : {
+      "comment" : "Last use filter: files last used between 6 and 12 months ago.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 6 a 12 meses"
           }
         }
       }
     },
-    "All Kinds": {
-      "comment": "Filter option that shows files of every kind.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todos los tipos"
+    "All Kinds" : {
+      "comment" : "Filter option that shows files of every kind.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los tipos"
           }
         }
       }
     },
-    "Any Size": {
-      "comment": "Filter option that shows files of every size.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cualquier tamaño"
+    "Any Size" : {
+      "comment" : "Filter option that shows files of every size.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cualquier tamaño"
           }
         }
       }
     },
-    "Any Time": {
-      "comment": "Filter option that shows files regardless of when they were last used.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cualquier fecha"
+    "Any Time" : {
+      "comment" : "Filter option that shows files regardless of when they were last used.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cualquier fecha"
           }
         }
       }
     },
-    "Archives": {
-      "comment": "File kind filter: zip, tar and other compressed files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comprimidos"
+    "Archives" : {
+      "comment" : "File kind filter: zip, tar and other compressed files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprimidos"
           }
         }
       }
     },
-    "Audio": {
-      "comment": "File kind filter: music, podcasts and recordings.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio"
+    "Audio" : {
+      "comment" : "File kind filter: music, podcasts and recordings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
           }
         }
       }
     },
-    "Clear Filters": {
-      "comment": "Button that removes every filter and search of the large files list.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quitar filtros"
+    "Clear Filters" : {
+      "comment" : "Button that removes every filter and search of the large files list.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar filtros"
           }
         }
       }
     },
-    "Disk Images": {
-      "comment": "File kind filter: dmg and iso files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imágenes de disco"
+    "Disk Images" : {
+      "comment" : "File kind filter: dmg and iso files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imágenes de disco"
           }
         }
       }
     },
-    "Documents": {
-      "comment": "File kind filter: PDF, text, spreadsheets and presentations.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Documentos"
+    "Documents" : {
+      "comment" : "File kind filter: PDF, text, spreadsheets and presentations.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Documentos"
           }
         }
       }
     },
-    "Find the files that take up the most space and the ones you haven’t opened in a long time.": {
-      "comment": "Introduction of the large files feature.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Encuentra los archivos que más ocupan y los que no abres desde hace tiempo."
+    "Find the files that take up the most space and the ones you haven’t opened in a long time." : {
+      "comment" : "Introduction of the large files feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra los archivos que más ocupan y los que no abres desde hace tiempo."
           }
         }
       }
     },
-    "Images": {
-      "comment": "File kind filter: photos and pictures.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imágenes"
+    "Images" : {
+      "comment" : "File kind filter: photos and pictures.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imágenes"
           }
         }
       }
     },
-    "Kind": {
-      "comment": "Title of the file kind filters.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo"
+    "Kind" : {
+      "comment" : "Title of the file kind filters.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         }
       }
     },
-    "Large Files": {
-      "comment": "Feature name in the sidebar.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Archivos grandes"
+    "Large Files" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos grandes"
           }
         }
       }
     },
-    "Last Used": {
-      "comment": "Sort option and filter title: when a file was last opened.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Último uso"
+    "Last Used" : {
+      "comment" : "Sort option and filter title: when a file was last opened.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Último uso"
           }
         }
       }
     },
-    "Less than a month": {
-      "comment": "Last use filter: files used in the last month.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Menos de un mes"
+    "Less than a month" : {
+      "comment" : "Last use filter: files used in the last month.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos de un mes"
           }
         }
       }
     },
-    "More than 1 GB": {
-      "comment": "Size filter: files of 1 GB or more.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Más de 1 GB"
+    "More than 1 GB" : {
+      "comment" : "Size filter: files of 1 GB or more.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más de 1 GB"
           }
         }
       }
     },
-    "More than a year": {
-      "comment": "Last use filter: files not used for over a year.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Más de un año"
+    "More than a year" : {
+      "comment" : "Last use filter: files not used for over a year.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más de un año"
           }
         }
       }
     },
-    "Move %lld Files to Trash (%@)": {
-      "comment": "Button that moves the selected files to the Trash. The arguments are the number of files and their size, such as “1.2 GB”.",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Move %lld File to Trash (%@)"
+    "Move %lld Files to Trash (%@)" : {
+      "comment" : "Button that moves the selected files to the Trash. The arguments are the number of files and their size, such as “1.2 GB”.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld File to Trash (%@)"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Move %lld Files to Trash (%@)"
-                }
-              }
-            }
-          }
-        },
-        "es": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Mover %lld archivo a la Papelera (%@)"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "Mover %lld archivos a la Papelera (%@)"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "Move to Trash": {
-      "comment": "Disabled button to remove files, shown while nothing is selected.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mover a la Papelera"
-          }
-        }
-      }
-    },
-    "Name": {
-      "comment": "Sort option: alphabetical order.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre"
-          }
-        }
-      }
-    },
-    "No Files Match the Filters": {
-      "comment": "Title shown when the filters leave the list of large files empty.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ningún archivo coincide con los filtros"
-          }
-        }
-      }
-    },
-    "No Large Files": {
-      "comment": "Title shown when no large files were found.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay archivos grandes"
-          }
-        }
-      }
-    },
-    "Nothing in your home folder takes up more than 50 MB.": {
-      "comment": "Message shown when a complete scan found no large files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nada en tu carpeta de inicio ocupa más de 50 MB."
-          }
-        }
-      }
-    },
-    "Other": {
-      "comment": "File kind filter: files of any other kind.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otros"
-          }
-        }
-      }
-    },
-    "Scan": {
-      "comment": "Button that starts looking for large files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escanear"
-          }
-        }
-      }
-    },
-    "Scan Again": {
-      "comment": "Button that repeats the large files scan.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Volver a escanear"
-          }
-        }
-      }
-    },
-    "Search files": {
-      "comment": "Placeholder of the search box over the list of large files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buscar archivos"
-          }
-        }
-      }
-    },
-    "Select All": {
-      "comment": "Accessibility label of the checkbox that selects every visible file.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleccionar todo"
-          }
-        }
-      }
-    },
-    "Show in Finder": {
-      "comment": "Tooltip of the button that reveals a file in Finder.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar en Finder"
-          }
-        }
-      }
-    },
-    "Size": {
-      "comment": "Sort option and filter title: how much space a file takes up.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tamaño"
-          }
-        }
-      }
-    },
-    "Sort by": {
-      "comment": "Label of the menu that orders the list of large files.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ordenar por"
-          }
-        }
-      }
-    },
-    "The scan was stopped before finding any large files.": {
-      "comment": "Message shown when the user stopped the scan before any large file was found.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El análisis se detuvo antes de encontrar archivos grandes."
-          }
-        }
-      }
-    },
-    "The scan was stopped, so these results are incomplete.": {
-      "comment": "Warning shown above partial results after the user stopped the scan.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El análisis se detuvo: los resultados están incompletos."
-          }
-        }
-      }
-    },
-    "Unknown": {
-      "comment": "Shown instead of the last use date of a file when it isn't known.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Desconocido"
-          }
-        }
-      }
-    },
-    "Videos": {
-      "comment": "File kind filter.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vídeos"
-          }
-        }
-      }
-    },
-    "found": {
-      "comment": "Caption below the size of large files found so far, as in “1.2 GB found”.",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "encontrados"
-          }
-        }
-      }
-    },
-    "in %lld large files. Choose the ones you no longer need.": {
-      "comment": "Shown after the total size found, as in “12 GB in 40 large files”. The argument is the number of files.",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "in %lld large file. Choose the ones you no longer need."
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "in %lld large files. Choose the ones you no longer need."
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld Files to Trash (%@)"
                 }
               }
             }
           }
         },
-        "es": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "en %lld archivo grande. Elige los que ya no necesitas."
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld archivo a la Papelera (%@)"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "en %lld archivos grandes. Elige los que ya no necesitas."
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld archivos a la Papelera (%@)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move to Trash" : {
+      "comment" : "Disabled button to remove files, shown while nothing is selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "comment" : "Sort option: alphabetical order.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "No Files Match the Filters" : {
+      "comment" : "Title shown when the filters leave the list of large files empty.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún archivo coincide con los filtros"
+          }
+        }
+      }
+    },
+    "No Large Files" : {
+      "comment" : "Title shown when no large files were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay archivos grandes"
+          }
+        }
+      }
+    },
+    "Nothing in your home folder takes up more than 50 MB." : {
+      "comment" : "Message shown when a complete scan found no large files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada en tu carpeta de inicio ocupa más de 50 MB."
+          }
+        }
+      }
+    },
+    "Other" : {
+      "comment" : "File kind filter: files of any other kind.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "Button that starts looking for large files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that repeats the large files scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Search files" : {
+      "comment" : "Placeholder of the search box over the list of large files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar archivos"
+          }
+        }
+      }
+    },
+    "Select All" : {
+      "comment" : "Accessibility label of the checkbox that selects every visible file.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar todo"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Tooltip of the button that reveals a file in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "comment" : "Sort option and filter title: how much space a file takes up.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        }
+      }
+    },
+    "Sort by" : {
+      "comment" : "Label of the menu that orders the list of large files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar por"
+          }
+        }
+      }
+    },
+    "The scan was stopped before finding any large files." : {
+      "comment" : "Message shown when the user stopped the scan before any large file was found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El análisis se detuvo antes de encontrar archivos grandes."
+          }
+        }
+      }
+    },
+    "The scan was stopped, so these results are incomplete." : {
+      "comment" : "Warning shown above partial results after the user stopped the scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El análisis se detuvo: los resultados están incompletos."
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "Shown instead of the last use date of a file when it isn't known.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconocido"
+          }
+        }
+      }
+    },
+    "Videos" : {
+      "comment" : "File kind filter.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vídeos"
+          }
+        }
+      }
+    },
+    "found" : {
+      "comment" : "Caption below the size of large files found so far, as in “1.2 GB found”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "encontrados"
+          }
+        }
+      }
+    },
+    "in %lld large files. Choose the ones you no longer need." : {
+      "comment" : "Shown after the total size found, as in “12 GB in 40 large files”. The argument is the number of files.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "in %lld large file. Choose the ones you no longer need."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "in %lld large files. Choose the ones you no longer need."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "en %lld archivo grande. Elige los que ya no necesitas."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "en %lld archivos grandes. Elige los que ya no necesitas."
                 }
               }
             }
@@ -543,5 +543,5 @@
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
