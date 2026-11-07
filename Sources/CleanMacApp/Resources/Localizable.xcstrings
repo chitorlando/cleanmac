@@ -77,17 +77,6 @@
           }
         }
       }
-    },
-    "Uninstaller" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desinstalador"
-          }
-        }
-      }
     }
   },
   "version" : "1.0"

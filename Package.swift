@@ -29,13 +29,13 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
-            name: "MaintenanceFeature",
+            name: "UninstallerFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "CleanMacApp",
-            dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature", "MaintenanceFeature"],
+            dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature"],
             resources: [.process("Resources")],
             linkerSettings: [
                 .unsafeFlags([
@@ -52,8 +52,8 @@ let package = Package(
             dependencies: ["SystemJunkFeature", "CleanMacCore"]
         ),
         .testTarget(
-            name: "MaintenanceFeatureTests",
-            dependencies: ["MaintenanceFeature", "CleanMacCore"]
+            name: "UninstallerFeatureTests",
+            dependencies: ["UninstallerFeature", "CleanMacCore"]
         ),
         .testTarget(name: "LocalizationTests")
     ]

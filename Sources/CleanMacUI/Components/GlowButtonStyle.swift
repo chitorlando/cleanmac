@@ -20,7 +20,7 @@ public struct GlowButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         styled(configuration.label)
             .font(.system(.title3, design: .rounded, weight: .semibold))
-            .foregroundStyle(.white)
+            .foregroundStyle(Palette.canvas)
             .shadow(color: theme.primary.opacity(isEnabled ? 0.55 : 0), radius: 22)
             .scaleEffect(configuration.isPressed && !reduceMotion ? 0.95 : 1)
             .brightness(configuration.isPressed && reduceMotion ? -0.12 : 0)
