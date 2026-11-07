@@ -41,6 +41,7 @@ let package = Package(
         .testTarget(
             name: "SystemJunkFeatureTests",
             dependencies: ["SystemJunkFeature", "CleanMacCore"]
-        )
+        ),
+        .testTarget(name: "LocalizationTests")
     ]
 )
