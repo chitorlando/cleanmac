@@ -58,6 +58,7 @@ Es opcional: sin ese permiso la app simplemente omite esas carpetas.
 open Package.swift   # abre el proyecto en Xcode
 make run             # compila y lanza la app
 make test            # ejecuta los tests
+./scripts/make-app-icon.sh  # regenera el icono de la app
 ```
 
 ### Arquitectura

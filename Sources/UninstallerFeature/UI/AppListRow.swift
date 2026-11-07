@@ -12,7 +12,11 @@ struct AppListRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            TriStateCheckbox(state: CheckState(viewModel.selectionState(of: app)), tint: theme.primary) {
+            TriStateCheckbox(
+                state: CheckState(viewModel.selectionState(of: app)),
+                tint: theme.primary,
+                label: Text(verbatim: app.info.name)
+            ) {
                 viewModel.toggle(app)
             }
             .disabled(isRunning)

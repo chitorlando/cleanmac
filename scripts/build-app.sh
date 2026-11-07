@@ -15,6 +15,7 @@ rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR/Contents/MacOS" "$RESOURCES_DIR"
 cp "$BIN_DIR/$APP_NAME" "$APP_DIR/Contents/MacOS/$APP_NAME"
 cp "$ROOT/Support/Info.plist" "$APP_DIR/Contents/Info.plist"
+cp "$ROOT/Support/AppIcon.icns" "$RESOURCES_DIR/AppIcon.icns"
 
 # Localized Info.plist values, one folder per language.
 cp -R "$ROOT"/Support/*.lproj "$RESOURCES_DIR/"

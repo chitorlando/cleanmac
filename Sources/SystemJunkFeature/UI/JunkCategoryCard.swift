@@ -24,13 +24,15 @@ struct JunkCategoryCard: View {
         HStack(spacing: 14) {
             TriStateCheckbox(
                 state: CheckState(viewModel.selectionState(of: result)),
-                tint: theme.primary
+                tint: theme.primary,
+                label: Text(result.category.title)
             ) { viewModel.toggle(result) }
 
             Image(systemName: result.category.symbolName)
                 .font(.title2)
                 .foregroundStyle(theme.gradient)
                 .frame(width: 32)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(result.category.title).font(.headline)

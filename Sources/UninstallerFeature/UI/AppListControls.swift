@@ -14,12 +14,13 @@ struct AppListControls: View {
                 theme: theme
             )
             HStack(spacing: 8) {
-                TriStateCheckbox(state: CheckState(viewModel.allSelectionState), tint: theme.primary) {
+                TriStateCheckbox(state: CheckState(viewModel.allSelectionState), tint: theme.primary, label: selectAllLabel) {
                     viewModel.toggleAll()
                 }
-                Text("Select All", bundle: .module, comment: "Label of the checkbox that selects every listed app.")
+                selectAllLabel
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .accessibilityHidden(true)
                 Spacer()
                 sortMenu
             }
@@ -39,6 +40,10 @@ struct AppListControls: View {
         .labelsHidden()
         .help(sortLabel)
         .fixedSize()
+    }
+
+    private var selectAllLabel: Text {
+        Text("Select All", bundle: .module, comment: "Label of the checkbox that selects every listed app.")
     }
 
     private var sortLabel: Text {
