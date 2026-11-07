@@ -38,11 +38,6 @@ extension UpcomingFeature {
             section: .performance
         ),
         UpcomingFeature(
-            title: String(localized: "Maintenance", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "wrench.and.screwdriver.fill",
-            section: .performance
-        ),
-        UpcomingFeature(
             title: String(
                 localized: "Monitor",
                 bundle: .module,

@@ -1,4 +1,5 @@
 import CleanMacUI
+import MaintenanceFeature
 import SystemJunkFeature
 import UninstallerFeature
 
