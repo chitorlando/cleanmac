@@ -28,7 +28,11 @@ let package = Package(
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
         ),
-        .target(name: "LargeFilesFeature", dependencies: ["CleanMacCore"]),
+        .target(
+            name: "LargeFilesFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
         .executableTarget(
             name: "CleanMacApp",
             dependencies: ["CleanMacCore", "CleanMacUI", "SystemJunkFeature"],
