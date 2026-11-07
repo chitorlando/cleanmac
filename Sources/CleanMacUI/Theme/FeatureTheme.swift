@@ -40,6 +40,11 @@ public extension FeatureTheme {
         secondary: Color(red: 0.94, green: 0.50, blue: 0.12)
     )
 
+    static let duplicates = FeatureTheme(
+        primary: Color(red: 0.80, green: 0.48, blue: 1.00),
+        secondary: Color(red: 0.84, green: 0.24, blue: 0.72)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)
