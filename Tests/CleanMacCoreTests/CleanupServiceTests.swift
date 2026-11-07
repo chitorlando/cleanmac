@@ -16,6 +16,15 @@ struct CleanupServiceTests {
         }
     }
 
+    /// Records every URL it is asked to remove.
+    private actor RecordingRemover: ItemRemoving {
+        private(set) var removedURLs: [URL] = []
+
+        func remove(_ url: URL) async throws {
+            removedURLs.append(url)
+        }
+    }
+
     @Test func sumsFreedBytesOfRemovedItems() async {
         let items = [
             CleanableItem(url: URL(filePath: "/tmp/a"), size: 100),
@@ -38,5 +47,17 @@ struct CleanupServiceTests {
         #expect(report.freedBytes == 30)
         #expect(report.failures.map(\.item) == [blocked])
         #expect(report.failures.first?.reason == "Permiso denegado")
+    }
+
+    @Test func removesDuplicatedItemsOnlyOnce() async {
+        let shared = CleanableItem(url: URL(filePath: "/tmp/shared"), size: 40)
+        let unique = CleanableItem(url: URL(filePath: "/tmp/unique"), size: 10)
+        let remover = RecordingRemover()
+
+        let report = await CleanupService(remover: remover).clean([shared, unique, shared])
+
+        #expect(await remover.removedURLs == [shared.url, unique.url])
+        #expect(report.removedCount == 2)
+        #expect(report.freedBytes == 50)
     }
 }

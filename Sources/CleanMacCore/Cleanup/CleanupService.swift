@@ -1,6 +1,6 @@
 import Foundation
 
-/// Removes a batch of items, continuing past individual failures.
+/// Removes a batch of items once each, continuing past individual failures.
 public struct CleanupService: Sendable {
     private let remover: any ItemRemoving
 
@@ -11,7 +11,7 @@ public struct CleanupService: Sendable {
     @concurrent
     public func clean(_ items: [CleanableItem]) async -> CleanupReport {
         var report = CleanupReport()
-        for item in items {
+        for item in items.uniquedByID() {
             guard !Task.isCancelled else { break }
             do {
                 try await remover.remove(item.url)
