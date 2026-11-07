@@ -1,5 +1,5 @@
 import Foundation
-import LargeFilesFeature
+import CleanMacCore
 import Testing
 
 struct FileSystemWalkerTests {

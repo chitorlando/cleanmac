@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Walks a folder in the background and reports the files that match the criteria as they're found.

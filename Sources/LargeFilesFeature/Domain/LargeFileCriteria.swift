@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Which files count as large or old enough to be worth reviewing.
