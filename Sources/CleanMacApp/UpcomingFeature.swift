@@ -16,10 +16,6 @@ extension UpcomingFeature {
             symbolName: "app.badge.checkmark"
         ),
         UpcomingFeature(
-            title: String(localized: "Large Files", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "doc.richtext"
-        ),
-        UpcomingFeature(
             title: String(localized: "Disk Map", bundle: .module, comment: "Upcoming feature name in the sidebar."),
             symbolName: "chart.pie.fill"
         ),
