@@ -15,7 +15,11 @@ struct DuplicatesReviewView: View {
                 theme: theme
             )
             if viewModel.wasStoppedEarly {
-                StoppedEarlyNotice()
+                WarningNotice(Text(
+                    "The scan was stopped, so these results are incomplete.",
+                    bundle: .module,
+                    comment: "Warning shown above partial results after the user stopped the scan."
+                ))
             }
             HStack(alignment: .top, spacing: 16) {
                 DuplicateGroupListPane(viewModel: viewModel, theme: theme)

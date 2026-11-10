@@ -1,14 +1,17 @@
 import SwiftUI
 
-/// Warns that the list is incomplete because the user stopped the scan.
-struct StoppedEarlyNotice: View {
-    var body: some View {
+/// Orange banner with a warning sign, such as the one above partial results of a stopped scan.
+public struct WarningNotice: View {
+    private let message: Text
+
+    /// - Parameter message: The warning, already localized by the feature that shows it.
+    public init(_ message: Text) {
+        self.message = message
+    }
+
+    public var body: some View {
         Label {
-            Text(
-                "The scan was stopped, so these results are incomplete.",
-                bundle: .module,
-                comment: "Warning shown above partial results after the user stopped the scan."
-            )
+            message
         } icon: {
             Image(systemName: "exclamationmark.triangle.fill")
         }
