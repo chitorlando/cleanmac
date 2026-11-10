@@ -135,6 +135,17 @@
         }
       }
     },
+    "Clones" : {
+      "comment" : "Badge on a group of duplicates whose copies all share the same data on disk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clones"
+          }
+        }
+      }
+    },
     "Created %@" : {
       "comment" : "Creation date of a copy, shown after its folder. The argument is a date, such as “Mar 5, 2026”.",
       "localizations" : {
@@ -410,6 +421,17 @@
         }
       }
     },
+    "These copies share the same data on disk, so removing them frees no space." : {
+      "comment" : "Explains why a group made only of APFS clones can free no space.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas copias comparten los mismos datos en el disco, así que borrarlas no libera espacio."
+          }
+        }
+      }
+    },
     "This copy is an APFS clone: it shares its data with another file, so moving it to the Trash frees little or no space." : {
       "comment" : "Explains the badge on a copy that is an APFS clone of another file.",
       "localizations" : {
@@ -417,6 +439,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta copia es un clon de APFS: comparte sus datos con otro archivo, así que moverla a la Papelera libera poco espacio o ninguno."
+          }
+        }
+      }
+    },
+    "You can still mark copies by hand to tidy up your folders." : {
+      "comment" : "Shown below the explanation of a group made only of clones.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aun así puedes marcar copias a mano para ordenar tus carpetas."
           }
         }
       }

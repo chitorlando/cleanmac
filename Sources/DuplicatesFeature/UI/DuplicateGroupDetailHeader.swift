@@ -4,6 +4,7 @@ import SwiftUI
 /// Icon, name, number of copies and space the focused group can free.
 ///
 /// The space sits on the right when everything fits on one line, and below the name otherwise.
+/// A group made only of clones frees nothing, so it shows no space: `CloneGroupNotice` explains why.
 struct DuplicateGroupDetailHeader: View {
     let group: DuplicateGroup
     let theme: FeatureTheme
@@ -14,13 +15,17 @@ struct DuplicateGroupDetailHeader: View {
                 DuplicateFileIcon(group: group, size: 56)
                 titles
                 Spacer(minLength: 16)
-                recoverableSpace(alignment: .trailing)
+                if !group.isMadeOfClones {
+                    recoverableSpace(alignment: .trailing)
+                }
             }
             HStack(alignment: .top, spacing: 16) {
                 DuplicateFileIcon(group: group, size: 56)
                 VStack(alignment: .leading, spacing: 8) {
                     titles
-                    recoverableSpace(alignment: .leading)
+                    if !group.isMadeOfClones {
+                        recoverableSpace(alignment: .leading)
+                    }
                 }
                 Spacer(minLength: 0)
             }

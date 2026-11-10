@@ -120,6 +120,21 @@ struct DuplicateGroupTests {
         #expect(group.physicalCopy(containing: Fixtures.file("/elsewhere")) == nil)
     }
 
+    @Test func aGroupIsMadeOfClonesWhenEveryCopySharesTheSameData() {
+        let clones = Fixtures.group(
+            Fixtures.file("/a", storage: .clone(stream: 7, count: 2)),
+            Fixtures.file("/b", storage: .clone(stream: 7, count: 2))
+        )
+        let mixed = Fixtures.group(Fixtures.file("/a", storage: .clone(stream: 7, count: 2)), Fixtures.file("/c"))
+        let unknown = Fixtures.group(Fixtures.file("/a", storage: .unknown), Fixtures.file("/b", storage: .unknown))
+
+        #expect(clones.isMadeOfClones)
+        #expect(!mixed.isMadeOfClones)
+        // Nothing is counted for these either, but nothing says they are clones.
+        #expect(!unknown.isMadeOfClones)
+        #expect(unknown.recoverableSize == 0)
+    }
+
     @Test func aCopyIsACloneWhenAnotherFileSharesAllOfItsData() {
         #expect(Fixtures.file("/a", storage: .clone(stream: 7, count: 2)).isClone)
         #expect(!Fixtures.file("/b").isClone)

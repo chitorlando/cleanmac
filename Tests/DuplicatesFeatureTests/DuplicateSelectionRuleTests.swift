@@ -125,6 +125,19 @@ struct DuplicateSelectionRuleTests {
         #expect(selection.isEmpty)
     }
 
+    @Test func togglingAGroupOfClonesMarksEveryCopyButTheSuggestedOne() {
+        let first = Fixtures.file("/a", created: Fixtures.date(2), storage: .clone(stream: 3, count: 3))
+        let oldest = Fixtures.file("/b", created: Fixtures.date(1), storage: .clone(stream: 3, count: 3))
+        let last = Fixtures.file("/c", created: Fixtures.date(3), storage: .clone(stream: 3, count: 3))
+        let group = Fixtures.group(first, oldest, last)
+        var selection = ItemSelection()
+
+        Rule.toggle(group, selection: &selection)
+
+        #expect(selection == self.selection(first, last))
+        #expect(Rule.state(of: group, selection: selection) == .all)
+    }
+
     @Test func togglingAPartlyMarkedGroupClearsIt() {
         var selection = selection(desktop)
 

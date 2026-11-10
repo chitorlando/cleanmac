@@ -229,7 +229,41 @@ struct DuplicatesViewModelTests {
         #expect(!viewModel.hasSelection)
     }
 
-    @Test func aGroupOfClonesHasNothingToMarkAsAWhole() async {
+    @Test func copiesOfAGroupOfClonesCanBeMarkedByHandButNeverAll() async {
+        let first = Fixtures.file("/Users/test/a.zip", created: Fixtures.date(1), storage: .clone(stream: 9, count: 3))
+        let second = Fixtures.file("/Users/test/b/a.zip", created: Fixtures.date(2), storage: .clone(stream: 9, count: 3))
+        let third = Fixtures.file("/Users/test/c/a.zip", created: Fixtures.date(3), storage: .clone(stream: 9, count: 3))
+        let clones = Fixtures.group(first, second, third)
+        let viewModel = makeViewModel(events: [.found(clones)])
+        await viewModel.startScan().value
+
+        viewModel.toggle(first, in: clones)
+        viewModel.toggle(second, in: clones)
+        viewModel.toggle(third, in: clones)
+
+        #expect(viewModel.isSelected(first) && viewModel.isSelected(second))
+        #expect(!viewModel.isSelected(third))
+        #expect(!viewModel.canSelect(third, in: clones))
+        #expect(viewModel.selectedCount == 2)
+        #expect(viewModel.selectedSize == 0)
+    }
+
+    @Test func markingAGroupOfClonesKeepsTheSuggestedCopy() async {
+        let first = Fixtures.file("/Users/test/a.zip", created: Fixtures.date(1), storage: .clone(stream: 9, count: 2))
+        let second = Fixtures.file("/Users/test/b/a.zip", created: Fixtures.date(2), storage: .clone(stream: 9, count: 2))
+        let clones = Fixtures.group(first, second)
+        let viewModel = makeViewModel(events: [.found(clones), .found(reports)])
+        await viewModel.startScan().value
+
+        viewModel.toggle(clones)
+        #expect(viewModel.selectedItems.map(\.id) == [second.id])
+        #expect(viewModel.selectionState(of: clones) == .all)
+
+        viewModel.toggle(clones)
+        #expect(!viewModel.hasSelection)
+    }
+
+    @Test func selectingDuplicatesLeavesGroupsOfClonesAlone() async {
         let clones = Fixtures.group(
             Fixtures.file("/Users/test/a.zip", storage: .clone(stream: 9, count: 2)),
             Fixtures.file("/Users/test/b/a.zip", storage: .clone(stream: 9, count: 2))
@@ -237,11 +271,10 @@ struct DuplicatesViewModelTests {
         let viewModel = makeViewModel(events: [.found(clones), .found(reports)])
         await viewModel.startScan().value
 
-        #expect(!viewModel.canToggle(clones))
-        #expect(viewModel.canToggle(reports))
+        viewModel.toggleDuplicates()
 
-        viewModel.toggle(clones.files[1], in: clones)
-        #expect(viewModel.canToggle(clones))
+        #expect(Set(viewModel.selectedItems.map(\.id)) == [reportDownload.id, reportDesktop.id])
+        #expect(viewModel.selectionState(of: clones) == .none)
     }
 
     @Test func theSelectDuplicatesCheckboxMarksOrClearsTheVisibleGroups() async {
