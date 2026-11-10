@@ -27,7 +27,7 @@ public extension FeatureTheme {
 
     static let uninstaller = FeatureTheme(
         primary: Color(red: 0.36, green: 0.62, blue: 1.00),
-        secondary: Color(red: 0.50, green: 0.30, blue: 0.92)
+        secondary: Color(red: 0.55, green: 0.40, blue: 0.98)
     )
 
     static let largeFiles = FeatureTheme(

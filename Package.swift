@@ -95,6 +95,7 @@ let package = Package(
             dependencies: ["DiskMapFeature", "CleanMacCore"]
         ),
         .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacUI"]),
+        .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI"]),
         .testTarget(name: "LocalizationTests")
     ]
 )

@@ -21,7 +21,7 @@ public struct TriStateCheckbox: View {
             Image(systemName: symbolName)
                 .font(.title3)
                 .foregroundStyle(symbolColor)
-                .opacity(isEnabled ? 1 : 0.4)
+                .opacity(isEnabled ? 1 : 0.5)
                 .contentTransition(.symbolEffect(.replace))
         }
         .buttonStyle(.plain)
@@ -35,11 +35,12 @@ public struct TriStateCheckbox: View {
         isEnabled && state != .unchecked ? tint : .secondary
     }
 
+    /// A disabled empty checkbox has a dashed outline, so it never reads as one that can be checked.
     private var symbolName: String {
         switch state {
         case .checked: "checkmark.circle.fill"
         case .mixed: "minus.circle.fill"
-        case .unchecked: "circle"
+        case .unchecked: isEnabled ? "circle" : "circle.dashed"
         }
     }
 

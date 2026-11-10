@@ -10,7 +10,11 @@ struct LargeFilesReviewView: View {
         VStack(spacing: 20) {
             LargeFilesReviewHeader(foundSize: viewModel.foundSize, foundCount: viewModel.foundCount, theme: theme)
             if viewModel.wasStoppedEarly {
-                StoppedEarlyNotice()
+                WarningNotice(Text(
+                    "The scan was stopped, so these results are incomplete.",
+                    bundle: .module,
+                    comment: "Warning shown above partial results after the user stopped the scan."
+                ))
             }
             HStack(alignment: .top, spacing: 20) {
                 LargeFileFilterPanel(
