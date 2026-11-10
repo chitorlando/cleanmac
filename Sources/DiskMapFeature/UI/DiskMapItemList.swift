@@ -18,7 +18,7 @@ struct DiskMapItemList: View {
                         }
                         .padding(.trailing, 8)
                     }
-                    .onChange(of: viewModel.highlightedID) { _, id in
+                    .onValueChange(of: viewModel.highlightedID) { id in
                         guard let id else { return }
                         proxy.scrollTo(id)
                     }
