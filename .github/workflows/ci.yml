@@ -41,5 +41,51 @@ jobs:
           ./scripts/sync-strings.sh
           git diff --exit-code
 
-      - name: Build app
-        run: ./scripts/build-app.sh release
+      # The runners are Apple silicon. Building for Intel too makes the result
+      # usable on every Mac the app supports.
+      - name: Build universal app
+        run: ./scripts/build-app.sh release arm64 x86_64
+
+      - name: Check that the app is universal
+        run: |
+          executable=build/CleanMac.app/Contents/MacOS/CleanMac
+          lipo -archs "$executable"
+          if ! lipo "$executable" -verify_arch arm64 x86_64; then
+            echo "::error::CleanMac.app must contain both arm64 and x86_64."
+            exit 1
+          fi
+          # For whoever reads the log: the minimum macOS and the libraries of
+          # each slice decide whether the app starts on an older Mac.
+          vtool -show-build "$executable"
+          otool -arch all -L "$executable"
+          # The bundle embeds no libraries, so one that does not ship with
+          # macOS would only be found on a Mac with the toolchain that built
+          # the app.
+          if otool -arch all -L "$executable" | grep -q '@rpath/'; then
+            echo "::warning::CleanMac links a library that its bundle does not embed" \
+              "(the @rpath lines above), so it may not start on other Macs."
+          fi
+
+      # Artifacts keep neither the executable bit nor symlinks, and a ditto
+      # archive does, so the app is uploaded inside one. --sequesterRsrc puts
+      # any extended attributes beside the bundle instead of inside it, where
+      # a plain unzip would leave files that break the signature.
+      - name: Archive app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent build/CleanMac.app build/CleanMac.app.zip
+          # What gets downloaded has to unpack into an app that still runs
+          # and still has a valid signature.
+          unpacked="$(mktemp -d)"
+          ditto -x -k build/CleanMac.app.zip "$unpacked"
+          test -x "$unpacked/CleanMac.app/Contents/MacOS/CleanMac"
+          codesign --verify --strict --verbose=2 "$unpacked/CleanMac.app"
+
+      - name: Upload app
+        uses: actions/upload-artifact@v7
+        with:
+          name: CleanMac-universal
+          path: build/CleanMac.app.zip
+          if-no-files-found: error
+          retention-days: 14
+          # ditto has already compressed it.
+          compression-level: 0
