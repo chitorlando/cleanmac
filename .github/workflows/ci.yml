@@ -58,6 +58,13 @@ jobs:
           # each slice decide whether the app starts on an older Mac.
           vtool -show-build "$executable"
           otool -arch all -L "$executable"
+          # The bundle embeds no libraries, so one that does not ship with
+          # macOS would only be found on a Mac with the toolchain that built
+          # the app.
+          if otool -arch all -L "$executable" | grep -q '@rpath/'; then
+            echo "::warning::CleanMac links a library that its bundle does not embed" \
+              "(the @rpath lines above), so it may not start on other Macs."
+          fi
 
       # Artifacts keep neither the executable bit nor symlinks, and a ditto
       # archive does, so the app is uploaded inside one. --sequesterRsrc puts
