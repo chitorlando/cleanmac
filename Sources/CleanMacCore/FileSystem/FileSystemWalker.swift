@@ -3,8 +3,10 @@ import Foundation
 /// `FileWalking` over the local disk that only offers files the user can safely review.
 ///
 /// - Hidden files and folders are skipped.
-/// - Packages such as `.app` or `.photoslibrary` are neither entered nor offered:
-///   removing one of their files would break them, and removing them whole could be catastrophic.
+/// - Packages such as `.app` or `.photoslibrary` are never entered: removing one of their
+///   files would break them. They aren't offered either, since removing them whole could
+///   be catastrophic, unless a `packageSizeCalculator` is given. Then each package is
+///   reported as a single record with its whole size, for features that only measure space.
 /// - Excluded folders, `~/Library` by default, are skipped with everything inside,
 ///   because other features take care of them.
 public struct FileSystemWalker: FileWalking {
@@ -17,9 +19,15 @@ public struct FileSystemWalker: FileWalking {
     ]
 
     private let excludedPaths: Set<String>
+    private let packageSizeCalculator: (any SizeCalculating)?
 
-    public init(excludedDirectories: [URL] = [Self.userLibrary]) {
+    /// - Parameter packageSizeCalculator: Measures packages so they're reported whole. `nil` skips them.
+    public init(
+        excludedDirectories: [URL] = [Self.userLibrary],
+        packageSizeCalculator: (any SizeCalculating)? = nil
+    ) {
         excludedPaths = Set(excludedDirectories.map(\.standardizedFileURL.path))
+        self.packageSizeCalculator = packageSizeCalculator
     }
 
     public static var userLibrary: URL {
@@ -46,17 +54,28 @@ public struct FileSystemWalker: FileWalking {
     }
 
     private func record(for url: URL) -> FileRecord? {
-        guard
-            let values = try? url.resourceValues(forKeys: Set(Self.resourceKeys)),
-            values.isRegularFile == true,
-            values.isPackage != true
-        else { return nil }
+        guard let values = try? url.resourceValues(forKeys: Set(Self.resourceKeys)) else { return nil }
+        if values.isPackage == true {
+            return packageRecord(for: url, values: values)
+        }
+        guard values.isRegularFile == true else { return nil }
 
         return FileRecord(
             url: url,
             size: Int64(values.totalFileAllocatedSize ?? 0),
             accessDate: values.contentAccessDate,
             modificationDate: values.contentModificationDate
+        )
+    }
+
+    private func packageRecord(for url: URL, values: URLResourceValues) -> FileRecord? {
+        guard let packageSizeCalculator else { return nil }
+        return FileRecord(
+            url: url,
+            size: packageSizeCalculator.size(of: url),
+            accessDate: values.contentAccessDate,
+            modificationDate: values.contentModificationDate,
+            isPackage: true
         )
     }
 }
