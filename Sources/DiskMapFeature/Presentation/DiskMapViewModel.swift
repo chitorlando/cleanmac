@@ -11,10 +11,14 @@ import Foundation
 public final class DiskMapViewModel: ObservableObject {
     @Published public private(set) var phase: DiskMapPhase = .intro
     @Published public private(set) var progress = DiskMapProgress()
-    @Published public private(set) var map: DiskNode?
+    @Published public private(set) var map: DiskNode? {
+        didSet { knownSelectedItems = nil }
+    }
     /// Folders opened from the top of the map down to the focused one.
     @Published public private(set) var focusPath: [URL] = []
-    @Published public private(set) var selection = ItemSelection()
+    @Published public private(set) var selection = ItemSelection() {
+        didSet { knownSelectedItems = nil }
+    }
 
     /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
     ///
@@ -36,6 +40,8 @@ public final class DiskMapViewModel: ObservableObject {
     private let policy: DiskMapRemovalPolicy
     private let layout: SunburstLayout
     private var activeTask: Task<Void, Never>?
+    /// `selectedItems` of the current map and selection, or `nil` until they're asked for.
+    private var knownSelectedItems: [CleanableItem]?
 
     public init(
         scanner: any DiskMapScanning,
@@ -137,10 +143,16 @@ public final class DiskMapViewModel: ObservableObject {
 
     /// Items that `remove()` would move to the Trash, in every folder. An item inside a
     /// selected folder goes with it, so it isn't listed on its own.
+    ///
+    /// Finding them walks the whole map, and the screen asks for them several times each
+    /// time it's redrawn, so they're kept until the map or the selection changes.
     public var selectedItems: [CleanableItem] {
-        guard let map else { return [] }
+        if let knownSelectedItems { return knownSelectedItems }
         var items: [CleanableItem] = []
-        collectSelected(in: map, into: &items)
+        if let map, !selection.isEmpty {
+            collectSelected(in: map, into: &items)
+        }
+        knownSelectedItems = items
         return items
     }
 

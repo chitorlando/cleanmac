@@ -225,6 +225,27 @@ struct DiskMapViewModelTests {
         #expect(viewModel.selectedSize == 400)
     }
 
+    @Test func followsTheSelectionAsItChanges() async throws {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.selectedItems.isEmpty)
+
+        viewModel.toggle(try item("notes.txt", in: viewModel))
+        #expect(viewModel.selectedItems.map(\.url) == [url("notes.txt")])
+
+        viewModel.open(try item("Movies", in: viewModel))
+        let clip = try item("clip.mov", in: viewModel)
+        viewModel.toggle(clip)
+        #expect(viewModel.selectedCount == 2)
+        #expect(viewModel.selectedSize == 130)
+
+        viewModel.toggle(clip)
+        #expect(viewModel.selectedItems.map(\.url) == [url("notes.txt")])
+
+        let scan = viewModel.startScan()
+        #expect(viewModel.selectedItems.isEmpty)
+        await scan.value
+    }
+
     @Test func keepsStandardFoldersOutOfTheSelection() async throws {
         let viewModel = await scannedViewModel()
         let movies = try item("Movies", in: viewModel)
