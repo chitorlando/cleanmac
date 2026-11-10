@@ -37,4 +37,14 @@ public struct DiskNode: Identifiable, Equatable, Sendable {
     public init(record: FileRecord) {
         self.init(url: record.url, kind: record.isPackage ? .package : .file, size: record.size, fileCount: 1)
     }
+
+    /// Order of the children: largest first, and items of the same size by name, as Finder sorts them.
+    static func isLarger(_ lhs: DiskNode, _ rhs: DiskNode) -> Bool {
+        guard lhs.size == rhs.size else { return lhs.size > rhs.size }
+        switch lhs.name.localizedStandardCompare(rhs.name) {
+        case .orderedAscending: return true
+        case .orderedDescending: return false
+        case .orderedSame: return lhs.url.path < rhs.url.path
+        }
+    }
 }
