@@ -9,8 +9,20 @@ struct CloneAttributesTests {
     private let mayShareBlocks = UInt64(EF_MAY_SHARE_BLOCKS)
     private let sharesAllBlocks = UInt64(EF_SHARES_ALL_BLOCKS)
 
-    private func info(flags: UInt64, referenceCount: Int?) -> CloneInfo? {
-        CloneAttributes(device: 3, cloneID: 42, flags: flags, referenceCount: referenceCount).cloneInfo
+    private func info(
+        flags: UInt64,
+        referenceCount: Int?,
+        allocatedSize: Int64? = nil,
+        privateSize: Int64? = nil
+    ) -> CloneInfo? {
+        CloneAttributes(
+            device: 3,
+            cloneID: 42,
+            flags: flags,
+            referenceCount: referenceCount,
+            allocatedSize: allocatedSize,
+            privateSize: privateSize
+        ).cloneInfo
     }
 
     @Test func identifiesTheDataStreamByVolumeAndCloneID() {
@@ -63,5 +75,58 @@ struct CloneAttributesTests {
         #expect(info != nil)
         #expect(info?.cloneCount == nil)
         #expect(info?.mayShareSomeData == true)
+    }
+
+    // MARK: Space that is the file's own
+
+    @Test func withoutACountAFormerCloneThatKeepsAllItsSpaceStandsAlone() {
+        // The flag outlives the clones: once they are gone, all of the file's space is its own.
+        let info = info(
+            flags: mayShareBlocks | noExtendedAttributes,
+            referenceCount: nil,
+            allocatedSize: 303_104,
+            privateSize: 303_104
+        )
+
+        #expect(info?.cloneCount == 1)
+        #expect(info?.mayShareSomeData == false)
+    }
+
+    @Test func withoutACountAFileThatSharesItsSpaceHasAnUnknownNumberOfClones() {
+        let clone = info(flags: mayShareBlocks, referenceCount: nil, allocatedSize: 303_104, privateSize: 0)
+        let partlyRewritten = info(flags: mayShareBlocks, referenceCount: nil, allocatedSize: 303_104, privateSize: 4_096)
+
+        for shared in [clone, partlyRewritten] {
+            #expect(shared != nil)
+            #expect(shared?.cloneCount == nil)
+            #expect(shared?.mayShareSomeData == true)
+        }
+    }
+
+    @Test func withoutACountAFileThatTakesUpNoSpaceProvesNothing() {
+        let info = info(flags: mayShareBlocks, referenceCount: nil, allocatedSize: 0, privateSize: 0)
+
+        #expect(info != nil)
+        #expect(info?.cloneCount == nil)
+        #expect(info?.mayShareSomeData == true)
+    }
+
+    @Test func withoutACountAMissingSizeProvesNothing() {
+        let info = info(flags: mayShareBlocks, referenceCount: nil, allocatedSize: 303_104, privateSize: nil)
+
+        #expect(info != nil)
+        #expect(info?.cloneCount == nil)
+        #expect(info?.mayShareSomeData == true)
+    }
+
+    @Test func theSizesNeverChangeWhatACountSays() {
+        // A modified clone that counts one file keeps saying it may share part of its data.
+        let modified = info(flags: mayShareBlocks, referenceCount: 1, allocatedSize: 303_104, privateSize: 303_104)
+        let clones = info(flags: mayShareBlocks | sharesAllBlocks, referenceCount: 3, allocatedSize: 303_104, privateSize: 0)
+
+        #expect(modified?.cloneCount == 1)
+        #expect(modified?.mayShareSomeData == true)
+        #expect(clones?.cloneCount == 3)
+        #expect(clones?.mayShareSomeData == false)
     }
 }

@@ -75,7 +75,9 @@ struct CloneAttributeRequest: Sendable {
             flags: buffer.loadUnaligned(fromByteOffset: Offset.flags, as: UInt64.self),
             referenceCount: countsClones
                 ? Int(buffer.loadUnaligned(fromByteOffset: Offset.cloneCount, as: UInt32.self))
-                : nil
+                : nil,
+            allocatedSize: nil,
+            privateSize: nil
         )
     }
 }
