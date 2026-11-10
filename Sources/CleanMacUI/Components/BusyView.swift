@@ -1,7 +1,11 @@
 import SwiftUI
 
-/// Spinner with a status message, shown while a long action runs.
+/// Spinning ring in the feature's colors with a status message, shown while a long action runs.
+///
+/// With Reduce Motion on, the ring stands still.
 public struct BusyView: View {
+    private static let ringDiameter: CGFloat = 88
+
     private let message: Text
     private let theme: FeatureTheme
 
@@ -19,10 +23,9 @@ public struct BusyView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 24) {
-            ProgressView()
-                .controlSize(.large)
-                .tint(theme.primary)
+        VStack(spacing: 28) {
+            IndeterminateProgressRing(theme: theme, lineWidth: 9)
+                .frame(width: Self.ringDiameter, height: Self.ringDiameter)
             message
                 .font(.title3.weight(.medium))
         }
