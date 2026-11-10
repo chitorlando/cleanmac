@@ -12,7 +12,8 @@ public struct DuplicateFile: Identifiable, Hashable, Sendable {
 
     /// Shares all of its data with another file, so removing it alone frees no space.
     ///
-    /// `false` when its clones couldn't be counted, since nothing says the file has any.
+    /// `false` when its clones couldn't be counted, since nothing says the file has any:
+    /// only its group can then tell, by its other copies (see `DuplicateGroup.isClone(_:)`).
     public var isClone: Bool { (cloneInfo?.cloneCount ?? 1) > 1 }
 
     public init(item: CleanableItem, creationDate: Date?, cloneInfo: CloneInfo?) {

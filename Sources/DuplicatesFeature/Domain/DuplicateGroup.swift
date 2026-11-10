@@ -39,6 +39,14 @@ public struct DuplicateGroup: Identifiable, Hashable, Sendable {
         physicalCopies.first { copy in copy.files.contains { $0.id == file.id } }
     }
 
+    /// Whether `file` shares all of its data with another file, so removing it alone frees no space.
+    ///
+    /// True when its volume counted other files on its data, or when another copy of the group
+    /// is on the same data stream, which is all that tells a clone where clones can't be counted.
+    public func isClone(_ file: DuplicateFile) -> Bool {
+        file.isClone || (physicalCopy(containing: file)?.files.count ?? 0) > 1
+    }
+
     /// Space freed by removing the given copies: the data of every physical copy whose files are all removed.
     public func freedSize(removing removedIDs: Set<CleanableItem.ID>) -> Int64 {
         physicalCopies

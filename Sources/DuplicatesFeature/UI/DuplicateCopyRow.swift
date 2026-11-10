@@ -30,7 +30,7 @@ struct DuplicateCopyRow: View {
                     if viewModel.isSuggestedKeeper(file, in: group) && !isSelected {
                         KeepBadge()
                     }
-                    if file.isClone {
+                    if group.isClone(file) {
                         CloneBadge()
                     }
                 }

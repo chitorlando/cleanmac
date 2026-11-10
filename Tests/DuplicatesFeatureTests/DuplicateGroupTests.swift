@@ -178,4 +178,26 @@ struct DuplicateGroupTests {
     @Test func aCopyWhoseClonesCannotBeCountedIsNotKnownToBeAClone() {
         #expect(!Fixtures.file("/a", storage: .uncountedClone(stream: 7)).isClone)
     }
+
+    @Test func tellsClonesThatCannotBeCountedByTheCopiesOnTheirDataStream() {
+        let first = Fixtures.file("/first", storage: .uncountedClone(stream: 7))
+        let second = Fixtures.file("/second", storage: .uncountedClone(stream: 7))
+        let alone = Fixtures.file("/alone", storage: .uncountedClone(stream: 8))
+        let own = Fixtures.file("/own")
+        let group = Fixtures.group(first, alone, own, second)
+
+        #expect(group.isClone(first))
+        #expect(group.isClone(second))
+        // It may be a clone of a file outside the group, but nothing says so.
+        #expect(!group.isClone(alone))
+        #expect(!group.isClone(own))
+    }
+
+    @Test func tellsCountedClonesWhoseOtherFilesAreOutsideTheGroup() {
+        let sharedOutside = Fixtures.file("/a", storage: .clone(stream: 7, count: 2))
+        let group = Fixtures.group(sharedOutside, Fixtures.file("/b"), Fixtures.file("/c", storage: .partlyShared))
+
+        #expect(group.isClone(sharedOutside))
+        #expect(group.files.dropFirst().allSatisfy { !group.isClone($0) })
+    }
 }
