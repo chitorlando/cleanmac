@@ -180,6 +180,8 @@ public final class UninstallerViewModel: ObservableObject {
         visibleApps.filter { !isRunning($0) }
     }
 
+    /// Shared leftovers are worked out once, when every app is in: they are only read while
+    /// browsing, and rebuilding them after each app grew with the square of the app count.
     private func load() async {
         for await event in scanner.scan() {
             guard !Task.isCancelled else { return }
@@ -189,10 +191,10 @@ public final class UninstallerViewModel: ObservableObject {
             case .analyzed(let app):
                 analyzedCount += 1
                 apps.append(app)
-                sharedLeftovers = SharedLeftovers(apps: apps)
             }
         }
         guard !Task.isCancelled else { return }
+        sharedLeftovers = SharedLeftovers(apps: apps)
         refreshRunningApps()
         if focusedApp == nil {
             focusedAppID = visibleApps.first?.id
