@@ -12,7 +12,7 @@ let infoPlistPath = URL(filePath: #filePath)
 let package = Package(
     name: "CleanMac",
     defaultLocalization: "en",
-    platforms: [.macOS(.v15)],
+    platforms: [.macOS(.v13)],
     products: [
         .executable(name: "CleanMac", targets: ["CleanMacApp"])
     ],

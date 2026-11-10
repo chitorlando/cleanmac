@@ -52,7 +52,7 @@ con la etiqueta «Pronto».
 
 ## Requisitos
 
-- macOS 15 Sequoia o posterior
+- macOS 13 Ventura o posterior
 - Xcode 26 o posterior (Swift 6.2) para compilar
 - Xcode 27 o posterior (Swift 6.4) para `make strings`, igual que la CI
 
