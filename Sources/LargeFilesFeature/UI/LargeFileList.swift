@@ -4,7 +4,7 @@ import SwiftUI
 /// Scrollable list of the visible files.
 struct LargeFileList: View {
     let files: [LargeFile]
-    let viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {

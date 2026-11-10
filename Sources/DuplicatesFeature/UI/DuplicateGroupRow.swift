@@ -5,7 +5,7 @@ import SwiftUI
 /// Clicking it shows its copies; the checkbox marks its duplicates.
 struct DuplicateGroupRow: View {
     let group: DuplicateGroup
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     private var isFocused: Bool { viewModel.focusedGroupID == group.id }

@@ -3,7 +3,7 @@ import SwiftUI
 
 /// "Select all" checkbox, search box and sort menu above the list of files.
 struct LargeFileListToolbar: View {
-    @Bindable var viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {

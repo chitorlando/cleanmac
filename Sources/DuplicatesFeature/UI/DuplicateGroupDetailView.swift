@@ -4,7 +4,7 @@ import SwiftUI
 /// Every copy of the focused group, with the one suggested to keep and the clones flagged.
 struct DuplicateGroupDetailView: View {
     let group: DuplicateGroup
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {

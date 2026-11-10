@@ -219,6 +219,26 @@ struct DuplicatesViewModelTests {
         #expect(viewModel.selectedSize == size)
     }
 
+    @Test func promisesNoSpaceForClonesThatCannotBeCounted() async {
+        let own = Fixtures.file("/Users/test/a.mov", created: Fixtures.date(1))
+        let clone = Fixtures.file("/Users/test/Desktop/a.mov", created: Fixtures.date(2), storage: .uncountedClone(stream: 5))
+        let otherClone = Fixtures.file("/Users/test/Movies/a.mov", created: Fixtures.date(3), storage: .uncountedClone(stream: 5))
+        let group = Fixtures.group(own, clone, otherClone)
+        let viewModel = makeViewModel(events: [.found(group)])
+        await viewModel.startScan().value
+
+        #expect(viewModel.recoverableSize == size)
+        viewModel.selectDuplicates()
+        #expect(viewModel.selectedItems.map(\.id) == [own.id])
+        #expect(viewModel.selectedSize == size)
+
+        viewModel.toggle(own, in: group)
+        viewModel.toggle(clone, in: group)
+        viewModel.toggle(otherClone, in: group)
+        #expect(viewModel.selectedCount == 2)
+        #expect(viewModel.selectedSize == 0)
+    }
+
     @Test func togglesWholeGroups() async {
         let viewModel = await scannedViewModel()
 
