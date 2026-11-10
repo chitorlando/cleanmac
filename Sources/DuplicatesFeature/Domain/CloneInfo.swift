@@ -18,14 +18,17 @@ public struct CloneInfo: Hashable, Sendable {
 
     public let streamID: StreamID
     /// Files that share all of this data, this one included: 1 when the file has no clones.
-    public let cloneCount: Int
+    ///
+    /// `nil` when the system can't count them, as on macOS 13: the file may then have any
+    /// number of clones, in the group or outside it, so no space can be promised for it.
+    public let cloneCount: Int?
     /// The file may share part of its data with files that are not clones of it, such as a
     /// clone that was later modified, so removing it frees an unknown amount of space.
     ///
     /// The volume keeps reporting it after the other files are gone, so it may be a false alarm.
     public let mayShareSomeData: Bool
 
-    public init(streamID: StreamID, cloneCount: Int, mayShareSomeData: Bool) {
+    public init(streamID: StreamID, cloneCount: Int?, mayShareSomeData: Bool) {
         self.streamID = streamID
         self.cloneCount = cloneCount
         self.mayShareSomeData = mayShareSomeData

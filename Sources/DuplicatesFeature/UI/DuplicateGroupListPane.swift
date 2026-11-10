@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Left pane: the searchable, sorted list of groups of duplicates.
 struct DuplicateGroupListPane: View {
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {

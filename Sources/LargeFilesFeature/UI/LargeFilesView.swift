@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Root screen of the feature. Shows the view that matches the current phase.
 struct LargeFilesView: View {
-    let viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {

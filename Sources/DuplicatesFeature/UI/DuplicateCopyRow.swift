@@ -6,7 +6,7 @@ import SwiftUI
 struct DuplicateCopyRow: View {
     let file: DuplicateFile
     let group: DuplicateGroup
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     private var isSelected: Bool { viewModel.isSelected(file) }
@@ -30,7 +30,7 @@ struct DuplicateCopyRow: View {
                     if viewModel.isSuggestedKeeper(file, in: group) && !isSelected {
                         KeepBadge()
                     }
-                    if file.isClone {
+                    if group.isClone(file) {
                         CloneBadge()
                     }
                 }

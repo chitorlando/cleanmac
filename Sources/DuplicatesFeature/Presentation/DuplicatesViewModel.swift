@@ -1,6 +1,6 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates scanning, browsing, selection and removal for the duplicates screen.
 ///
@@ -8,20 +8,19 @@ import Observation
 /// group, together with its clones, and no action can ever mark every copy of a group
 /// (see `DuplicateSelectionRule`).
 @MainActor
-@Observable
-public final class DuplicatesViewModel {
-    public private(set) var phase: DuplicatesPhase = .intro
-    public private(set) var groups: [DuplicateGroup] = []
-    public private(set) var progress = DuplicateScanProgress()
+public final class DuplicatesViewModel: ObservableObject {
+    @Published public private(set) var phase: DuplicatesPhase = .intro
+    @Published public private(set) var groups: [DuplicateGroup] = []
+    @Published public private(set) var progress = DuplicateScanProgress()
     /// The user stopped the scan, so the list only has the groups confirmed until then.
-    public private(set) var wasStoppedEarly = false
-    public private(set) var selection = ItemSelection()
-    public var query = DuplicateListQuery()
-    public var focusedGroupID: DuplicateGroup.ID?
+    @Published public private(set) var wasStoppedEarly = false
+    @Published public private(set) var selection = ItemSelection()
+    @Published public var query = DuplicateListQuery()
+    @Published public var focusedGroupID: DuplicateGroup.ID?
 
     private let scanner: any DuplicateScanning
     private let cleanupService: CleanupService
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     public init(scanner: any DuplicateScanning, cleanupService: CleanupService) {
         self.scanner = scanner

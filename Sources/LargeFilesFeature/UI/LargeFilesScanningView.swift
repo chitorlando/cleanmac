@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Progress while the home folder is walked.
 struct LargeFilesScanningView: View {
-    let viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {

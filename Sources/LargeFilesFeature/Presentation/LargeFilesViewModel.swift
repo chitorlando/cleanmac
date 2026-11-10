@@ -1,6 +1,6 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates scanning, filtering, selection and removal for the large files screen.
 ///
@@ -8,22 +8,21 @@ import Observation
 /// is marked by hand. The selection survives filter changes, and `remove()` moves
 /// every selected file to the Trash, visible or not.
 @MainActor
-@Observable
-public final class LargeFilesViewModel {
-    public private(set) var phase: LargeFilesPhase = .intro
-    public private(set) var files: [LargeFile] = []
-    public private(set) var scannedFileCount = 0
+public final class LargeFilesViewModel: ObservableObject {
+    @Published public private(set) var phase: LargeFilesPhase = .intro
+    @Published public private(set) var files: [LargeFile] = []
+    @Published public private(set) var scannedFileCount = 0
     /// The user stopped the scan, so the list only has the files found until then.
-    public private(set) var wasStoppedEarly = false
-    public private(set) var selection = ItemSelection()
-    public var filter = LargeFileFilter()
-    public var sortOrder = LargeFileSortOrder.size
+    @Published public private(set) var wasStoppedEarly = false
+    @Published public private(set) var selection = ItemSelection()
+    @Published public var filter = LargeFileFilter()
+    @Published public var sortOrder = LargeFileSortOrder.size
 
     private let scanner: any LargeFileScanning
     private let cleanupService: CleanupService
     private let now: () -> Date
     private let calendar: Calendar
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     /// - Parameters:
     ///   - now: Current date, used to group files by age.

@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Right pane: the copies of the focused group, or a hint when none is focused.
 struct DuplicateGroupDetailPane: View {
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {

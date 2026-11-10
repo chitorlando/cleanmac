@@ -4,7 +4,7 @@ import SwiftUI
 /// Groups of duplicates on the left and the copies of the focused group on the right,
 /// where the user marks the copies to remove.
 struct DuplicatesReviewView: View {
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {

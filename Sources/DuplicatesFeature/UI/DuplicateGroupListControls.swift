@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Search box, "Select duplicates" checkbox and sort menu above the list of groups.
 struct DuplicateGroupListControls: View {
-    @Bindable var viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {

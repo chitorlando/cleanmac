@@ -51,6 +51,15 @@ struct DuplicateSelectionRuleTests {
         #expect(Set(removable) == [download.item, desktop.item])
     }
 
+    @Test func neverRemovesEveryCloneThatCannotBeCounted() {
+        let older = Fixtures.file("/a", created: Fixtures.date(1), storage: .uncountedClone(stream: 3))
+        let newer = Fixtures.file("/b", created: Fixtures.date(2), storage: .uncountedClone(stream: 3))
+        let group = Fixtures.group(older, newer)
+
+        #expect(!Rule.canSelect(newer, in: group, selection: selection(older)))
+        #expect(Rule.removableItems(in: [group], selection: selection(older, newer)) == [newer.item])
+    }
+
     // MARK: Select duplicates
 
     @Test func selectingDuplicatesKeepsTheSuggestedCopy() {
@@ -84,6 +93,19 @@ struct DuplicateSelectionRuleTests {
 
         #expect(selection == self.selection(firstClone, secondClone))
         #expect(group.freedSize(removing: [firstClone.id, secondClone.id]) == Fixtures.fileSize)
+    }
+
+    @Test func keepsClonesThatCannotBeCountedAndSelectsTheCopiesWithTheirOwnData() {
+        let firstClone = Fixtures.file("/Users/test/Desktop/report.pdf", created: Fixtures.date(5), storage: .uncountedClone(stream: 2))
+        let secondClone = Fixtures.file("/Users/test/Mail/report.pdf", created: Fixtures.date(6), storage: .uncountedClone(stream: 2))
+        let group = Fixtures.group(firstClone, original, download, secondClone)
+        var selection = ItemSelection()
+
+        Rule.selectDuplicates(in: [group], selection: &selection)
+
+        #expect(selection == self.selection(original, download))
+        #expect(Rule.state(of: group, selection: selection) == .all)
+        #expect(group.freedSize(removing: [original.id, download.id]) == Fixtures.fileSize * 2)
     }
 
     @Test func selectsNothingWhenEveryCopySharesTheSameData() {
