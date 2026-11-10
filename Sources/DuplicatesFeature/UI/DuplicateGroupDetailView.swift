@@ -11,6 +11,10 @@ struct DuplicateGroupDetailView: View {
         VStack(alignment: .leading, spacing: 20) {
             DuplicateGroupDetailHeader(group: group, theme: theme)
 
+            if group.isMadeOfClones {
+                CloneGroupNotice()
+            }
+
             Divider()
 
             ScrollView {

@@ -120,11 +120,6 @@ public final class DuplicatesViewModel {
         DuplicateSelectionRule.state(of: group, selection: selection)
     }
 
-    /// A group can be marked as a whole when it has duplicates to mark, or cleared when it has marked copies.
-    public func canToggle(_ group: DuplicateGroup) -> Bool {
-        group.physicalCopies.count > 1 || selectionState(of: group) != .none
-    }
-
     public func toggle(_ file: DuplicateFile, in group: DuplicateGroup) {
         DuplicateSelectionRule.toggle(file, in: group, selection: &selection)
     }
@@ -135,7 +130,7 @@ public final class DuplicatesViewModel {
 
     /// State of the "Select duplicates" checkbox, over the visible groups with duplicates to mark.
     public var duplicatesSelectionState: ItemSelection.State {
-        let states = Set(visibleGroups.filter { $0.physicalCopies.count > 1 }.map(selectionState(of:)))
+        let states = Set(visibleGroups.filter { !$0.isMadeOfClones }.map(selectionState(of:)))
         switch states {
         case [.all]: return .all
         case [], [.none]: return .none
@@ -143,8 +138,9 @@ public final class DuplicatesViewModel {
         }
     }
 
+    /// The checkbox can mark a visible group that frees space, or clear any visible marked copy.
     public var canToggleDuplicates: Bool {
-        visibleGroups.contains(where: canToggle)
+        visibleGroups.contains { !$0.isMadeOfClones || selectionState(of: $0) != .none }
     }
 
     /// Marks the duplicates of every visible group, keeping one copy and its clones in each.

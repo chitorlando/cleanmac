@@ -40,11 +40,18 @@ public enum DuplicateSelectionRule {
     }
 
     /// Clears a group with any marked copy; otherwise marks its duplicates.
+    ///
+    /// A group made only of clones frees no space, so "Select duplicates" leaves it alone,
+    /// but marking it by hand marks every copy but the suggested one, to tidy up folders.
     public static func toggle(_ group: DuplicateGroup, selection: inout ItemSelection) {
-        if state(of: group, selection: selection) == .none {
-            selectDuplicates(in: [group], selection: &selection)
-        } else {
+        guard state(of: group, selection: selection) == .none else {
             selection.deselect(group.items)
+            return
+        }
+        if group.isMadeOfClones, let keeper = DuplicateKeeper.keeper(in: group) {
+            selection.select(group.files.filter { $0.id != keeper.id }.map(\.item))
+        } else {
+            selectDuplicates(in: [group], selection: &selection)
         }
     }
 

@@ -23,6 +23,17 @@ struct DuplicateListQueryTests {
         #expect(DuplicateListQuery().apply(to: groups) == [video, report, archive])
     }
 
+    @Test func listsGroupsThatFreeNothingLastWhenSortedBySize() {
+        // Frees a single byte, but still more than the clones of “archive.zip”, which come first by name.
+        let tiny = DuplicateGroup(
+            id: "tiny",
+            files: [Fixtures.file("/Users/test/zzz.txt"), Fixtures.file("/Users/test/Old/zzz.txt")],
+            fileSize: 1
+        )
+
+        #expect(DuplicateListQuery().apply(to: [archive, tiny]) == [tiny, archive])
+    }
+
     @Test func sortsByNameAsTheFinderDoes() {
         let query = DuplicateListQuery(sortOrder: .name)
 

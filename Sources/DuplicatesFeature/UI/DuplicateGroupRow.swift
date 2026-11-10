@@ -1,7 +1,8 @@
 import CleanMacUI
 import SwiftUI
 
-/// One group of duplicates in the list. Clicking it shows its copies; the checkbox marks its duplicates.
+/// One group of duplicates in the list, with the space it can free, or a badge when its copies are all clones.
+/// Clicking it shows its copies; the checkbox marks its duplicates.
 struct DuplicateGroupRow: View {
     let group: DuplicateGroup
     let viewModel: DuplicatesViewModel
@@ -18,7 +19,6 @@ struct DuplicateGroupRow: View {
             ) {
                 viewModel.toggle(group)
             }
-            .disabled(!viewModel.canToggle(group))
 
             DuplicateFileIcon(group: group, size: 32)
 
@@ -34,10 +34,14 @@ struct DuplicateGroupRow: View {
 
             Spacer(minLength: 4)
 
-            Text(group.recoverableSize.formattedByteCount)
-                .font(.callout.monospacedDigit())
-                .foregroundStyle(.secondary)
-                .help(Text("Space that can be freed", bundle: .module, comment: "Tooltip of the space a group of duplicates can free."))
+            if group.isMadeOfClones {
+                CloneGroupBadge()
+            } else {
+                Text(group.recoverableSize.formattedByteCount)
+                    .font(.callout.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .help(Text("Space that can be freed", bundle: .module, comment: "Tooltip of the space a group of duplicates can free."))
+            }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)

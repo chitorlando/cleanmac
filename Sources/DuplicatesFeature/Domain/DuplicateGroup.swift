@@ -26,6 +26,9 @@ public struct DuplicateGroup: Identifiable, Hashable, Sendable {
         return sizes.reduce(0, +) - (sizes.min() ?? 0)
     }
 
+    /// Every copy shares the same data on disk, so removing any of them frees no space.
+    public var isMadeOfClones: Bool { physicalCopies.count == 1 }
+
     /// Name of the first copy, to label the group.
     public var name: String { files.first?.item.name ?? "" }
 
