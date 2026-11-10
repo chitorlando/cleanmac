@@ -9,22 +9,42 @@ import Foundation
 @MainActor
 public final class UninstallerViewModel: ObservableObject {
     @Published public private(set) var phase: UninstallerPhase = .intro
-    @Published public private(set) var apps: [InstalledApp] = []
-    @Published public private(set) var selection = ItemSelection()
+    @Published public private(set) var apps: [InstalledApp] = [] {
+        didSet { forgetDerivedState(visibleApps: true, selectedItems: true, allSelectionState: true) }
+    }
+    @Published public private(set) var selection = ItemSelection() {
+        didSet { forgetDerivedState(selectedItems: true, allSelectionState: true) }
+    }
     @Published public private(set) var discoveredCount: Int?
     @Published public private(set) var analyzedCount = 0
-    @Published public private(set) var sharedLeftovers = SharedLeftovers.none
-    @Published public private(set) var runningAppIDs: Set<InstalledApp.ID> = []
+    @Published public private(set) var sharedLeftovers = SharedLeftovers.none {
+        didSet { forgetDerivedState(allSelectionState: true) }
+    }
+    @Published public private(set) var runningAppIDs: Set<InstalledApp.ID> = [] {
+        didSet { forgetDerivedState(allSelectionState: true) }
+    }
     @Published public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
-    @Published public var query = AppListQuery()
+    @Published public var query = AppListQuery() {
+        didSet { forgetDerivedState(visibleApps: true, allSelectionState: true) }
+    }
     @Published public var focusedAppID: InstalledApp.ID?
     /// Items of running apps, updated whenever the running apps are refreshed.
-    @Published private var lockedItemIDs: Set<CleanableItem.ID> = []
+    @Published private var lockedItemIDs: Set<CleanableItem.ID> = [] {
+        didSet { forgetDerivedState(selectedItems: true) }
+    }
 
     private let scanner: any InstalledAppScanning
     private let runningApps: any RunningAppsProviding
     private let cleanupService: CleanupService
     private var activeTask: Task<Void, Never>?
+
+    // Derived state kept between reads. Every change re-renders all the views that observe
+    // the view model, and several of them read these values in each pass, which took several
+    // frames with a few hundred apps. Each value is worked out on its first read and forgotten
+    // by the `didSet` of every property it comes from.
+    private var cachedVisibleApps: [InstalledApp]?
+    private var cachedSelectedItems: [CleanableItem]?
+    private var cachedAllSelectionState: ItemSelection.State?
 
     public init(
         scanner: any InstalledAppScanning,
@@ -44,7 +64,12 @@ public final class UninstallerViewModel: ObservableObject {
         return Double(analyzedCount) / Double(discoveredCount)
     }
 
-    public var visibleApps: [InstalledApp] { query.apply(to: apps) }
+    public var visibleApps: [InstalledApp] {
+        if let cachedVisibleApps { return cachedVisibleApps }
+        let visible = query.apply(to: apps)
+        cachedVisibleApps = visible
+        return visible
+    }
 
     public var focusedApp: InstalledApp? {
         apps.first { $0.id == focusedAppID }
@@ -52,10 +77,13 @@ public final class UninstallerViewModel: ObservableObject {
 
     /// Items that `uninstall()` would remove, without duplicates.
     public var selectedItems: [CleanableItem] {
+        if let cachedSelectedItems { return cachedSelectedItems }
         var seen: Set<CleanableItem.ID> = []
-        return apps
+        let items = apps
             .flatMap(\.allItems)
             .filter { selection.contains($0) && canSelect($0) && seen.insert($0.id).inserted }
+        cachedSelectedItems = items
+        return items
     }
 
     public var selectedSize: Int64 { selectedItems.totalSize }
@@ -155,7 +183,10 @@ public final class UninstallerViewModel: ObservableObject {
 
     /// State of the "select all" checkbox, over the visible apps that are not running.
     public var allSelectionState: ItemSelection.State {
-        rule.state(of: selectableVisibleApps, in: selection)
+        if let cachedAllSelectionState { return cachedAllSelectionState }
+        let state = rule.state(of: selectableVisibleApps, in: selection)
+        cachedAllSelectionState = state
+        return state
     }
 
     public func toggle(_ item: CleanableItem) {
@@ -180,6 +211,18 @@ public final class UninstallerViewModel: ObservableObject {
         visibleApps.filter { !isRunning($0) }
     }
 
+    private func forgetDerivedState(
+        visibleApps: Bool = false,
+        selectedItems: Bool = false,
+        allSelectionState: Bool = false
+    ) {
+        if visibleApps { cachedVisibleApps = nil }
+        if selectedItems { cachedSelectedItems = nil }
+        if allSelectionState { cachedAllSelectionState = nil }
+    }
+
+    /// Shared leftovers are worked out once, when every app is in: they are only read while
+    /// browsing, and rebuilding them after each app grew with the square of the app count.
     private func load() async {
         for await event in scanner.scan() {
             guard !Task.isCancelled else { return }
@@ -189,10 +232,10 @@ public final class UninstallerViewModel: ObservableObject {
             case .analyzed(let app):
                 analyzedCount += 1
                 apps.append(app)
-                sharedLeftovers = SharedLeftovers(apps: apps)
             }
         }
         guard !Task.isCancelled else { return }
+        sharedLeftovers = SharedLeftovers(apps: apps)
         refreshRunningApps()
         if focusedApp == nil {
             focusedAppID = visibleApps.first?.id
