@@ -50,13 +50,14 @@ let package = Package(
         ),
         .target(
             name: "DiskMapFeature",
-            dependencies: ["CleanMacCore"]
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "CleanMacApp",
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
-                "LargeFilesFeature", "DuplicatesFeature", "MaintenanceFeature"
+                "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
