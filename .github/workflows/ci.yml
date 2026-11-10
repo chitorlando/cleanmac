@@ -41,5 +41,20 @@ jobs:
           ./scripts/sync-strings.sh
           git diff --exit-code
 
-      - name: Build app
-        run: ./scripts/build-app.sh release
+      # The runners are Apple silicon. Building for Intel too makes the result
+      # usable on every Mac the app supports.
+      - name: Build universal app
+        run: ./scripts/build-app.sh release arm64 x86_64
+
+      - name: Check that the app is universal
+        run: |
+          executable=build/CleanMac.app/Contents/MacOS/CleanMac
+          lipo -archs "$executable"
+          if ! lipo "$executable" -verify_arch arm64 x86_64; then
+            echo "::error::CleanMac.app must contain both arm64 and x86_64."
+            exit 1
+          fi
+          # For whoever reads the log: the minimum macOS and the libraries of
+          # each slice decide whether the app starts on an older Mac.
+          vtool -show-build "$executable"
+          otool -arch all -L "$executable"
