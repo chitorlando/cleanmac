@@ -12,17 +12,6 @@
         }
       }
     },
-    "Duplicates" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duplicados"
-          }
-        }
-      }
-    },
     "Login Items" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {

@@ -18,11 +18,6 @@ extension UpcomingFeature {
             section: .files
         ),
         UpcomingFeature(
-            title: String(localized: "Duplicates", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "doc.on.doc.fill",
-            section: .files
-        ),
-        UpcomingFeature(
             title: String(localized: "Privacy", bundle: .module, comment: "Upcoming feature name in the sidebar."),
             symbolName: "hand.raised.fill",
             section: .cleanup
