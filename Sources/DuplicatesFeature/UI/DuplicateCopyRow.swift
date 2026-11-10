@@ -3,34 +3,39 @@ import CleanMacUI
 import SwiftUI
 
 /// One copy of the focused group: checkbox, name and badges, folder and creation date, and a button to show it in Finder.
-struct DuplicateCopyRow: View {
+///
+/// It takes plain values instead of the view model, and two rows are equal when they show
+/// the same, so wrapped in `.equatable()` a row is only evaluated again when it changes,
+/// not on every change of the screen.
+struct DuplicateCopyRow: View, Equatable {
     let file: DuplicateFile
-    let group: DuplicateGroup
-    @ObservedObject var viewModel: DuplicatesViewModel
+    let isSelected: Bool
+    /// `false` keeps the copy from being marked, as when every other copy already is.
+    let canSelect: Bool
+    let isSuggestedKeeper: Bool
+    let isClone: Bool
     let theme: FeatureTheme
-
-    private var isSelected: Bool { viewModel.isSelected(file) }
+    let onToggle: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
             TriStateCheckbox(
                 state: isSelected ? .checked : .unchecked,
                 tint: theme.primary,
-                label: Text(verbatim: file.item.name)
-            ) {
-                viewModel.toggle(file, in: group)
-            }
-            .disabled(!viewModel.canSelect(file, in: group))
+                label: Text(verbatim: file.item.name),
+                action: onToggle
+            )
+            .disabled(!canSelect)
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
                     Text(verbatim: file.item.name)
                         .lineLimit(1)
                         .truncationMode(.middle)
-                    if viewModel.isSuggestedKeeper(file, in: group) && !isSelected {
+                    if isSuggestedKeeper && !isSelected {
                         KeepBadge()
                     }
-                    if group.isClone(file) {
+                    if isClone {
                         CloneBadge()
                     }
                 }
@@ -55,6 +60,17 @@ struct DuplicateCopyRow: View {
             revealButton
         }
         .padding(.leading, 4)
+    }
+
+    /// Compares what the row shows. The action is left out: it acts on the same copy.
+    nonisolated static func == (lhs: DuplicateCopyRow, rhs: DuplicateCopyRow) -> Bool {
+        lhs.file == rhs.file
+            && lhs.isSelected == rhs.isSelected
+            && lhs.canSelect == rhs.canSelect
+            && lhs.isSuggestedKeeper == rhs.isSuggestedKeeper
+            && lhs.isClone == rhs.isClone
+            && lhs.theme.primary == rhs.theme.primary
+            && lhs.theme.secondary == rhs.theme.secondary
     }
 
     private var folderPath: String {

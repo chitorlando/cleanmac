@@ -20,7 +20,16 @@ struct DuplicateGroupDetailView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     ForEach(group.files) { file in
-                        DuplicateCopyRow(file: file, group: group, viewModel: viewModel, theme: theme)
+                        DuplicateCopyRow(
+                            file: file,
+                            isSelected: viewModel.isSelected(file),
+                            canSelect: viewModel.canSelect(file, in: group),
+                            isSuggestedKeeper: viewModel.isSuggestedKeeper(file, in: group),
+                            isClone: group.isClone(file),
+                            theme: theme,
+                            onToggle: { viewModel.toggle(file, in: group) }
+                        )
+                        .equatable()
                     }
                 }
             }
