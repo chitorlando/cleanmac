@@ -24,9 +24,11 @@ struct LargeFilesView: View {
         case .scanning:
             LargeFilesScanningView(viewModel: viewModel, theme: theme)
         case .review where viewModel.files.isEmpty:
-            LargeFilesNoneFoundView(wasStoppedEarly: viewModel.wasStoppedEarly, theme: theme) {
-                viewModel.startScan()
-            }
+            LargeFilesNoneFoundView(
+                wasStoppedEarly: viewModel.wasStoppedEarly,
+                minimumSize: viewModel.minimumSize,
+                theme: theme
+            ) { viewModel.startScan() }
         case .review:
             LargeFilesReviewView(viewModel: viewModel, theme: theme)
         case .removing:

@@ -4,6 +4,7 @@ import LargeFilesFeature
 struct StubLargeFileScanner: LargeFileScanning {
     let events: [LargeFileScanEvent]
     var finishes = true
+    var criteria = LargeFileCriteria()
 
     func scan() -> AsyncStream<LargeFileScanEvent> {
         AsyncStream { continuation in

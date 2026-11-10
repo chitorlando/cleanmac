@@ -13,8 +13,13 @@ struct LargeFilesReviewView: View {
                 StoppedEarlyNotice()
             }
             HStack(alignment: .top, spacing: 20) {
-                LargeFileFilterPanel(filter: $viewModel.filter, counts: viewModel.filterCounts, theme: theme)
-                    .frame(width: 240)
+                LargeFileFilterPanel(
+                    filter: $viewModel.filter,
+                    kindOptions: viewModel.kindOptions,
+                    counts: viewModel.filterCounts,
+                    theme: theme
+                )
+                .frame(width: 240)
                 LargeFileListPane(viewModel: viewModel, theme: theme)
             }
             ActionBar(

@@ -5,8 +5,8 @@ import Foundation
 public struct LargeFileScanner: LargeFileScanning {
     public static let defaultProgressInterval = 500
 
+    public let criteria: LargeFileCriteria
     private let root: URL
-    private let criteria: LargeFileCriteria
     private let walker: any FileWalking
     private let progressInterval: Int
 

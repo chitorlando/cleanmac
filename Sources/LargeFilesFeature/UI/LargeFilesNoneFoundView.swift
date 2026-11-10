@@ -4,6 +4,8 @@ import SwiftUI
 /// Shown when the scan found no large files.
 struct LargeFilesNoneFoundView: View {
     let wasStoppedEarly: Bool
+    /// Smallest size the scan looked for, in bytes.
+    let minimumSize: Int64
     let theme: FeatureTheme
     let onScanAgain: () -> Void
 
@@ -32,9 +34,9 @@ struct LargeFilesNoneFoundView: View {
             )
         } else {
             String(
-                localized: "Nothing in your home folder takes up more than 50 MB.",
+                localized: "Nothing in your home folder takes up more than \(minimumSize.formattedByteCount).",
                 bundle: .module,
-                comment: "Message shown when a complete scan found no large files."
+                comment: "Message shown when a complete scan found no large files. The argument is the smallest size looked for, such as “50 MB”."
             )
         }
     }

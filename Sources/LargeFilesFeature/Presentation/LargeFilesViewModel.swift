@@ -41,12 +41,20 @@ public final class LargeFilesViewModel {
 
     // MARK: Derived state
 
+    /// Smallest size a file must have to be found, as the scanner looks for it.
+    public var minimumSize: Int64 { scanner.criteria.minimumSize }
+
     public var foundCount: Int { files.count }
     public var foundSize: Int64 { files.map(\.item).totalSize }
 
     /// Files that pass the filter, in the chosen order.
     public var visibleFiles: [LargeFile] {
         sortOrder.sorted(filter.apply(to: files, now: now(), calendar: calendar))
+    }
+
+    /// Kinds shown in the filter column: those of the files found, plus the chosen ones.
+    public var kindOptions: [FileKind] {
+        filter.kindOptions(for: files)
     }
 
     public var filterCounts: LargeFileFilterCounts {

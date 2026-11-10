@@ -35,6 +35,13 @@ public struct LargeFileFilter: Equatable, Sendable {
         files.filter { matches($0, now: now, calendar: calendar) }
     }
 
+    /// Kinds worth offering as options, in catalog order: those of `files`, plus the chosen
+    /// ones even when no file is left of them, so they stay visible and can be cleared.
+    public func kindOptions(for files: [LargeFile]) -> [FileKind] {
+        let offered = kinds.union(files.map(\.kind))
+        return FileKind.allCases.filter(offered.contains)
+    }
+
     private func matchesKind(_ file: LargeFile) -> Bool {
         kinds.isEmpty || kinds.contains(file.kind)
     }
