@@ -1,10 +1,10 @@
 import CleanMacCore
 import Foundation
-import Synchronization
+import os
 
 /// Removes nothing and remembers which URLs it was asked to remove.
 final class RecordingRemover: ItemRemoving {
-    private let removedURLs = Mutex<[URL]>([])
+    private let removedURLs = OSAllocatedUnfairLock<[URL]>(initialState: [])
 
     var removed: [URL] { removedURLs.withLock { $0 } }
 
