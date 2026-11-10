@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Search, ordering, "select all" and the filtered list of files.
 struct LargeFileListPane: View {
-    @Bindable var viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {

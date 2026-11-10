@@ -4,7 +4,7 @@ import SwiftUI
 /// A titled group of the focused app's items, such as its caches.
 struct AppItemSectionView: View {
     let section: AppItemSection
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

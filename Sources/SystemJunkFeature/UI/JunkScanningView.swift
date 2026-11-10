@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Progress while the junk scanners run.
 struct JunkScanningView: View {
-    let viewModel: SystemJunkViewModel
+    @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
 
     var body: some View {

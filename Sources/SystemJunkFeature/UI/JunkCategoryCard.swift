@@ -4,7 +4,7 @@ import SwiftUI
 /// Expandable card for one category with its items.
 struct JunkCategoryCard: View {
     let result: CategoryScanResult
-    let viewModel: SystemJunkViewModel
+    @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
     @Binding var isExpanded: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion

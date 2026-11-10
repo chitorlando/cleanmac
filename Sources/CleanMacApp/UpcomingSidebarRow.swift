@@ -16,7 +16,7 @@ struct UpcomingSidebarRow: View {
                 color: .primary.opacity(0.65)
             )
         }
-        .selectionDisabled()
+        .selectionDisabledWhereSupported()
         .accessibilityElement(children: .combine)
     }
 }

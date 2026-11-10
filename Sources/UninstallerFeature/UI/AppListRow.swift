@@ -4,7 +4,7 @@ import SwiftUI
 /// One installed app in the list. Clicking it shows its details; the checkbox selects it.
 struct AppListRow: View {
     let app: InstalledApp
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     private var isFocused: Bool { viewModel.focusedAppID == app.id }

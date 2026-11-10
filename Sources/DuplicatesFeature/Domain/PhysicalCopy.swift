@@ -4,8 +4,9 @@ public struct PhysicalCopy: Hashable, Sendable {
     public let files: [DuplicateFile]
     /// Space freed once every file of this copy is removed.
     ///
-    /// Zero whenever that isn't certain: when a volume couldn't tell how the data is shared,
-    /// when files outside the group share it too, or when part of it may be shared.
+    /// Zero whenever that isn't certain: when a volume couldn't tell how the data is shared
+    /// or how many files share it, when files outside the group share it too, or when part
+    /// of it may be shared.
     public let freeableSize: Int64
 
     init(files: [DuplicateFile], fileSize: Int64) {
