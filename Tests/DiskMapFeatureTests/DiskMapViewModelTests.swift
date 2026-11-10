@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import DiskMapFeature
 import Foundation
 import Testing
@@ -128,6 +129,25 @@ struct DiskMapViewModelTests {
         viewModel.open(try item("Tool.app", in: viewModel))
 
         #expect(viewModel.focusPath.isEmpty)
+    }
+
+    // MARK: Highlight
+
+    @Test func announcesTheHighlightOnlyWhenItChanges() async {
+        let viewModel = await scannedViewModel()
+        var announcements = 0
+        let observation = viewModel.objectWillChange.sink { announcements += 1 }
+
+        viewModel.highlightedID = url("Movies")
+        viewModel.highlightedID = url("Movies")
+        #expect(announcements == 1)
+
+        viewModel.highlightedID = url("notes.txt")
+        viewModel.highlightedID = nil
+        viewModel.highlightedID = nil
+        #expect(announcements == 3)
+        #expect(viewModel.highlightedID == nil)
+        observation.cancel()
     }
 
     // MARK: Keyboard

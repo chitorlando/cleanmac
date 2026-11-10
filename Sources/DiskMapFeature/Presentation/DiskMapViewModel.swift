@@ -15,8 +15,21 @@ public final class DiskMapViewModel: ObservableObject {
     /// Folders opened from the top of the map down to the focused one.
     @Published public private(set) var focusPath: [URL] = []
     @Published public private(set) var selection = ItemSelection()
+
     /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
-    @Published public var highlightedID: DiskNode.ID?
+    ///
+    /// Pointing at another slice of the same branch sets the same item again. A published
+    /// property redraws every view that observes the model on each assignment, even of the
+    /// value it already holds, so only a different item is stored.
+    public var highlightedID: DiskNode.ID? {
+        get { storedHighlightedID }
+        set {
+            guard newValue != storedHighlightedID else { return }
+            storedHighlightedID = newValue
+        }
+    }
+
+    @Published private var storedHighlightedID: DiskNode.ID?
 
     private let scanner: any DiskMapScanning
     private let cleanupService: CleanupService
