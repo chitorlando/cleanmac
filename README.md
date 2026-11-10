@@ -36,7 +36,8 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 ## Requisitos
 
 - macOS 15 Sequoia o posterior
-- Xcode 16 o posterior (Swift 6) para compilar
+- Xcode 26 o posterior (Swift 6.2) para compilar
+- Xcode 27 o posterior (Swift 6.4) para `make strings`, igual que la CI
 
 ## Instalación desde el código
 
