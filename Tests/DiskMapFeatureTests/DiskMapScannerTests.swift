@@ -158,6 +158,10 @@ struct DiskMapScannerTests {
         #expect(scanner.root == FileManager.default.homeDirectoryForCurrentUser)
     }
 
+    @Test func mapsTheHomeFolderOfTheCurrentUser() {
+        #expect(DiskMapScanner.home().root == FileManager.default.homeDirectoryForCurrentUser)
+    }
+
     // MARK: Cancellation
 
     @Test(.timeLimit(.minutes(1)))
