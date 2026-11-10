@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Root screen of the feature. Shows the view that matches the current phase.
 struct DiskMapView: View {
-    let viewModel: DiskMapViewModel
+    @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     var body: some View {
