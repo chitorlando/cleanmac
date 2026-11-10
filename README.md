@@ -95,7 +95,19 @@ make clean           # borra los productos de compilación
 ```
 
 Cada pull request se compila y se prueba en GitHub Actions ([`ci.yml`](.github/workflows/ci.yml)):
-compilación limpia, tests, String Catalogs sincronizados (`make strings`) y empaquetado de la app.
+compilación limpia, tests, String Catalogs sincronizados (`make strings`) y empaquetado de la app
+en versión universal, para Apple silicon e Intel (`./scripts/build-app.sh release arm64 x86_64`).
+
+Cada ejecución publica esa app como artefacto `CleanMac-universal`, disponible durante 14 días,
+así que puedes probarla en un Mac que no pueda compilar el proyecto:
+
+```bash
+rm -rf build                                         # por si ya había una app
+gh run list --workflow ci.yml                        # busca la ejecución y copia su ID
+gh run download <ID> -n CleanMac-universal -D build  # descarga build/CleanMac.app.zip
+ditto -x -k build/CleanMac.app.zip build             # conserva los permisos y la firma
+open build/CleanMac.app
+```
 
 ### Arquitectura
 
