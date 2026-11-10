@@ -19,9 +19,17 @@ if [ ${#catalogs[@]} -eq 0 ]; then
 fi
 
 stringsdata_files=()
-while IFS= read -r -d '' file; do
-    stringsdata_files+=("$file")
-done < <(find "$INTERMEDIATES" -path "*/Debug/*" -name "*.stringsdata" -print0)
+if [ -d "$INTERMEDIATES" ]; then
+    while IFS= read -r -d '' file; do
+        stringsdata_files+=("$file")
+    done < <(find "$INTERMEDIATES" -path "*/Debug/*" -name "*.stringsdata" -print0)
+fi
+
+if [ ${#stringsdata_files[@]} -eq 0 ]; then
+    echo "No strings data found in $INTERMEDIATES." >&2
+    echo "make strings needs Swift 6.4 or later (Xcode 27), whose build system emits it." >&2
+    exit 1
+fi
 
 for catalog in "${catalogs[@]}"; do
     target="$(basename "$(dirname "$(dirname "$catalog")")")"
