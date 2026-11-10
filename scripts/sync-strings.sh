@@ -47,5 +47,9 @@ for catalog in "${catalogs[@]}"; do
     fi
 
     xcrun xcstringstool sync "$catalog" "${args[@]}"
+    # xcstringstool drops the final newline when it rewrites a catalog. Command
+    # substitution strips every trailing newline, so exactly one is written back.
+    content="$(cat "$catalog")"
+    printf '%s\n' "$content" > "$catalog"
     echo "Synced $target"
 done
