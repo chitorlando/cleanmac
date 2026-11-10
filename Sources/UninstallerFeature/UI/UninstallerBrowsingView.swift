@@ -3,7 +3,7 @@ import SwiftUI
 
 /// App list and details side by side, with the uninstall action below.
 struct UninstallerBrowsingView: View {
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

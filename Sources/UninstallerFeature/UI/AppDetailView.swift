@@ -4,7 +4,7 @@ import SwiftUI
 /// Everything that belongs to the focused app, grouped by kind.
 struct AppDetailView: View {
     let app: InstalledApp
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {
