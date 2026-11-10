@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Search box, "select all" checkbox and sort menu above the app list.
 struct AppListControls: View {
-    @Bindable var viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

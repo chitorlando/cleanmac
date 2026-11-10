@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Progress while installed apps are found and measured.
 struct UninstallerLoadingView: View {
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {
