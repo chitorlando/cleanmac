@@ -1,0 +1,494 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld files" : {
+      "comment" : "Number of files inside a folder of the disk map.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld file"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld files"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld files analyzed" : {
+      "comment" : "Status shown while measuring. The argument is the number of files looked at so far.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld file analyzed"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld files analyzed"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivo analizado"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld archivos analizados"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld small items" : {
+      "comment" : "Number of items too small to show one by one in the disk map.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld small item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld small items"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento pequeño"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos pequeños"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Apps keep their data here. Removing it could break them, so the map only shows it." : {
+      "comment" : "Tooltip on app data in Library that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las apps guardan aquí sus datos. Borrarlos podría estropearlas, así que el mapa solo los muestra."
+          }
+        }
+      }
+    },
+    "Disk Map" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapa del disco"
+          }
+        }
+      }
+    },
+    "Enclosing Folder" : {
+      "comment" : "Button that goes up one folder in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpeta contenedora"
+          }
+        }
+      }
+    },
+    "For a complete map, give CleanMac Full Disk Access. Without it, macOS keeps some folders, such as Mail or Messages, out of the map." : {
+      "comment" : "Note on the disk map intro about the Full Disk Access permission.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para un mapa completo, da a CleanMac Acceso total al disco. Sin él, macOS deja fuera del mapa algunas carpetas, como Mail o Mensajes."
+          }
+        }
+      }
+    },
+    "Move %lld Items to Trash (%@)" : {
+      "comment" : "Button that moves the items selected in the disk map to the Trash. The arguments are the number of items and their size, such as “1.2 GB”.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld Item to Trash (%@)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld Items to Trash (%@)"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld elemento a la Papelera (%@)"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld elementos a la Papelera (%@)"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move %lld items to the Trash?" : {
+      "comment" : "Title when confirming a removal from the disk map. The argument is the number of items.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld item to the Trash?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld items to the Trash?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld elemento a la Papelera?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld elementos a la Papelera?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move to Trash" : {
+      "comment" : "Button that confirms moving the selected items to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "comment" : "Tooltip of the button that opens a folder in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir"
+          }
+        }
+      }
+    },
+    "Open Privacy & Security" : {
+      "comment" : "Button that opens the Privacy & Security pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Privacidad y seguridad"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "comment" : "Small items of a folder, counted together in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otros"
+          }
+        }
+      }
+    },
+    "Protected" : {
+      "comment" : "Note on data the disk map never removes, such as mail or keychains.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protegido"
+          }
+        }
+      }
+    },
+    "Remove it with the Uninstaller" : {
+      "comment" : "Note on an app in the disk map, pointing to the Uninstaller feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimínala con el Desinstalador"
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "Button that starts measuring the home folder for the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that measures the home folder again.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "See which folders take up the most space, explore them and free up what you no longer need." : {
+      "comment" : "Introduction of the disk map feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descubre qué carpetas ocupan más espacio, explóralas y libera lo que ya no necesitas."
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Tooltip of the button that reveals an item in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "System folder" : {
+      "comment" : "Note on a standard folder, such as Documents, that the disk map won't remove.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpeta del sistema"
+          }
+        }
+      }
+    },
+    "They take up %@. You can put them back from the Trash." : {
+      "comment" : "Message when confirming a removal from the disk map. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocupan %@. Puedes recuperarlos desde la Papelera."
+          }
+        }
+      }
+    },
+    "This folder is empty" : {
+      "comment" : "Shown in the disk map for a folder with nothing inside.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta carpeta está vacía"
+          }
+        }
+      }
+    },
+    "This holds data that can’t be recovered once removed, such as passwords, mail, photos or iCloud files." : {
+      "comment" : "Tooltip on protected data that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contiene datos que no se recuperan una vez borrados, como contraseñas, correo, fotos o archivos de iCloud."
+          }
+        }
+      }
+    },
+    "Use the Uninstaller to remove this app together with the files it leaves behind." : {
+      "comment" : "Tooltip on an app that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa el Desinstalador para eliminar esta app junto con los archivos que deja."
+          }
+        }
+      }
+    },
+    "Used by apps" : {
+      "comment" : "Note on app data in Library that the disk map only shows.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo usan las apps"
+          }
+        }
+      }
+    },
+    "in %lld files" : {
+      "comment" : "Shown after the size of the focused folder, as in “120 GB in 3,000 files”. The argument is the number of files.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "in %lld file"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "in %lld files"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "en %lld archivo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "en %lld archivos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "macOS expects this folder. You can remove what’s inside it." : {
+      "comment" : "Tooltip on a standard folder that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS necesita esta carpeta. Puedes borrar lo que contiene."
+          }
+        }
+      }
+    },
+    "measured" : {
+      "comment" : "Caption below the space measured so far, as in “120 GB measured”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "medidos"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
