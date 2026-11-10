@@ -1,4 +1,5 @@
 import CleanMacUI
+import DuplicatesFeature
 import LargeFilesFeature
 import MaintenanceFeature
 import SystemJunkFeature
@@ -12,6 +13,7 @@ enum AppComposition {
             SystemJunkModule.live(),
             UninstallerModule.live(),
             LargeFilesModule.live(),
+            DuplicatesModule.live(),
             MaintenanceModule.live()
         ]
     }
