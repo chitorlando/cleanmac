@@ -51,6 +51,42 @@ struct FileSystemWalkerTests {
         #expect(walkedNames(in: folder) == ["notes.txt"])
     }
 
+    @Test func reportsPackagesWholeWhenAskedToMeasureThem() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Tool.app/Contents/MacOS/Tool")
+        try folder.makeFile("Tool.app/Contents/Resources/big.bin")
+        try folder.makeFile("notes.txt")
+        let calculator = FixedSizeCalculator(bytes: 7_000_000)
+
+        var records: [FileRecord] = []
+        FileSystemWalker(excludedDirectories: [], packageSizeCalculator: calculator).walk(folder.root) { record in
+            records.append(record)
+            return true
+        }
+
+        let package = try #require(records.first { $0.url.lastPathComponent == "Tool.app" })
+        #expect(records.count == 2)
+        #expect(package.isPackage)
+        #expect(package.size == 7_000_000)
+        #expect(calculator.measured.map(\.lastPathComponent) == ["Tool.app"])
+        #expect(records.first { $0.url.lastPathComponent == "notes.txt" }?.isPackage == false)
+    }
+
+    @Test func measuresPackagesWithEverythingInside() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Tool.app/Contents/MacOS/Tool", size: 30_000)
+        try folder.makeFile("Tool.app/Contents/Resources/big.bin", size: 50_000)
+
+        var records: [FileRecord] = []
+        FileSystemWalker(excludedDirectories: [], packageSizeCalculator: AllocatedSizeCalculator()).walk(folder.root) {
+            records.append($0)
+            return true
+        }
+
+        #expect(records.map(\.url.lastPathComponent) == ["Tool.app"])
+        #expect((records.first?.size ?? 0) >= 80_000)
+    }
+
     @Test func skipsExcludedFoldersEntirely() throws {
         let folder = try TemporaryFolder()
         try folder.makeFile("Library/Caches/cache.bin")
