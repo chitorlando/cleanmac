@@ -58,3 +58,27 @@ jobs:
           # each slice decide whether the app starts on an older Mac.
           vtool -show-build "$executable"
           otool -arch all -L "$executable"
+
+      # Artifacts keep neither the executable bit nor symlinks, and a ditto
+      # archive does, so the app is uploaded inside one. --sequesterRsrc puts
+      # any extended attributes beside the bundle instead of inside it, where
+      # a plain unzip would leave files that break the signature.
+      - name: Archive app
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent build/CleanMac.app build/CleanMac.app.zip
+          # What gets downloaded has to unpack into an app that still runs
+          # and still has a valid signature.
+          unpacked="$(mktemp -d)"
+          ditto -x -k build/CleanMac.app.zip "$unpacked"
+          test -x "$unpacked/CleanMac.app/Contents/MacOS/CleanMac"
+          codesign --verify --strict --verbose=2 "$unpacked/CleanMac.app"
+
+      - name: Upload app
+        uses: actions/upload-artifact@v7
+        with:
+          name: CleanMac-universal
+          path: build/CleanMac.app.zip
+          if-no-files-found: error
+          retention-days: 14
+          # ditto has already compressed it.
+          compression-level: 0
