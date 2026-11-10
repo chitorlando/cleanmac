@@ -8,19 +8,21 @@ struct MaintenanceFinishedView: View {
     let onDone: () -> Void
 
     private static let maxListHeight: CGFloat = 320
+    /// Height the list keeps in a short window, where it scrolls instead of pushing the rest off screen.
+    private static let minListHeight: CGFloat = 96
     @State private var listHeight: CGFloat = 0
 
     var body: some View {
         VStack(spacing: 32) {
             HeroHeader(symbolName: symbolName, title: title, subtitle: subtitle, theme: theme)
             GlassCard {
-                // Hugs short reports and only scrolls once they outgrow the maximum height.
+                // Hugs short reports, and scrolls once they outgrow the maximum height or the window.
                 ScrollView {
                     results
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { listHeight = $0 }
                 }
                 .scrollBounceBehavior(.basedOnSize)
-                .frame(height: min(listHeight, Self.maxListHeight))
+                .frame(minHeight: min(listHeight, Self.minListHeight), maxHeight: min(listHeight, Self.maxListHeight))
             }
             DoneButton(theme: theme, action: onDone)
         }
