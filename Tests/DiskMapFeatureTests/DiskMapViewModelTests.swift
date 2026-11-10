@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import DiskMapFeature
 import Foundation
 import Testing
@@ -130,6 +131,25 @@ struct DiskMapViewModelTests {
         #expect(viewModel.focusPath.isEmpty)
     }
 
+    // MARK: Highlight
+
+    @Test func announcesTheHighlightOnlyWhenItChanges() async {
+        let viewModel = await scannedViewModel()
+        var announcements = 0
+        let observation = viewModel.objectWillChange.sink { announcements += 1 }
+
+        viewModel.highlightedID = url("Movies")
+        viewModel.highlightedID = url("Movies")
+        #expect(announcements == 1)
+
+        viewModel.highlightedID = url("notes.txt")
+        viewModel.highlightedID = nil
+        viewModel.highlightedID = nil
+        #expect(announcements == 3)
+        #expect(viewModel.highlightedID == nil)
+        observation.cancel()
+    }
+
     // MARK: Keyboard
 
     @Test func movesTheHighlightThroughTheItems() async {
@@ -203,6 +223,27 @@ struct DiskMapViewModelTests {
 
         #expect(viewModel.selectedItems.map(\.url) == [url("Movies/Trips")])
         #expect(viewModel.selectedSize == 400)
+    }
+
+    @Test func followsTheSelectionAsItChanges() async throws {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.selectedItems.isEmpty)
+
+        viewModel.toggle(try item("notes.txt", in: viewModel))
+        #expect(viewModel.selectedItems.map(\.url) == [url("notes.txt")])
+
+        viewModel.open(try item("Movies", in: viewModel))
+        let clip = try item("clip.mov", in: viewModel)
+        viewModel.toggle(clip)
+        #expect(viewModel.selectedCount == 2)
+        #expect(viewModel.selectedSize == 130)
+
+        viewModel.toggle(clip)
+        #expect(viewModel.selectedItems.map(\.url) == [url("notes.txt")])
+
+        let scan = viewModel.startScan()
+        #expect(viewModel.selectedItems.isEmpty)
+        await scan.value
     }
 
     @Test func keepsStandardFoldersOutOfTheSelection() async throws {

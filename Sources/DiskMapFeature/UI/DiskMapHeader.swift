@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Breadcrumbs of the focused folder, with its size and number of files.
 struct DiskMapHeader: View {
-    let viewModel: DiskMapViewModel
+    @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     var body: some View {

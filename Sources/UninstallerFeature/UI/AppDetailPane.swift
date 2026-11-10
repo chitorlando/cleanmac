@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Right pane: details of the focused app, or a hint when none is focused.
 struct AppDetailPane: View {
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

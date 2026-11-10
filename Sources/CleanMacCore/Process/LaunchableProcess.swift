@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 /// A subprocess that can be terminated from any thread, even before it has been launched.
 final class LaunchableProcess: Sendable {
@@ -7,7 +7,7 @@ final class LaunchableProcess: Sendable {
         case idle, running, terminated
     }
 
-    private let state = Mutex(State.idle)
+    private let state = OSAllocatedUnfairLock(initialState: State.idle)
     private let process: Process
 
     init(_ process: Process) {

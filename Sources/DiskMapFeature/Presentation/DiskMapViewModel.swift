@@ -1,6 +1,6 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates scanning, browsing, selection and removal for the disk map screen.
 ///
@@ -8,22 +8,40 @@ import Observation
 /// breadcrumbs. Items can be selected in any folder, but only those the removal policy
 /// allows, and after a removal the map shrinks in place instead of being scanned again.
 @MainActor
-@Observable
-public final class DiskMapViewModel {
-    public private(set) var phase: DiskMapPhase = .intro
-    public private(set) var progress = DiskMapProgress()
-    public private(set) var map: DiskNode?
+public final class DiskMapViewModel: ObservableObject {
+    @Published public private(set) var phase: DiskMapPhase = .intro
+    @Published public private(set) var progress = DiskMapProgress()
+    @Published public private(set) var map: DiskNode? {
+        didSet { knownSelectedItems = nil }
+    }
     /// Folders opened from the top of the map down to the focused one.
-    public private(set) var focusPath: [URL] = []
-    public private(set) var selection = ItemSelection()
+    @Published public private(set) var focusPath: [URL] = []
+    @Published public private(set) var selection = ItemSelection() {
+        didSet { knownSelectedItems = nil }
+    }
+
     /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
-    public var highlightedID: DiskNode.ID?
+    ///
+    /// Pointing at another slice of the same branch sets the same item again. A published
+    /// property redraws every view that observes the model on each assignment, even of the
+    /// value it already holds, so only a different item is stored.
+    public var highlightedID: DiskNode.ID? {
+        get { storedHighlightedID }
+        set {
+            guard newValue != storedHighlightedID else { return }
+            storedHighlightedID = newValue
+        }
+    }
+
+    @Published private var storedHighlightedID: DiskNode.ID?
 
     private let scanner: any DiskMapScanning
     private let cleanupService: CleanupService
     private let policy: DiskMapRemovalPolicy
     private let layout: SunburstLayout
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
+    /// `selectedItems` of the current map and selection, or `nil` until they're asked for.
+    private var knownSelectedItems: [CleanableItem]?
 
     public init(
         scanner: any DiskMapScanning,
@@ -125,10 +143,16 @@ public final class DiskMapViewModel {
 
     /// Items that `remove()` would move to the Trash, in every folder. An item inside a
     /// selected folder goes with it, so it isn't listed on its own.
+    ///
+    /// Finding them walks the whole map, and the screen asks for them several times each
+    /// time it's redrawn, so they're kept until the map or the selection changes.
     public var selectedItems: [CleanableItem] {
-        guard let map else { return [] }
+        if let knownSelectedItems { return knownSelectedItems }
         var items: [CleanableItem] = []
-        collectSelected(in: map, into: &items)
+        if let map, !selection.isEmpty {
+            collectSelected(in: map, into: &items)
+        }
+        knownSelectedItems = items
         return items
     }
 

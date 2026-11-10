@@ -3,7 +3,7 @@ import SwiftUI
 
 /// List of tasks where the user chooses what to run.
 struct MaintenanceChoosingView: View {
-    let viewModel: MaintenanceViewModel
+    @ObservedObject var viewModel: MaintenanceViewModel
     let theme: FeatureTheme
 
     var body: some View {
