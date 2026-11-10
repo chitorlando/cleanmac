@@ -1,13 +1,13 @@
 import CleanMacCore
 import Foundation
-import Synchronization
+import os
 
 /// Removes nothing and remembers which URLs it was asked to remove, failing for the ones given.
 final class RecordingRemover: ItemRemoving {
     private struct Failure: Error {}
 
     private let failing: Set<URL>
-    private let removedURLs = Mutex<[URL]>([])
+    private let removedURLs = OSAllocatedUnfairLock<[URL]>(initialState: [])
 
     init(failing: Set<URL> = []) {
         self.failing = failing

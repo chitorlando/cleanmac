@@ -3,7 +3,7 @@ import SwiftUI
 
 /// List of findings where the user decides what to remove.
 struct JunkReviewView: View {
-    let viewModel: SystemJunkViewModel
+    @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
 
     @State private var expandedCategoryIDs: Set<JunkCategory.ID> = []

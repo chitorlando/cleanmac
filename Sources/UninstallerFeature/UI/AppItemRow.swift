@@ -5,7 +5,7 @@ import SwiftUI
 /// One file of the focused app, flagged when another copy of the app shares it.
 struct AppItemRow: View {
     let item: CleanableItem
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

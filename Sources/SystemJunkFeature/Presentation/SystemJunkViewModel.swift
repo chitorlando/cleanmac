@@ -1,18 +1,17 @@
 import CleanMacCore
-import Observation
+import Combine
 
 /// Coordinates scanning, selection and cleanup for the system junk screen.
 @MainActor
-@Observable
-public final class SystemJunkViewModel {
-    public private(set) var phase: SystemJunkPhase = .idle
-    public private(set) var results: [CategoryScanResult] = []
-    public private(set) var selection = ItemSelection()
-    public private(set) var scannedCategoryCount = 0
+public final class SystemJunkViewModel: ObservableObject {
+    @Published public private(set) var phase: SystemJunkPhase = .idle
+    @Published public private(set) var results: [CategoryScanResult] = []
+    @Published public private(set) var selection = ItemSelection()
+    @Published public private(set) var scannedCategoryCount = 0
 
     private let scanService: JunkScanService
     private let cleanupService: CleanupService
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     public init(scanService: JunkScanService, cleanupService: CleanupService) {
         self.scanService = scanService

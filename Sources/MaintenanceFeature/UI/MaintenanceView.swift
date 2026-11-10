@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Root screen of the feature. Shows the view that matches the current phase.
 struct MaintenanceView: View {
-    let viewModel: MaintenanceViewModel
+    @ObservedObject var viewModel: MaintenanceViewModel
     let theme: FeatureTheme
 
     var body: some View {
