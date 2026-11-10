@@ -16,16 +16,17 @@ public struct LargeFileFilterCounts: Equatable, Sendable {
         anyAge.ageBucket = nil
         var anySize = filter
         anySize.sizeBucket = nil
+        let boundaries = AgeBucketBoundaries(now: now, calendar: calendar)
 
         for file in files {
-            if anyKind.matches(file, now: now, calendar: calendar) {
+            if anyKind.matches(file, ages: boundaries) {
                 kinds[file.kind, default: 0] += 1
             }
-            if anyAge.matches(file, now: now, calendar: calendar),
-               let age = AgeBucket(lastAccessDate: file.lastAccessDate, now: now, calendar: calendar) {
+            if anyAge.matches(file, ages: boundaries),
+               let age = boundaries.bucket(forLastAccessDate: file.lastAccessDate) {
                 ages[age, default: 0] += 1
             }
-            if anySize.matches(file, now: now, calendar: calendar), let size = SizeBucket(size: file.item.size) {
+            if anySize.matches(file, ages: boundaries), let size = SizeBucket(size: file.item.size) {
                 sizes[size, default: 0] += 1
             }
         }

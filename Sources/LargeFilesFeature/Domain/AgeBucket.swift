@@ -8,20 +8,12 @@ public enum AgeBucket: CaseIterable, Sendable {
     case overOneYear
 
     /// The bucket of a file last used on `date`, or `nil` when the date is unknown.
+    ///
+    /// To place many files on the same day, `AgeBucketBoundaries` works the dates out once.
     public init?(lastAccessDate date: Date?, now: Date, calendar: Calendar = .current) {
-        guard let date else { return nil }
-        func monthsAgo(_ months: Int) -> Date {
-            calendar.date(byAdding: .month, value: -months, to: now) ?? now
+        guard let bucket = AgeBucketBoundaries(now: now, calendar: calendar).bucket(forLastAccessDate: date) else {
+            return nil
         }
-
-        if date > monthsAgo(1) {
-            self = .lessThanOneMonth
-        } else if date > monthsAgo(6) {
-            self = .oneToSixMonths
-        } else if date > monthsAgo(12) {
-            self = .sixToTwelveMonths
-        } else {
-            self = .overOneYear
-        }
+        self = bucket
     }
 }
