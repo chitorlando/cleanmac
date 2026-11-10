@@ -19,11 +19,13 @@ public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var selection = ItemSelection() {
         didSet { selectionDidChange() }
     }
+    /// The search field writes its text back after showing it, so the same query often comes
+    /// twice. Only a different one recomputes the list.
     @Published public var query = DuplicateListQuery() {
-        didSet { queryDidChange() }
+        didSet { if query != oldValue { queryDidChange() } }
     }
     @Published public var focusedGroupID: DuplicateGroup.ID? {
-        didSet { focusedGroupMemo.invalidate() }
+        didSet { if focusedGroupID != oldValue { focusedGroupMemo.invalidate() } }
     }
 
     private let scanner: any DuplicateScanning

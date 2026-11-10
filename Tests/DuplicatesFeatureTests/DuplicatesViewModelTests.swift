@@ -183,6 +183,18 @@ struct DuplicatesViewModelTests {
         #expect(viewModel.visibleGroups == [photos])
     }
 
+    @Test func writingTheSameQueryAgainKeepsTheListAndANewOneUpdatesIt() async {
+        let viewModel = await scannedViewModel()
+        viewModel.query.searchText = "pictures"
+        #expect(viewModel.visibleGroups == [photos])
+
+        viewModel.query.searchText = "pictures"
+        #expect(viewModel.visibleGroups == [photos])
+
+        viewModel.query.searchText = ""
+        #expect(viewModel.visibleGroups == [reports, photos])
+    }
+
     // MARK: Selection
 
     @Test func selectsNothingAfterTheScan() async {
