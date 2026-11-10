@@ -46,6 +46,7 @@ struct DiskMapItemList: View {
                 onToggle: { viewModel.toggle(node) },
                 onOpen: { viewModel.open(node) }
             )
+            .equatable()
             .id(node.id)
             .onHover { inside in
                 if inside { viewModel.highlightedID = node.id }
