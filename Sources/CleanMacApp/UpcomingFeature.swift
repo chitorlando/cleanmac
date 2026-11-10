@@ -3,11 +3,21 @@ import Foundation
 
 /// A planned feature shown in the sidebar until it is implemented.
 struct UpcomingFeature: Identifiable {
+    /// Identity of a planned feature, a type of its own on purpose.
+    ///
+    /// The sidebar selects features by their string identifier, and a list can only select
+    /// the rows whose identity has the type of its selection. With an identity of another
+    /// type, a planned feature can't be selected by click or keyboard on any system.
+    /// Before macOS 14 there's no other way to keep a row out of the selection.
+    struct ID: Hashable {
+        let title: String
+    }
+
     let title: String
     let symbolName: String
     let section: FeatureSection
 
-    var id: String { title }
+    var id: ID { ID(title: title) }
 }
 
 extension UpcomingFeature {
@@ -28,8 +38,18 @@ extension UpcomingFeature {
                 bundle: .module,
                 comment: "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk."
             ),
-            symbolName: "gauge.with.dots.needle.67percent",
+            symbolName: monitorSymbolName,
             section: .performance
         )
     ]
+
+    /// The gauge of the monitor. SF Symbols 5 gave it a new name, and macOS 13 only knows
+    /// the old one, so the new name would draw nothing there.
+    private static var monitorSymbolName: String {
+        if #available(macOS 14, *) {
+            return "gauge.with.dots.needle.67percent"
+        } else {
+            return "speedometer"
+        }
+    }
 }
