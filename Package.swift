@@ -45,7 +45,8 @@ let package = Package(
         ),
         .target(
             name: "DuplicatesFeature",
-            dependencies: ["CleanMacCore"]
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "CleanMacApp",

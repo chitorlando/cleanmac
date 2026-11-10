@@ -1,0 +1,489 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld copies" : {
+      "comment" : "Number of identical copies in a group of duplicates.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copy"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copies"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copia"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copias"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld copies of %@ each" : {
+      "comment" : "Number of copies in a group of duplicates and the size of each, as in “3 copies of 1.2 GB each”.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copy of %@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copies of %@ each"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copia de %@"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld copias de %@ cada una"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld groups of duplicates found" : {
+      "comment" : "Status shown while scanning. The argument is the number of groups of identical files found so far.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld group of duplicates found"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld groups of duplicates found"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld grupo de duplicados encontrado"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld grupos de duplicados encontrados"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Clone" : {
+      "comment" : "Badge on a copy that is an APFS clone of another file.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clon"
+          }
+        }
+      }
+    },
+    "Created %@" : {
+      "comment" : "Creation date of a copy, shown after its folder. The argument is a date, such as “Mar 5, 2026”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creado el %@"
+          }
+        }
+      }
+    },
+    "Duplicates" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicados"
+          }
+        }
+      }
+    },
+    "Find identical copies of your files and choose which ones to move to the Trash." : {
+      "comment" : "Introduction of the duplicates feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra copias idénticas de tus archivos y elige cuáles mover a la Papelera."
+          }
+        }
+      }
+    },
+    "Keep" : {
+      "comment" : "Badge on the copy of a group of duplicates suggested to keep.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conservar"
+          }
+        }
+      }
+    },
+    "Looking for identical files…" : {
+      "comment" : "Status shown while scanning, before any duplicate is found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando archivos idénticos…"
+          }
+        }
+      }
+    },
+    "Marks every copy but one in each group. The copy suggested to keep and its clones stay unmarked." : {
+      "comment" : "Tooltip of the checkbox that marks the duplicates of every listed group.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marca todas las copias menos una en cada grupo. La copia sugerida para conservar y sus clones quedan sin marcar."
+          }
+        }
+      }
+    },
+    "Move to Trash" : {
+      "comment" : "Disabled button to remove copies, shown while nothing is selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "Move to Trash (%@)" : {
+      "comment" : "Button that moves the selected copies to the Trash. The argument is the space it frees, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera (%@)"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "comment" : "Sort option that orders groups alphabetically.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "No Duplicates" : {
+      "comment" : "Title shown when no duplicate files were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay duplicados"
+          }
+        }
+      }
+    },
+    "No duplicates found" : {
+      "comment" : "Shown in the list when there are no groups of duplicates.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron duplicados"
+          }
+        }
+      }
+    },
+    "No duplicates match “%@”" : {
+      "comment" : "Shown when the search finds no group of duplicates. The argument is the search text.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún duplicado coincide con «%@»"
+          }
+        }
+      }
+    },
+    "No file of %@ or more in your home folder has an identical copy." : {
+      "comment" : "Message shown when a complete scan found no duplicates. The argument is the smallest size compared, such as “1 MB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún archivo de %@ o más de tu carpeta de inicio tiene una copia idéntica."
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "Button that starts looking for duplicate files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that repeats the duplicates scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Search duplicates" : {
+      "comment" : "Placeholder of the field that filters the groups of duplicates by path.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar duplicados"
+          }
+        }
+      }
+    },
+    "Select Duplicates" : {
+      "comment" : "Label of the checkbox that marks every copy but one in each listed group.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar duplicados"
+          }
+        }
+      }
+    },
+    "Select a group to see its copies." : {
+      "comment" : "Shown in the detail pane when no group of duplicates is focused.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un grupo para ver sus copias."
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Tooltip of the button that reveals a copy in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "comment" : "Sort option that orders groups by the space they can free, largest first.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        }
+      }
+    },
+    "Sort by" : {
+      "comment" : "Label of the menu that orders the groups of duplicates.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar por"
+          }
+        }
+      }
+    },
+    "Space that can be freed" : {
+      "comment" : "Tooltip of the space a group of duplicates can free.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacio que se puede liberar"
+          }
+        }
+      }
+    },
+    "Suggested copy to keep. Select Duplicates leaves it unmarked." : {
+      "comment" : "Explains the badge on the copy suggested to keep. “Select Duplicates” is the checkbox that marks the duplicates.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia sugerida para conservar: «Marcar duplicados» no la marca."
+          }
+        }
+      }
+    },
+    "The scan was stopped before finding any duplicates." : {
+      "comment" : "Message shown when the user stopped the scan before any duplicate was found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El análisis se detuvo antes de encontrar duplicados."
+          }
+        }
+      }
+    },
+    "The scan was stopped, so these results are incomplete." : {
+      "comment" : "Warning shown above partial results after the user stopped the scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El análisis se detuvo: los resultados están incompletos."
+          }
+        }
+      }
+    },
+    "This copy is an APFS clone: it shares its data with another file, so moving it to the Trash frees little or no space." : {
+      "comment" : "Explains the badge on a copy that is an APFS clone of another file.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta copia es un clon de APFS: comparte sus datos con otro archivo, así que moverla a la Papelera libera poco espacio o ninguno."
+          }
+        }
+      }
+    },
+    "can be freed" : {
+      "comment" : "Caption below the space a group of duplicates can free.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "recuperables"
+          }
+        }
+      }
+    },
+    "can be freed from %lld groups of identical files." : {
+      "comment" : "Shown after the space that can be freed, as in “3 GB can be freed from 12 groups of identical files”. The argument is the number of groups.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "can be freed from %lld group of identical files."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "can be freed from %lld groups of identical files."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "recuperables en %lld grupo de archivos idénticos."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "recuperables en %lld grupos de archivos idénticos."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "files analyzed" : {
+      "comment" : "Caption below the number of files looked at so far.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "archivos analizados"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
