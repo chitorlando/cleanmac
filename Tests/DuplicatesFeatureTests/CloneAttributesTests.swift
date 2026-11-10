@@ -10,6 +10,7 @@ struct CloneAttributesTests {
     private let sharesAllBlocks = UInt64(EF_SHARES_ALL_BLOCKS)
 
     private func info(
+        cloneID: UInt64 = 42,
         flags: UInt64,
         referenceCount: Int?,
         allocatedSize: Int64? = nil,
@@ -17,7 +18,7 @@ struct CloneAttributesTests {
     ) -> CloneInfo? {
         CloneAttributes(
             device: 3,
-            cloneID: 42,
+            cloneID: cloneID,
             flags: flags,
             referenceCount: referenceCount,
             allocatedSize: allocatedSize,
@@ -75,6 +76,17 @@ struct CloneAttributesTests {
         #expect(info != nil)
         #expect(info?.cloneCount == nil)
         #expect(info?.mayShareSomeData == true)
+    }
+
+    @Test func withoutACountAVolumeThatNamesNoDataStreamTellsNothing() {
+        // HFS+ and exFAT answer the request with zeros for every file.
+        #expect(info(cloneID: 0, flags: 0, referenceCount: nil) == nil)
+    }
+
+    @Test func aFileOnAVolumeThatNamesNoDataStreamIsNotTakenForOneThatStandsAlone() {
+        let info = info(cloneID: 0, flags: 0, referenceCount: nil, allocatedSize: 303_104, privateSize: 303_104)
+
+        #expect(info == nil)
     }
 
     // MARK: Space that is the file's own

@@ -18,8 +18,7 @@ struct CloneAttributes: Equatable, Sendable {
     /// return it.
     let privateSize: Int64?
 
-    /// How the file shares its data, or `nil` when the volume counts no file on it, as one
-    /// that doesn't track clones would.
+    /// How the file shares its data, or `nil` when the volume tells nothing about it.
     ///
     /// Without a count, as on macOS 13, a file is known to stand alone when it shares no
     /// blocks: it never did, or it keeps the flag of a file that had clones but all of its
@@ -28,7 +27,7 @@ struct CloneAttributes: Equatable, Sendable {
     /// never with `EF_SHARES_ALL_BLOCKS`, so the number of clones stays unknown and the file
     /// counts as one that may share part of its data.
     var cloneInfo: CloneInfo? {
-        if let referenceCount, referenceCount <= 0 { return nil }
+        guard tracksClones else { return nil }
         let mayShareBlocks = flags & UInt64(EF_MAY_SHARE_BLOCKS) != 0
         let sharesAllBlocks = flags & UInt64(EF_SHARES_ALL_BLOCKS) != 0
         // Where clones are counted the sizes aren't needed, and don't change what the count says.
@@ -38,6 +37,14 @@ struct CloneAttributes: Equatable, Sendable {
             cloneCount: referenceCount ?? (mayShareBlocks && !sharesNothingNow ? nil : 1),
             mayShareSomeData: mayShareBlocks && !sharesAllBlocks && !sharesNothingNow
         )
+    }
+
+    /// Whether the volume keeps track of the file's data. One that doesn't, such as HFS+ or
+    /// exFAT, still answers, with zeros: no file counted or, where clones can't be counted,
+    /// no data stream. Its files would otherwise all seem to be on the same stream.
+    private var tracksClones: Bool {
+        if let referenceCount { return referenceCount > 0 }
+        return cloneID != 0
     }
 
     /// Whether no other file shares any of the space the file takes up, by the sizes the volume
