@@ -22,7 +22,7 @@ public struct TriStateCheckbox: View {
                 .font(.title3)
                 .foregroundStyle(symbolColor)
                 .opacity(isEnabled ? 1 : 0.5)
-                .contentTransition(.symbolEffect(.replace))
+                .contentTransition(.symbolReplacement)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
