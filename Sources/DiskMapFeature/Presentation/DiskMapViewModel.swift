@@ -1,6 +1,6 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates scanning, browsing, selection and removal for the disk map screen.
 ///
@@ -8,22 +8,21 @@ import Observation
 /// breadcrumbs. Items can be selected in any folder, but only those the removal policy
 /// allows, and after a removal the map shrinks in place instead of being scanned again.
 @MainActor
-@Observable
-public final class DiskMapViewModel {
-    public private(set) var phase: DiskMapPhase = .intro
-    public private(set) var progress = DiskMapProgress()
-    public private(set) var map: DiskNode?
+public final class DiskMapViewModel: ObservableObject {
+    @Published public private(set) var phase: DiskMapPhase = .intro
+    @Published public private(set) var progress = DiskMapProgress()
+    @Published public private(set) var map: DiskNode?
     /// Folders opened from the top of the map down to the focused one.
-    public private(set) var focusPath: [URL] = []
-    public private(set) var selection = ItemSelection()
+    @Published public private(set) var focusPath: [URL] = []
+    @Published public private(set) var selection = ItemSelection()
     /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
-    public var highlightedID: DiskNode.ID?
+    @Published public var highlightedID: DiskNode.ID?
 
     private let scanner: any DiskMapScanning
     private let cleanupService: CleanupService
     private let policy: DiskMapRemovalPolicy
     private let layout: SunburstLayout
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     public init(
         scanner: any DiskMapScanning,

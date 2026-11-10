@@ -7,7 +7,7 @@ import SwiftUI
 /// Keys: ↑ and ↓ move through the items, → or Return opens a folder, ← or ⌘↑ goes up.
 /// While something is selected, Return belongs to the bar's main button, which only asks.
 struct DiskMapBrowserView: View {
-    let viewModel: DiskMapViewModel
+    @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     @State private var isConfirmingRemoval = false
