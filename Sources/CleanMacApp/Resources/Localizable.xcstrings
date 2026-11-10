@@ -1,17 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Disk Map" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mapa del disco"
-          }
-        }
-      }
-    },
     "Login Items" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {

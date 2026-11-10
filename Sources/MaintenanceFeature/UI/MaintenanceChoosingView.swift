@@ -13,13 +13,33 @@ struct MaintenanceChoosingView: View {
                 viewModel.toggleAll()
             }
             taskList
-            MaintenanceActionBar(
-                selectedCount: viewModel.selectedCount,
-                requiresAdministrator: viewModel.requiresAdministrator,
+            actionBar
+        }
+        .frame(maxWidth: 760)
+    }
+
+    /// The shared action bar, with the password notice on its left when a chosen task needs it.
+    private var actionBar: some View {
+        HStack(spacing: 16) {
+            if viewModel.requiresAdministrator {
+                AdministratorPasswordNotice()
+            }
+            ActionBar(
+                primaryTitle: runTitle,
+                isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme
             ) { viewModel.run() }
         }
-        .frame(maxWidth: 760)
+    }
+
+    private var runTitle: Text {
+        viewModel.selectedCount == 0
+            ? Text("Run Tasks", bundle: .module, comment: "Disabled button shown before any maintenance task is chosen.")
+            : Text(
+                "Run \(viewModel.selectedCount) Tasks",
+                bundle: .module,
+                comment: "Button that runs the chosen maintenance tasks. The argument is how many."
+            )
     }
 
     private var taskList: some View {
