@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Filters on the left and the list of files on the right, where the user picks what to remove.
 struct LargeFilesReviewView: View {
-    @Bindable var viewModel: LargeFilesViewModel
+    @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {
