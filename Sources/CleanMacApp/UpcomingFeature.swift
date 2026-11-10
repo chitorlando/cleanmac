@@ -38,8 +38,18 @@ extension UpcomingFeature {
                 bundle: .module,
                 comment: "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk."
             ),
-            symbolName: "gauge.with.dots.needle.67percent",
+            symbolName: monitorSymbolName,
             section: .performance
         )
     ]
+
+    /// The gauge of the monitor. SF Symbols 5 gave it a new name, and macOS 13 only knows
+    /// the old one, so the new name would draw nothing there.
+    private static var monitorSymbolName: String {
+        if #available(macOS 14, *) {
+            return "gauge.with.dots.needle.67percent"
+        } else {
+            return "speedometer"
+        }
+    }
 }
