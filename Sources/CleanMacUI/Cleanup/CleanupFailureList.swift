@@ -34,7 +34,7 @@ public struct CleanupFailureList: View {
                     reasons
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { listHeight = $0 }
                 }
-                .scrollBounceBehavior(.basedOnSize)
+                .scrollBouncesOnlyWhenContentOverflows()
                 .frame(minHeight: min(listHeight, Self.minListHeight), maxHeight: min(listHeight, Self.maxListHeight))
             }
         }
