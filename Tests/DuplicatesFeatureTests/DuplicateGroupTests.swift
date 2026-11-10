@@ -87,6 +87,39 @@ struct DuplicateGroupTests {
         #expect(group.recoverableSize == size)
     }
 
+    @Test func doesNotCountClonesThatCannotBeCounted() {
+        // More clones may live outside the group, so removing both frees nothing for certain.
+        let first = Fixtures.file("/first", storage: .uncountedClone(stream: 7))
+        let second = Fixtures.file("/second", storage: .uncountedClone(stream: 7))
+        let own = Fixtures.file("/own")
+        let group = Fixtures.group(first, own, second)
+
+        #expect(group.physicalCopies.map(\.files) == [[first, second], [own]])
+        #expect(group.physicalCopies.map(\.freeableSize) == [0, size])
+        #expect(group.recoverableSize == size)
+        #expect(group.freedSize(removing: [first.id, second.id]) == 0)
+        #expect(group.freedSize(removing: [own.id]) == size)
+    }
+
+    @Test func recoversNothingFromClonesThatCannotBeCounted() {
+        let clones = Fixtures.group(
+            Fixtures.file("/a", storage: .uncountedClone(stream: 7)),
+            Fixtures.file("/b", storage: .uncountedClone(stream: 7))
+        )
+        let families = Fixtures.group(
+            Fixtures.file("/a", storage: .uncountedClone(stream: 7)),
+            Fixtures.file("/b", storage: .uncountedClone(stream: 7)),
+            Fixtures.file("/c", storage: .uncountedClone(stream: 8)),
+            Fixtures.file("/d", storage: .uncountedClone(stream: 8))
+        )
+
+        #expect(clones.isMadeOfClones)
+        #expect(clones.recoverableSize == 0)
+        #expect(families.physicalCopies.count == 2)
+        #expect(!families.isMadeOfClones)
+        #expect(families.recoverableSize == 0)
+    }
+
     @Test func doesNotCountCopiesWhoseVolumeCouldNotTell() {
         let group = Fixtures.group(
             Fixtures.file("/a", storage: .unknown),
@@ -140,5 +173,9 @@ struct DuplicateGroupTests {
         #expect(!Fixtures.file("/b").isClone)
         #expect(!Fixtures.file("/c", storage: .partlyShared).isClone)
         #expect(!Fixtures.file("/d", storage: .unknown).isClone)
+    }
+
+    @Test func aCopyWhoseClonesCannotBeCountedIsNotKnownToBeAClone() {
+        #expect(!Fixtures.file("/a", storage: .uncountedClone(stream: 7)).isClone)
     }
 }

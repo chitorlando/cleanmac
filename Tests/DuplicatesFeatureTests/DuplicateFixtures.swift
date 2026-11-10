@@ -10,6 +10,9 @@ enum DuplicateFixtures {
         case own
         /// Shares all of its data with the other files of `stream`, `count` files in total.
         case clone(stream: UInt64, count: Int)
+        /// Shares data with the other files of `stream` on a system that can't count them, as
+        /// macOS 13 reports any clone: it may share only part of it, with any number of files.
+        case uncountedClone(stream: UInt64)
         /// May share part of its data with other files.
         case partlyShared
         /// The volume couldn't tell.
@@ -42,6 +45,8 @@ enum DuplicateFixtures {
             CloneInfo(streamID: ownStream(of: url), cloneCount: 1, mayShareSomeData: false)
         case let .clone(stream, count):
             CloneInfo(streamID: CloneInfo.StreamID(device: device, cloneID: stream), cloneCount: count, mayShareSomeData: false)
+        case let .uncountedClone(stream):
+            CloneInfo(streamID: CloneInfo.StreamID(device: device, cloneID: stream), cloneCount: nil, mayShareSomeData: true)
         case .partlyShared:
             CloneInfo(streamID: ownStream(of: url), cloneCount: 1, mayShareSomeData: true)
         case .unknown:

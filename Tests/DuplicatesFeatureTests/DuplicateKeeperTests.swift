@@ -49,6 +49,18 @@ struct DuplicateKeeperTests {
         #expect(DuplicateKeeper.keeper(in: group) == sharedOutside)
     }
 
+    @Test func keepsClonesThatCannotBeCountedBeforeACopyWithItsOwnData() {
+        // Nothing says removing these clones would free their data, so the older copy goes instead.
+        let oldClone = Fixtures.file("/Users/test/Desktop/a.jpg", created: Fixtures.date(2), storage: .uncountedClone(stream: 7))
+        let group = Fixtures.group(
+            Fixtures.file("/Users/test/a.jpg", created: Fixtures.date(1)),
+            Fixtures.file("/Users/test/b/a.jpg", created: Fixtures.date(3), storage: .uncountedClone(stream: 7)),
+            oldClone
+        )
+
+        #expect(DuplicateKeeper.keeper(in: group) == oldClone)
+    }
+
     @Test func keepsTheOldestCopyAmongClonesOfEachOther() {
         let oldClone = Fixtures.file("/Users/test/Desktop/a.jpg", created: Fixtures.date(2), storage: .clone(stream: 7, count: 2))
         let group = Fixtures.group(
