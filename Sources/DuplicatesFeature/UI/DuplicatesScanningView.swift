@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Progress while the home folder is walked and the candidates are compared.
 struct DuplicatesScanningView: View {
-    let viewModel: DuplicatesViewModel
+    @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
 
     var body: some View {
