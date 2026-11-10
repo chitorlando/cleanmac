@@ -25,7 +25,15 @@ struct DuplicateGroupListPane: View {
             ScrollView {
                 LazyVStack(spacing: 2) {
                     ForEach(groups) { group in
-                        DuplicateGroupRow(group: group, viewModel: viewModel, theme: theme)
+                        DuplicateGroupRow(
+                            group: group,
+                            isFocused: viewModel.focusedGroupID == group.id,
+                            selectionState: viewModel.selectionState(of: group),
+                            theme: theme,
+                            onToggle: { viewModel.toggle(group) },
+                            onFocus: { viewModel.focusedGroupID = group.id }
+                        )
+                        .equatable()
                     }
                 }
             }
