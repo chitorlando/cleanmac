@@ -25,14 +25,20 @@ public struct LargeFileFilter: Equatable, Sendable {
 
     /// `now` and `calendar` decide which age bucket each file falls in.
     public func matches(_ file: LargeFile, now: Date, calendar: Calendar = .current) -> Bool {
+        matches(file, ages: AgeBucketBoundaries(now: now, calendar: calendar))
+    }
+
+    /// Like `matches(_:now:calendar:)`, with the age buckets already worked out, for passes over many files.
+    func matches(_ file: LargeFile, ages: AgeBucketBoundaries) -> Bool {
         matchesKind(file)
-            && matchesAge(file, now: now, calendar: calendar)
+            && matchesAge(file, ages: ages)
             && matchesSize(file)
             && matchesSearch(file)
     }
 
     public func apply(to files: [LargeFile], now: Date, calendar: Calendar = .current) -> [LargeFile] {
-        files.filter { matches($0, now: now, calendar: calendar) }
+        let ages = AgeBucketBoundaries(now: now, calendar: calendar)
+        return files.filter { matches($0, ages: ages) }
     }
 
     /// Kinds worth offering as options, in catalog order: those of `files`, plus the chosen
@@ -46,9 +52,9 @@ public struct LargeFileFilter: Equatable, Sendable {
         kinds.isEmpty || kinds.contains(file.kind)
     }
 
-    private func matchesAge(_ file: LargeFile, now: Date, calendar: Calendar) -> Bool {
+    private func matchesAge(_ file: LargeFile, ages: AgeBucketBoundaries) -> Bool {
         guard let ageBucket else { return true }
-        return AgeBucket(lastAccessDate: file.lastAccessDate, now: now, calendar: calendar) == ageBucket
+        return ages.bucket(forLastAccessDate: file.lastAccessDate) == ageBucket
     }
 
     private func matchesSize(_ file: LargeFile) -> Bool {
