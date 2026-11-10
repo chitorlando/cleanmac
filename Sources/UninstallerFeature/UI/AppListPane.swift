@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Left pane: the filtered and sorted list of installed apps.
 struct AppListPane: View {
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

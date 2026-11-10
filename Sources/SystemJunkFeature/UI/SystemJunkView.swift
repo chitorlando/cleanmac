@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Root screen of the feature. Shows the view that matches the current phase.
 struct SystemJunkView: View {
-    let viewModel: SystemJunkViewModel
+    @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
 
     var body: some View {

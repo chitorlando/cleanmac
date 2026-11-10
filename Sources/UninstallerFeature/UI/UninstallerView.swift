@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Root screen of the feature. Shows the view that matches the current phase.
 struct UninstallerView: View {
-    let viewModel: UninstallerViewModel
+    @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
     var body: some View {

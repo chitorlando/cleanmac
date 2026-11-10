@@ -5,7 +5,7 @@ import SwiftUI
 ///
 /// It holds the same items as the rings, so it's also how VoiceOver reads the map.
 struct DiskMapItemList: View {
-    let viewModel: DiskMapViewModel
+    @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     var body: some View {
@@ -18,7 +18,7 @@ struct DiskMapItemList: View {
                         }
                         .padding(.trailing, 8)
                     }
-                    .onChange(of: viewModel.highlightedID) { _, id in
+                    .onValueChange(of: viewModel.highlightedID) { id in
                         guard let id else { return }
                         proxy.scrollTo(id)
                     }

@@ -1,31 +1,30 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates loading, browsing, selection and removal for the uninstaller screen.
 ///
 /// Items of running apps can never be selected or removed, and shared leftovers are
 /// only removed when the user marks them by hand (see `AppSelectionRule`).
 @MainActor
-@Observable
-public final class UninstallerViewModel {
-    public private(set) var phase: UninstallerPhase = .intro
-    public private(set) var apps: [InstalledApp] = []
-    public private(set) var selection = ItemSelection()
-    public private(set) var discoveredCount: Int?
-    public private(set) var analyzedCount = 0
-    public private(set) var sharedLeftovers = SharedLeftovers.none
-    public private(set) var runningAppIDs: Set<InstalledApp.ID> = []
-    public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
-    public var query = AppListQuery()
-    public var focusedAppID: InstalledApp.ID?
+public final class UninstallerViewModel: ObservableObject {
+    @Published public private(set) var phase: UninstallerPhase = .intro
+    @Published public private(set) var apps: [InstalledApp] = []
+    @Published public private(set) var selection = ItemSelection()
+    @Published public private(set) var discoveredCount: Int?
+    @Published public private(set) var analyzedCount = 0
+    @Published public private(set) var sharedLeftovers = SharedLeftovers.none
+    @Published public private(set) var runningAppIDs: Set<InstalledApp.ID> = []
+    @Published public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
+    @Published public var query = AppListQuery()
+    @Published public var focusedAppID: InstalledApp.ID?
     /// Items of running apps, updated whenever the running apps are refreshed.
-    private var lockedItemIDs: Set<CleanableItem.ID> = []
+    @Published private var lockedItemIDs: Set<CleanableItem.ID> = []
 
     private let scanner: any InstalledAppScanning
     private let runningApps: any RunningAppsProviding
     private let cleanupService: CleanupService
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     public init(
         scanner: any InstalledAppScanning,

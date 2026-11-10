@@ -1,22 +1,21 @@
 import CleanMacCore
+import Combine
 import Foundation
-import Observation
 
 /// Coordinates choosing and running maintenance tasks.
 ///
 /// Nothing is chosen at first: each task changes the system, so the user picks
 /// them by hand. Chosen tasks always run in the order of `MaintenanceTaskKind.allCases`.
 @MainActor
-@Observable
-public final class MaintenanceViewModel {
-    public private(set) var phase = MaintenancePhase.choosing
-    public private(set) var selection: Set<MaintenanceTaskKind> = []
+public final class MaintenanceViewModel: ObservableObject {
+    @Published public private(set) var phase = MaintenancePhase.choosing
+    @Published public private(set) var selection: Set<MaintenanceTaskKind> = []
 
     /// Every task the user can choose, in the order they run.
     public let tasks = MaintenanceTaskKind.allCases
 
     private let runner: any MaintenanceRunning
-    @ObservationIgnored private var activeTask: Task<Void, Never>?
+    private var activeTask: Task<Void, Never>?
 
     public init(runner: any MaintenanceRunning) {
         self.runner = runner
