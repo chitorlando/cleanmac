@@ -11,6 +11,7 @@ struct DiskMapBrowserView: View {
     let theme: FeatureTheme
 
     @State private var isConfirmingRemoval = false
+    @FocusState private var hasKeyboardFocus: Bool
 
     var body: some View {
         VStack(spacing: 16) {
@@ -32,7 +33,9 @@ struct DiskMapBrowserView: View {
         }
         .frame(maxWidth: 1100)
         .focusable()
+        .focused($hasKeyboardFocus)
         .focusEffectDisabled()
+        .onAppear { hasKeyboardFocus = true }
         .onKeyPress(.downArrow) { viewModel.moveHighlight(by: 1); return .handled }
         .onKeyPress(.upArrow) { viewModel.moveHighlight(by: -1); return .handled }
         .onKeyPress(.rightArrow) { viewModel.openHighlighted(); return .handled }
