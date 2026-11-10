@@ -21,12 +21,12 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | ✅ | **Archivos grandes y antiguos** | Recorre tu carpeta de inicio en busca de archivos de 50 MB o más y los filtra por tipo, tamaño, último uso y nombre. Puedes detener el análisis y revisar lo encontrado hasta entonces. |
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. |
 | ✅ | **Mantenimiento** | Cinco tareas a elegir: vaciar la caché DNS, liberar memoria, reindexar Spotlight, reconstruir Launch Services y restablecer la caché de Quick Look. |
-| 🚧 | **Mapa del disco** | En desarrollo. Mostrará el espacio que ocupa cada carpeta. |
+| ✅ | **Mapa del disco** | Dibuja en anillos lo que ocupa cada carpeta de tu carpeta de inicio, `~/Library` incluida, junto a una lista ordenada por tamaño. Puedes entrar en las carpetas, volver con las migas y mover a la Papelera lo que no necesites. |
 | 🗓️ | **Privacidad** | Prevista. Limpiará cachés e historial de los navegadores. |
 | 🗓️ | **Ítems de inicio** | Prevista. Gestionará las apps y los agentes que arrancan con el sistema. |
 | 🗓️ | **Monitor** | Prevista. CPU, memoria y disco desde la barra de menús. |
 
-✅ disponible · 🚧 en desarrollo · 🗓️ prevista. Las funciones previstas aparecen en la barra lateral
+✅ disponible · 🗓️ prevista. Las funciones previstas aparecen en la barra lateral
 con la etiqueta «Pronto».
 
 ## Seguridad primero
@@ -39,6 +39,10 @@ con la etiqueta «Pronto».
   nada hasta que lo eliges tú.
 - **Apps abiertas y residuos compartidos.** No se puede desinstalar una app abierta: hay que cerrarla antes.
   Los residuos que comparten varias copias de una misma app nunca se marcan solos.
+- **Mapa del disco con candado.** Dentro de `~/Library` solo se puede borrar el contenido de Caches y Logs;
+  lo demás se abre en Finder. Llaveros, Mail, Mensajes, iCloud Drive y los contenedores de apps nunca se tocan,
+  las fototecas y las carpetas estándar como Documentos no se borran enteras, y las apps se eliminan
+  con el Desinstalador.
 - **Duplicados sin riesgo.** Siempre queda al menos una copia de cada grupo, y los clones de APFS,
   que comparten sus datos en el disco, cuentan como una sola copia física.
 - **Fuera de los archivos del sistema.** CleanMac trabaja con tu carpeta de usuario y las apps instaladas,
@@ -72,9 +76,10 @@ macOS puede pedirte estos permisos. Todos se gestionan en Ajustes del Sistema > 
   Sin él, la app simplemente las omite.
 - **Automatización de Finder.** Al desinstalar una app protegida, CleanMac pide a Finder que la mueva
   a la Papelera, para que puedas recuperarla con «Devolver».
-- **Escritorio, Documentos y Descargas.** En el primer análisis de Archivos grandes o de Duplicados,
-  que recorren tu carpeta de inicio.
-- **Datos de otras apps.** Cuando el Desinstalador mide los contenedores de otras apps en tu Library.
+- **Escritorio, Documentos y Descargas.** En el primer análisis de Archivos grandes, Duplicados
+  o Mapa del disco, que recorren tu carpeta de inicio.
+- **Datos de otras apps.** Cuando el Desinstalador o el Mapa del disco miden los contenedores de otras apps
+  en tu Library.
 - **Contraseña de administrador.** En Mantenimiento, para las tareas que lo necesitan (DNS, memoria
   y Spotlight), una sola vez por ejecución.
 
@@ -104,6 +109,7 @@ Sources/
 ├── UninstallerFeature/   Desinstalador
 ├── LargeFilesFeature/    Archivos grandes y antiguos
 ├── DuplicatesFeature/    Duplicados
+├── DiskMapFeature/      Mapa del disco
 ├── MaintenanceFeature/   Mantenimiento
 └── CleanMacApp/          Punto de entrada, barra lateral y composición de dependencias
 ```
