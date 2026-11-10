@@ -84,6 +84,7 @@ let package = Package(
             name: "DuplicatesFeatureTests",
             dependencies: ["DuplicatesFeature", "CleanMacCore"]
         ),
+        .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacUI"]),
         .testTarget(name: "LocalizationTests")
     ]
 )
