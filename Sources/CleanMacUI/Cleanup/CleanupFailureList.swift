@@ -4,6 +4,8 @@ import SwiftUI
 /// Items that could not be removed and why.
 public struct CleanupFailureList: View {
     private static let maxListHeight: CGFloat = 120
+    /// Height the list keeps in a short window, where it scrolls instead of pushing the rest off screen.
+    private static let minListHeight: CGFloat = 48
 
     private let failures: [CleanupFailure]
     @State private var listHeight: CGFloat = 0
@@ -27,13 +29,13 @@ public struct CleanupFailureList: View {
                 .font(.headline)
                 .foregroundStyle(.yellow)
 
-                // Hugs short lists and only scrolls once they outgrow the maximum height.
+                // Hugs short lists, and scrolls once they outgrow the maximum height or the window.
                 ScrollView {
                     reasons
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { listHeight = $0 }
                 }
                 .scrollBounceBehavior(.basedOnSize)
-                .frame(height: min(listHeight, Self.maxListHeight))
+                .frame(minHeight: min(listHeight, Self.minListHeight), maxHeight: min(listHeight, Self.maxListHeight))
             }
         }
     }
