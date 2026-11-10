@@ -23,11 +23,11 @@ struct DiskMapScannerTests {
     }
 
     /// Scans a folder on disk with the walker the disk map uses, packages measured whole.
-    private func map(of folder: TemporaryFolder, minimumShare: Double = 0) async throws -> DiskNode {
+    private func map(of folder: TemporaryFolder, grouping: SmallItemGrouping = .off) async throws -> DiskNode {
         let scanner = DiskMapScanner(
             root: folder.root,
             walker: FileSystemWalker(excludedDirectories: [], packageSizeCalculator: AllocatedSizeCalculator()),
-            grouping: SmallItemGrouping(minimumShare: minimumShare)
+            grouping: grouping
         )
         return try await map(of: scanner)
     }
@@ -74,7 +74,7 @@ struct DiskMapScannerTests {
         try folder.makeFile("b.txt")
         try folder.makeFile("Notes/c.txt")
 
-        let map = try await map(of: folder, minimumShare: SmallItemGrouping.defaultMinimumShare)
+        let map = try await map(of: folder, grouping: SmallItemGrouping())
 
         #expect(map.children.map(\.name) == ["big.bin"])
         #expect(map.otherItems?.itemCount == 3)

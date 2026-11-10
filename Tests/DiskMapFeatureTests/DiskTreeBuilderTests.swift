@@ -10,9 +10,9 @@ struct DiskTreeBuilderTests {
         FileRecord(url: root.appending(path: path), size: size, accessDate: nil, modificationDate: nil, isPackage: isPackage)
     }
 
-    /// Without a minimum share every item is shown, which isolates the sums and the order.
-    private func map(_ records: [FileRecord], minimumShare: Double = 0) -> DiskNode {
-        let builder = DiskTreeBuilder(root: root, grouping: SmallItemGrouping(minimumShare: minimumShare))
+    /// Without grouping every item is shown, which isolates the sums and the order.
+    private func map(_ records: [FileRecord], grouping: SmallItemGrouping = .off) -> DiskNode {
+        let builder = DiskTreeBuilder(root: root, grouping: grouping)
         records.forEach(builder.add)
         return builder.build()
     }
@@ -85,7 +85,7 @@ struct DiskTreeBuilderTests {
                 record("Small/a.txt", 30),
                 record("Small/b.txt", 20)
             ],
-            minimumShare: 0.01
+            grouping: SmallItemGrouping(minimumShare: 0.01)
         )
 
         #expect(map.size == 10_150)
@@ -94,10 +94,32 @@ struct DiskTreeBuilderTests {
     }
 
     @Test func showsALoneSmallItemAsItself() {
-        let map = map([record("big.bin", 10_000), record("tiny.txt", 50)], minimumShare: 0.01)
+        let map = map([record("big.bin", 10_000), record("tiny.txt", 50)], grouping: SmallItemGrouping(minimumShare: 0.01))
 
         #expect(map.children.map(\.name) == ["big.bin", "tiny.txt"])
         #expect(map.otherItems == nil)
+    }
+
+    @Test func alwaysShowsItemsOfTheMinimumSize() {
+        let map = map(
+            [
+                record("disk.img", 5_000_000_000),
+                record("video.mov", 20_000_000),
+                record("photo.jpg", 2_000_000),
+                record("song.mp3", 1_000_000)
+            ],
+            grouping: SmallItemGrouping()
+        )
+
+        #expect(map.children.map(\.name) == ["disk.img", "video.mov"])
+        #expect(map.otherItems == OtherItems(itemCount: 2, size: 3_000_000, fileCount: 2))
+    }
+
+    @Test func countsEmptyItemsTogether() {
+        let map = map([record("a.lock", 0), record("b.lock", 0), record("c.lock", 0)], grouping: SmallItemGrouping())
+
+        #expect(map.children.isEmpty)
+        #expect(map.otherItems == OtherItems(itemCount: 3, size: 0, fileCount: 3))
     }
 
     @Test func groupsByTheShareOfEachFolder() throws {
@@ -109,7 +131,7 @@ struct DiskTreeBuilderTests {
                 record("Notes/c.txt", 10),
                 record("Notes/d.txt", 5)
             ],
-            minimumShare: 0.1
+            grouping: SmallItemGrouping(minimumShare: 0.1)
         )
         let notes = try child("Notes", of: map)
 
@@ -121,7 +143,7 @@ struct DiskTreeBuilderTests {
     @Test func keepsEveryFolderAsLargeAsItsItemsAndOther() {
         let map = map(
             library + (1...40).map { record("Documents/Old/note\($0).txt", Int64($0)) },
-            minimumShare: 0.05
+            grouping: SmallItemGrouping(minimumShare: 0.05)
         )
 
         func check(_ node: DiskNode) {
@@ -143,10 +165,10 @@ struct DiskTreeBuilderTests {
             record("Movies/poster.jpg", 10)
         ]
 
-        let inOrder = map(records, minimumShare: 0.01)
+        let inOrder = map(records, grouping: SmallItemGrouping(minimumShare: 0.01))
 
-        #expect(map(records.reversed(), minimumShare: 0.01) == inOrder)
-        #expect(map(records.sorted { $0.size < $1.size }, minimumShare: 0.01) == inOrder)
+        #expect(map(records.reversed(), grouping: SmallItemGrouping(minimumShare: 0.01)) == inOrder)
+        #expect(map(records.sorted { $0.size < $1.size }, grouping: SmallItemGrouping(minimumShare: 0.01)) == inOrder)
     }
 
     // MARK: Edge cases
