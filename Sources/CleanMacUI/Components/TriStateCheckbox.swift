@@ -27,7 +27,7 @@ public struct TriStateCheckbox: View {
         .buttonStyle(.plain)
         .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)
-        .accessibilityAddTraits(.isToggle)
+        .accessibilityAddTraits(.toggleWhereSupported)
     }
 
     /// Gray when unchecked or disabled, so a disabled checkbox never looks active.
