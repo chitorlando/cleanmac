@@ -10,17 +10,33 @@ import Foundation
 @MainActor
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
-    @Published public private(set) var groups: [DuplicateGroup] = []
+    @Published public private(set) var groups: [DuplicateGroup] = [] {
+        didSet { groupsDidChange() }
+    }
     @Published public private(set) var progress = DuplicateScanProgress()
     /// The user stopped the scan, so the list only has the groups confirmed until then.
     @Published public private(set) var wasStoppedEarly = false
-    @Published public private(set) var selection = ItemSelection()
-    @Published public var query = DuplicateListQuery()
-    @Published public var focusedGroupID: DuplicateGroup.ID?
+    @Published public private(set) var selection = ItemSelection() {
+        didSet { selectionDidChange() }
+    }
+    @Published public var query = DuplicateListQuery() {
+        didSet { queryDidChange() }
+    }
+    @Published public var focusedGroupID: DuplicateGroup.ID? {
+        didSet { focusedGroupMemo.invalidate() }
+    }
 
     private let scanner: any DuplicateScanning
     private let cleanupService: CleanupService
     private var activeTask: Task<Void, Never>?
+
+    // Derived state, computed once per change of what it depends on (see `Memoized`).
+    private var visibleGroupsMemo = Memoized<[DuplicateGroup]>()
+    private var focusedGroupMemo = Memoized<DuplicateGroup?>()
+    private var recoverableSizeMemo = Memoized<Int64>()
+    private var selectedItemsMemo = Memoized<[CleanableItem]>()
+    private var duplicatesSelectionStateMemo = Memoized<ItemSelection.State>()
+    private var canToggleDuplicatesMemo = Memoized<Bool>()
 
     public init(scanner: any DuplicateScanning, cleanupService: CleanupService) {
         self.scanner = scanner
@@ -29,20 +45,26 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Derived state
 
-    public var visibleGroups: [DuplicateGroup] { query.apply(to: groups) }
+    public var visibleGroups: [DuplicateGroup] {
+        visibleGroupsMemo.value { query.apply(to: groups) }
+    }
 
     public var focusedGroup: DuplicateGroup? {
-        groups.first { $0.id == focusedGroupID }
+        focusedGroupMemo.value { groups.first { $0.id == focusedGroupID } }
     }
 
     /// Space freed by keeping one copy of every group found.
-    public var recoverableSize: Int64 { groups.map(\.recoverableSize).reduce(0, +) }
+    public var recoverableSize: Int64 {
+        recoverableSizeMemo.value { groups.map(\.recoverableSize).reduce(0, +) }
+    }
 
     /// Copies that `remove()` would move to the Trash, visible or not, each sized by the
     /// space its removal frees (see `DuplicateGroup.itemsToRemove(_:)`).
     public var selectedItems: [CleanableItem] {
-        let removableIDs = Set(DuplicateSelectionRule.removableItems(in: groups, selection: selection).map(\.id))
-        return groups.flatMap { $0.itemsToRemove(removableIDs) }
+        selectedItemsMemo.value {
+            let removableIDs = Set(DuplicateSelectionRule.removableItems(in: groups, selection: selection).map(\.id))
+            return groups.flatMap { $0.itemsToRemove(removableIDs) }
+        }
     }
 
     /// Space that removing the selected copies frees. Clones only count once every copy
@@ -129,17 +151,21 @@ public final class DuplicatesViewModel: ObservableObject {
 
     /// State of the "Select duplicates" checkbox, over the visible groups with duplicates to mark.
     public var duplicatesSelectionState: ItemSelection.State {
-        let states = Set(visibleGroups.filter { !$0.isMadeOfClones }.map(selectionState(of:)))
-        switch states {
-        case [.all]: return .all
-        case [], [.none]: return .none
-        default: return .some
+        duplicatesSelectionStateMemo.value {
+            let states = Set(visibleGroups.filter { !$0.isMadeOfClones }.map(selectionState(of:)))
+            switch states {
+            case [.all]: return .all
+            case [], [.none]: return .none
+            default: return .some
+            }
         }
     }
 
     /// The checkbox can mark a visible group that frees space, or clear any visible marked copy.
     public var canToggleDuplicates: Bool {
-        visibleGroups.contains { !$0.isMadeOfClones || selectionState(of: $0) != .none }
+        canToggleDuplicatesMemo.value {
+            visibleGroups.contains { !$0.isMadeOfClones || selectionState(of: $0) != .none }
+        }
     }
 
     /// Marks the duplicates of every visible group, keeping one copy and its clones in each.
@@ -157,6 +183,25 @@ public final class DuplicatesViewModel: ObservableObject {
     }
 
     // MARK: Private
+
+    private func groupsDidChange() {
+        visibleGroupsMemo.invalidate()
+        focusedGroupMemo.invalidate()
+        recoverableSizeMemo.invalidate()
+        selectionDidChange()
+    }
+
+    private func queryDidChange() {
+        visibleGroupsMemo.invalidate()
+        duplicatesSelectionStateMemo.invalidate()
+        canToggleDuplicatesMemo.invalidate()
+    }
+
+    private func selectionDidChange() {
+        selectedItemsMemo.invalidate()
+        duplicatesSelectionStateMemo.invalidate()
+        canToggleDuplicatesMemo.invalidate()
+    }
 
     private func scan() async {
         for await event in scanner.scan() {

@@ -99,6 +99,33 @@ struct DuplicatesViewModelTests {
         #expect(viewModel.recoverableSize == size * 3)
     }
 
+    @Test func theFocusedGroupFollowsTheFocus() async {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.focusedGroup == reports)
+
+        viewModel.focusedGroupID = photos.id
+
+        #expect(viewModel.focusedGroup == photos)
+    }
+
+    @Test func derivedValuesFollowTheGroupsLeftAfterARemoval() async {
+        let viewModel = await scannedViewModel()
+        viewModel.focusedGroupID = photos.id
+        viewModel.toggle(photoCopy, in: photos)
+        #expect(viewModel.visibleGroups == [reports, photos])
+        #expect(viewModel.recoverableSize == size * 3)
+        #expect(viewModel.focusedGroup == photos)
+        #expect(viewModel.selectedCount == 1)
+
+        await viewModel.remove()?.value
+
+        let remainingPhotos = Fixtures.group(photo, photoClone)
+        #expect(viewModel.visibleGroups == [reports, remainingPhotos])
+        #expect(viewModel.recoverableSize == size * 2)
+        #expect(viewModel.focusedGroup == remainingPhotos)
+        #expect(!viewModel.hasSelection)
+    }
+
     @Test func stoppingTheScanReviewsTheGroupsFoundSoFar() async {
         let (viewModel, task) = await scanningViewModel()
 
