@@ -16,4 +16,9 @@ struct FileRecordTests {
         let record = FileRecord(url: url, size: 1, accessDate: nil, modificationDate: modified)
         #expect(record.lastAccessDate == modified)
     }
+
+    @Test func isAPlainFileUnlessToldOtherwise() {
+        #expect(!FileRecord(url: url, size: 1, accessDate: nil, modificationDate: nil).isPackage)
+        #expect(FileRecord(url: url, size: 1, accessDate: nil, modificationDate: nil, isPackage: true).isPackage)
+    }
 }
