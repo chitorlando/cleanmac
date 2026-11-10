@@ -31,7 +31,7 @@ public struct ActionBar: View {
                 secondaryTitle
             }
             .buttonStyle(.borderless)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Palette.secondaryText)
 
             Spacer()
 
