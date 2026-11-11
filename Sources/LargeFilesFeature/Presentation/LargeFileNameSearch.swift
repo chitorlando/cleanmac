@@ -13,6 +13,6 @@ struct LargeFileNameSearch: Sendable {
 
     /// An empty text matches every file.
     func matches(_ file: LargeFile) -> Bool {
-        term.isEmpty || file.item.name.range(of: term, options: [.caseInsensitive, .diacriticInsensitive]) != nil
+        term.isEmpty || file.name.range(of: term, options: [.caseInsensitive, .diacriticInsensitive]) != nil
     }
 }
