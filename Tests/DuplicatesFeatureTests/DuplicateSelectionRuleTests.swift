@@ -108,6 +108,17 @@ struct DuplicateSelectionRuleTests {
         #expect(group.freedSize(removing: [original.id, download.id]) == Fixtures.fileSize * 2)
     }
 
+    @Test func selectingDuplicatesKeepsAFileWithOtherNames() {
+        let linked = Fixtures.file("/Users/test/Mail/report.pdf", created: Fixtures.date(9), linkCount: 2)
+        let group = Fixtures.group(original, linked, download)
+        var selection = ItemSelection()
+
+        Rule.selectDuplicates(in: [group], selection: &selection)
+
+        #expect(selection == self.selection(original, download))
+        #expect(group.freedSize(removing: [original.id, download.id]) == Fixtures.fileSize * 2)
+    }
+
     @Test func selectsNothingWhenEveryCopySharesTheSameData() {
         let group = Fixtures.group(
             Fixtures.file("/a", storage: .clone(stream: 3, count: 2)),

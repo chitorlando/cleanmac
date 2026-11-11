@@ -1,7 +1,7 @@
 import CleanMacUI
 import SwiftUI
 
-/// Every copy of the focused group, with the one suggested to keep and the clones flagged.
+/// Every copy of the focused group, with the one suggested to keep, the clones and the hard links flagged.
 struct DuplicateGroupDetailView: View {
     let group: DuplicateGroup
     @ObservedObject var viewModel: DuplicatesViewModel

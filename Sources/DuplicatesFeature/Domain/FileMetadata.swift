@@ -1,6 +1,6 @@
 import Foundation
 
-/// Identity and creation date of a file on disk.
+/// Identity, creation date and number of names of a file on disk.
 public struct FileMetadata: Hashable, Sendable {
     /// Device and inode. Hard links to the same file share it.
     public struct Identity: Hashable, Sendable {
@@ -15,9 +15,12 @@ public struct FileMetadata: Hashable, Sendable {
 
     public let identity: Identity
     public let creationDate: Date?
+    /// Names the file has on its volume, this one included: more than one when it has hard links.
+    public let linkCount: Int
 
-    public init(identity: Identity, creationDate: Date?) {
+    public init(identity: Identity, creationDate: Date?, linkCount: Int = 1) {
         self.identity = identity
         self.creationDate = creationDate
+        self.linkCount = linkCount
     }
 }

@@ -61,6 +61,14 @@ struct DuplicateKeeperTests {
         #expect(DuplicateKeeper.keeper(in: group) == oldClone)
     }
 
+    @Test func keepsAFileWithOtherNamesBeforeACopyWithItsOwnData() {
+        // Removing one name of a hard link frees nothing, so the older copy goes instead.
+        let linked = Fixtures.file("/Users/test/Exports/a.jpg", created: Fixtures.date(9), linkCount: 2)
+        let group = Fixtures.group(Fixtures.file("/Users/test/a.jpg", created: Fixtures.date(1)), linked)
+
+        #expect(DuplicateKeeper.keeper(in: group) == linked)
+    }
+
     @Test func keepsTheOldestCopyAmongClonesOfEachOther() {
         let oldClone = Fixtures.file("/Users/test/Desktop/a.jpg", created: Fixtures.date(2), storage: .clone(stream: 7, count: 2))
         let group = Fixtures.group(
