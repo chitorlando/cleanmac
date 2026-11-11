@@ -2,6 +2,7 @@ import CleanMacUI
 import DiskMapFeature
 import DuplicatesFeature
 import LargeFilesFeature
+import LoginItemsFeature
 import MaintenanceFeature
 import SystemJunkFeature
 import UninstallerFeature
@@ -17,7 +18,8 @@ enum AppComposition {
             LargeFilesModule.live(),
             DiskMapModule.live(uninstallerFeatureID: uninstaller.id),
             DuplicatesModule.live(),
-            MaintenanceModule.live()
+            MaintenanceModule.live(),
+            LoginItemsModule.live()
         ]
     }
 }
