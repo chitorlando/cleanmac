@@ -7,6 +7,10 @@ import SwiftUI
 /// such as menu pickers and bordered buttons draw their bezels with those levels, and brighter
 /// ones would turn the bezels light gray behind white labels. Components that place supporting
 /// text near the glows, like ``ActionBar``, brighten it themselves.
+///
+/// The screen uses the system's increased-contrast label colors, the same ones as the Increase
+/// Contrast accessibility setting: secondary and tertiary text get brighter while keeping their
+/// order, and native buttons keep their labels readable under the glows.
 public struct FeatureScreen<Content: View>: View {
     private let theme: FeatureTheme
     private let content: Content
@@ -23,5 +27,6 @@ public struct FeatureScreen<Content: View>: View {
                 .foregroundStyle(Color.primary)
         }
         .environment(\.colorScheme, .dark)
+        .environment(\._colorSchemeContrast, .increased)
     }
 }
