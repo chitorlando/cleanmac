@@ -55,7 +55,8 @@ let package = Package(
         ),
         .target(
             name: "MonitorFeature",
-            dependencies: ["CleanMacCore", "CleanMacUI"]
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
         ),
         .executableTarget(
             name: "CleanMacApp",
