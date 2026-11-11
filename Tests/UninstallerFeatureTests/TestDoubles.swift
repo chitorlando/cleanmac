@@ -40,6 +40,7 @@ struct FakeAppInfoReader: AppInfoReading {
 /// Emits a fixed list of scan events, optionally leaving the stream open.
 ///
 /// Apps of `appsElsewhere` are only analyzed when the scan is asked to include them.
+/// It can analyze those and the ones of its events, and no other.
 struct StubAppScanner: InstalledAppScanning {
     let events: [AppScanEvent]
     var finishes = true
@@ -52,6 +53,18 @@ struct StubAppScanner: InstalledAppScanning {
             events.forEach { continuation.yield($0) }
             requestedApps.forEach { continuation.yield(.analyzed($0)) }
             if finishes { continuation.finish() }
+        }
+    }
+
+    func canAnalyze(appAt url: URL) -> Bool {
+        let path = url.standardizedFileURL.path
+        return (analyzedApps + appsElsewhere).contains { $0.id.standardizedFileURL.path == path }
+    }
+
+    private var analyzedApps: [InstalledApp] {
+        events.compactMap { event in
+            guard case .analyzed(let app) = event else { return nil }
+            return app
         }
     }
 }
