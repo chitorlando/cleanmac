@@ -25,20 +25,23 @@ public struct LargeFileFilter: Equatable, Sendable {
 
     /// `now` and `calendar` decide which age bucket each file falls in.
     public func matches(_ file: LargeFile, now: Date, calendar: Calendar = .current) -> Bool {
-        matches(file, ages: AgeBucketBoundaries(now: now, calendar: calendar))
+        let ages = AgeBucketBoundaries(now: now, calendar: calendar)
+        return matches(file, ages: ages, search: LargeFileNameSearch(searchText))
     }
 
-    /// Like `matches(_:now:calendar:)`, with the age buckets already worked out, for passes over many files.
-    func matches(_ file: LargeFile, ages: AgeBucketBoundaries) -> Bool {
+    /// Like `matches(_:now:calendar:)`, with the age buckets and the search already worked out,
+    /// for passes over many files.
+    func matches(_ file: LargeFile, ages: AgeBucketBoundaries, search: LargeFileNameSearch) -> Bool {
         matchesKind(file)
             && matchesAge(file, ages: ages)
             && matchesSize(file)
-            && matchesSearch(file)
+            && search.matches(file)
     }
 
     public func apply(to files: [LargeFile], now: Date, calendar: Calendar = .current) -> [LargeFile] {
         let ages = AgeBucketBoundaries(now: now, calendar: calendar)
-        return files.filter { matches($0, ages: ages) }
+        let search = LargeFileNameSearch(searchText)
+        return files.filter { matches($0, ages: ages, search: search) }
     }
 
     /// Kinds worth offering as options, in catalog order: those of `files`, plus the chosen
@@ -60,11 +63,5 @@ public struct LargeFileFilter: Equatable, Sendable {
     private func matchesSize(_ file: LargeFile) -> Bool {
         guard let sizeBucket else { return true }
         return SizeBucket(size: file.item.size) == sizeBucket
-    }
-
-    private func matchesSearch(_ file: LargeFile) -> Bool {
-        let term = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !term.isEmpty else { return true }
-        return file.item.name.range(of: term, options: [.caseInsensitive, .diacriticInsensitive]) != nil
     }
 }
