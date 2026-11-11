@@ -5,27 +5,47 @@ import Foundation
 /// Coordinates loading, browsing, selection and removal for the uninstaller screen.
 ///
 /// Items of running apps can never be selected or removed, and shared leftovers are
-/// only removed when the user marks them by hand (see `AppSelectionRule`).
+/// only removed when the user marks them by hand (see `AppSelectionRule`). An app also
+/// counts as running when the system runs it from another place (see `RunningAppMatcher`).
 @MainActor
 public final class UninstallerViewModel: ObservableObject {
     @Published public private(set) var phase: UninstallerPhase = .intro
     @Published public private(set) var apps: [InstalledApp] = [] {
-        didSet { forgetDerivedState(visibleApps: true, selectedItems: true, allSelectionState: true) }
+        didSet {
+            storedSelectionMemo = nil
+            forgetDerivedState(sortedApps: true, visibleApps: true, selectedItems: true, allSelectionState: true)
+        }
     }
     @Published public private(set) var selection = ItemSelection() {
-        didSet { forgetDerivedState(selectedItems: true, allSelectionState: true) }
+        didSet {
+            if let changingItems {
+                storedSelectionMemo?.forget(appsListing: changingItems)
+            } else {
+                storedSelectionMemo?.forgetEverything()
+            }
+            forgetDerivedState(selectedItems: true, allSelectionState: true)
+        }
     }
     @Published public private(set) var discoveredCount: Int?
     @Published public private(set) var analyzedCount = 0
     @Published public private(set) var sharedLeftovers = SharedLeftovers.none {
-        didSet { forgetDerivedState(allSelectionState: true) }
+        didSet {
+            storedSelectionMemo?.forgetEverything()
+            forgetDerivedState(allSelectionState: true)
+        }
     }
     @Published public private(set) var runningAppIDs: Set<InstalledApp.ID> = [] {
         didSet { forgetDerivedState(allSelectionState: true) }
     }
     @Published public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
     @Published public var query = AppListQuery() {
-        didSet { forgetDerivedState(visibleApps: true, allSelectionState: true) }
+        didSet {
+            forgetDerivedState(
+                sortedApps: query.sortOrder != oldValue.sortOrder,
+                visibleApps: true,
+                allSelectionState: true
+            )
+        }
     }
     @Published public var focusedAppID: InstalledApp.ID?
     /// Path of the app to focus once the list is loaded, asked for by another feature.
@@ -35,7 +55,10 @@ public final class UninstallerViewModel: ObservableObject {
     private var requestedApps: [URL] = []
     /// Items of running apps, updated whenever the running apps are refreshed.
     @Published private var lockedItemIDs: Set<CleanableItem.ID> = [] {
-        didSet { forgetDerivedState(selectedItems: true) }
+        didSet {
+            storedSelectionMemo?.forgetEverything()
+            forgetDerivedState(selectedItems: true)
+        }
     }
 
     private let scanner: any InstalledAppScanning
@@ -47,9 +70,21 @@ public final class UninstallerViewModel: ObservableObject {
     // the view model, and several of them read these values in each pass, which took several
     // frames with a few hundred apps. Each value is worked out on its first read and forgotten
     // by the `didSet` of every property it comes from.
+    //
+    // The apps are kept in order apart from the visible ones: ordering them compares names as
+    // the Finder does, most of a frame with a few hundred apps, and the search doesn't change it.
+    private var cachedSortedApps: [InstalledApp]?
     private var cachedVisibleApps: [InstalledApp]?
     private var cachedSelectedItems: [CleanableItem]?
     private var cachedAllSelectionState: ItemSelection.State?
+
+    // Working out the two values above asks the selection about every item, which hashes a
+    // URL each time: most of a frame with a few thousand items. A toggle changes a handful, so
+    // the answers are also kept app by app and only the apps that list those items are asked
+    // again (see `AppSelectionMemo`). The memo is built on its first read after the apps change.
+    private var storedSelectionMemo: AppSelectionMemo?
+    /// The only items the change to `selection` under way can affect, or `nil` for any of them.
+    private var changingItems: [CleanableItem]?
 
     public init(
         scanner: any InstalledAppScanning,
@@ -71,7 +106,7 @@ public final class UninstallerViewModel: ObservableObject {
 
     public var visibleApps: [InstalledApp] {
         if let cachedVisibleApps { return cachedVisibleApps }
-        let visible = query.apply(to: apps)
+        let visible = query.filtered(sortedApps)
         cachedVisibleApps = visible
         return visible
     }
@@ -83,10 +118,7 @@ public final class UninstallerViewModel: ObservableObject {
     /// Items that `uninstall()` would remove, without duplicates.
     public var selectedItems: [CleanableItem] {
         if let cachedSelectedItems { return cachedSelectedItems }
-        var seen: Set<CleanableItem.ID> = []
-        let items = apps
-            .flatMap(\.allItems)
-            .filter { selection.contains($0) && canSelect($0) && seen.insert($0.id).inserted }
+        let items = selectionMemo.selectedItems { selection.contains($0) && canSelect($0) }
         cachedSelectedItems = items
         return items
     }
@@ -132,31 +164,39 @@ public final class UninstallerViewModel: ObservableObject {
     ///
     /// The app can be outside the application folders, such as in Downloads: the list is then
     /// loaded again with it, which clears the selection, also when it's asked for during a load.
-    /// Paths with no app leave the focus as it is.
+    ///
+    /// A loaded list is only loaded again when the scanner can analyze the app. Otherwise it
+    /// stays as it is, selection and focus included: there is no app at that path, or it is
+    /// one the uninstaller never lists.
     public func focusApp(at url: URL) {
         let app = url.standardizedFileURL
-        pendingFocusPath = app.path
-        let isNewRequest = request(app)
         switch phase {
         case .browsing:
-            if isNewRequest, !isListed(app) {
-                startLoading()
-            } else {
+            if isListed(app) {
+                pendingFocusPath = app.path
                 applyPendingFocus()
+            } else if scanner.canAnalyze(appAt: app) {
+                request(app)
+                startLoading()
             }
         case .intro:
+            request(app)
             startLoading()
         case .loading, .uninstalling, .finished:
-            break
+            request(app)
         }
     }
 
-    /// Asks a running app to quit, then refreshes which apps are open.
+    /// Asks a running app to quit, wherever it runs from, then refreshes which apps are open.
     @discardableResult
     public func quit(_ app: InstalledApp) async -> Bool {
         quittingAppIDs.insert(app.id)
         defer { quittingAppIDs.remove(app.id) }
-        let didQuit = await runningApps.quit(appAt: app.info.url)
+        let instancesElsewhere = runningAppMatcher().instancesElsewhere(of: app)
+        var didQuit = await runningApps.quit(appAt: app.info.url)
+        for instance in instancesElsewhere {
+            didQuit = await runningApps.quit(appAt: instance) && didQuit
+        }
         refreshRunningApps()
         return didQuit
     }
@@ -217,23 +257,26 @@ public final class UninstallerViewModel: ObservableObject {
     /// State of the "select all" checkbox, over the visible apps that are not running.
     public var allSelectionState: ItemSelection.State {
         if let cachedAllSelectionState { return cachedAllSelectionState }
-        let state = rule.state(of: selectableVisibleApps, in: selection)
+        let rule = self.rule
+        let states = selectionMemo.states(of: selectableVisibleApps) { rule.state(of: $0, in: selection) }
+        let state = AppSelectionRule.state(combining: states)
         cachedAllSelectionState = state
         return state
     }
 
     public func toggle(_ item: CleanableItem) {
         guard canSelect(item) else { return }
-        selection.toggle(item)
+        changeSelection(of: [item]) { $0.toggle(item) }
     }
 
     public func toggle(_ app: InstalledApp) {
         guard !isRunning(app) else { return }
-        rule.toggle(app, in: &selection)
+        changeSelection(of: app.allItems) { rule.toggle(app, in: &$0) }
     }
 
     public func toggleAll() {
-        rule.toggle(selectableVisibleApps, in: &selection)
+        let apps = selectableVisibleApps
+        changeSelection(of: apps.flatMap(\.allItems)) { rule.toggle(apps, in: &$0) }
     }
 
     // MARK: Private
@@ -244,11 +287,34 @@ public final class UninstallerViewModel: ObservableObject {
         visibleApps.filter { !isRunning($0) }
     }
 
+    private var selectionMemo: AppSelectionMemo {
+        get { storedSelectionMemo ?? AppSelectionMemo(apps: apps) }
+        set { storedSelectionMemo = newValue }
+    }
+
+    /// Changes the selection in a way that can only affect `items`, so that what is
+    /// remembered about the apps that list none of them is kept.
+    private func changeSelection(of items: [CleanableItem], _ change: (inout ItemSelection) -> Void) {
+        changingItems = items
+        defer { changingItems = nil }
+        change(&selection)
+    }
+
+    /// Every app in the order of the query, whatever the search.
+    private var sortedApps: [InstalledApp] {
+        if let cachedSortedApps { return cachedSortedApps }
+        let sorted = query.sorted(apps)
+        cachedSortedApps = sorted
+        return sorted
+    }
+
     private func forgetDerivedState(
+        sortedApps: Bool = false,
         visibleApps: Bool = false,
         selectedItems: Bool = false,
         allSelectionState: Bool = false
     ) {
+        if sortedApps { cachedSortedApps = nil }
         if visibleApps { cachedVisibleApps = nil }
         if selectedItems { cachedSelectedItems = nil }
         if allSelectionState { cachedAllSelectionState = nil }
@@ -270,7 +336,7 @@ public final class UninstallerViewModel: ObservableObject {
             }
         }
         guard !Task.isCancelled else { return }
-        guard !isMissingAnAppRequested(after: includedApps) else {
+        guard !leftOutAnAppRequested(after: includedApps) else {
             startLoading()
             return
         }
@@ -283,17 +349,21 @@ public final class UninstallerViewModel: ObservableObject {
         phase = .browsing
     }
 
-    /// Remembers that another feature asked for `app`. Returns `false` when it already had.
-    private func request(_ app: URL) -> Bool {
-        guard !requestedApps.contains(app) else { return false }
-        requestedApps.append(app)
-        return true
+    /// Remembers that another feature asked for `app`, so that loads analyze it with the
+    /// rest and the next one to end focuses it.
+    private func request(_ app: URL) {
+        pendingFocusPath = app.path
+        if !requestedApps.contains(app) {
+            requestedApps.append(app)
+        }
     }
 
-    /// Whether the app to focus was asked for after a load began, so that load left it out.
-    private func isMissingAnAppRequested(after includedApps: [URL]) -> Bool {
-        guard let path = pendingFocusPath, requestedApps != includedApps else { return false }
-        return listedApp(atPath: path) == nil
+    /// Whether an app the scanner can analyze was asked for after a load began, so that load
+    /// left it out. It looks at every app asked for meanwhile, not only the last one.
+    private func leftOutAnAppRequested(after includedApps: [URL]) -> Bool {
+        requestedApps.contains { app in
+            !includedApps.contains(app) && !isListed(app) && scanner.canAnalyze(appAt: app)
+        }
     }
 
     private func isListed(_ app: URL) -> Bool {
@@ -314,11 +384,15 @@ public final class UninstallerViewModel: ObservableObject {
         focusedAppID = app.id
     }
 
+    private func runningAppMatcher() -> RunningAppMatcher {
+        RunningAppMatcher(runningApps: runningApps.runningApps(), listedApps: apps)
+    }
+
     private func refreshRunningApps() {
-        let runningURLs = runningApps.runningAppURLs()
-        runningAppIDs = Set(apps.map(\.id).filter { runningURLs.contains($0.standardizedFileURL) })
+        let matcher = runningAppMatcher()
+        runningAppIDs = Set(apps.filter(matcher.isRunning).map(\.id))
         let lockedItems = apps.filter(isRunning).flatMap(\.allItems)
         lockedItemIDs = Set(lockedItems.map(\.id))
-        selection.deselect(lockedItems)
+        changeSelection(of: lockedItems) { $0.deselect(lockedItems) }
     }
 }

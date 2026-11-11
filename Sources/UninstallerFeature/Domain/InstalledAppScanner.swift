@@ -41,6 +41,10 @@ public struct InstalledAppScanner: InstalledAppScanning {
         }
     }
 
+    public func canAnalyze(appAt url: URL) -> Bool {
+        locator.application(at: url).flatMap(analyzableInfo(forAppAt:)) != nil
+    }
+
     private func run(
         including otherApps: [URL],
         reportingTo continuation: AsyncStream<AppScanEvent>.Continuation
@@ -72,7 +76,14 @@ public struct InstalledAppScanner: InstalledAppScanning {
         let apps = locator.applications(in: applicationFolders) + otherApps.compactMap(locator.application(at:))
         return apps
             .filter { seenPaths.insert($0.standardizedFileURL.path).inserted }
-            .compactMap(infoReader.info(forAppAt:))
-            .filter { !excludedBundleIDs.contains($0.bundleID.lowercased()) }
+            .compactMap(analyzableInfo(forAppAt:))
+    }
+
+    /// The identity of the app at `url`, unless it can't be read or the app is one to leave out.
+    private func analyzableInfo(forAppAt url: URL) -> AppBundleInfo? {
+        guard let info = infoReader.info(forAppAt: url),
+              !excludedBundleIDs.contains(info.bundleID.lowercased())
+        else { return nil }
+        return info
     }
 }
