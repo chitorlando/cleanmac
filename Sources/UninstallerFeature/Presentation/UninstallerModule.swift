@@ -21,6 +21,11 @@ public final class UninstallerModule: FeatureModule {
     public func makeView() -> AnyView {
         AnyView(UninstallerView(viewModel: viewModel, theme: theme))
     }
+
+    /// Focuses the app at `url`, loading the app list first if needed.
+    public func show(itemAt url: URL) {
+        viewModel.focusApp(at: url)
+    }
 }
 
 public extension UninstallerModule {

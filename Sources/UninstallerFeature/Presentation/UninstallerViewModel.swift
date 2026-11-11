@@ -28,6 +28,8 @@ public final class UninstallerViewModel: ObservableObject {
         didSet { forgetDerivedState(visibleApps: true, allSelectionState: true) }
     }
     @Published public var focusedAppID: InstalledApp.ID?
+    /// Path of the app to focus once the list is loaded, asked for by another feature.
+    private var pendingFocusPath: String?
     /// Items of running apps, updated whenever the running apps are refreshed.
     @Published private var lockedItemIDs: Set<CleanableItem.ID> = [] {
         didSet { forgetDerivedState(selectedItems: true) }
@@ -115,7 +117,25 @@ public final class UninstallerViewModel: ObservableObject {
 
     public func cancelLoading() {
         activeTask?.cancel()
+        pendingFocusPath = nil
         phase = .intro
+    }
+
+    /// Focuses the app at `url`, such as one another feature sends here.
+    ///
+    /// When the list isn't loaded yet, it loads it first, starting from the intro if needed,
+    /// and focuses the app when loading ends. The search is cleared if it hides the app.
+    /// Unknown apps leave the focus as it is.
+    public func focusApp(at url: URL) {
+        pendingFocusPath = url.standardizedFileURL.path
+        switch phase {
+        case .browsing:
+            applyPendingFocus()
+        case .intro:
+            startLoading()
+        case .loading, .uninstalling, .finished:
+            break
+        }
     }
 
     /// Asks a running app to quit, then refreshes which apps are open.
@@ -237,10 +257,21 @@ public final class UninstallerViewModel: ObservableObject {
         guard !Task.isCancelled else { return }
         sharedLeftovers = SharedLeftovers(apps: apps)
         refreshRunningApps()
+        applyPendingFocus()
         if focusedApp == nil {
             focusedAppID = visibleApps.first?.id
         }
         phase = .browsing
+    }
+
+    private func applyPendingFocus() {
+        guard let path = pendingFocusPath else { return }
+        pendingFocusPath = nil
+        guard let app = apps.first(where: { $0.id.standardizedFileURL.path == path }) else { return }
+        if !visibleApps.contains(where: { $0.id == app.id }) {
+            query.searchText = ""
+        }
+        focusedAppID = app.id
     }
 
     private func refreshRunningApps() {
