@@ -1,3 +1,5 @@
+import Foundation
+
 /// Finds installed apps with their leftovers, reporting progress as a stream of events.
 public protocol InstalledAppScanning: Sendable {
     /// - Parameter otherApps: Apps outside the application folders to analyze with the rest,
