@@ -33,6 +33,18 @@ struct UninstallerViewModelDerivedStateTests {
         #expect(viewModel.visibleApps == [zoom, notes])
     }
 
+    @Test func visibleAppsKeepTheirOrderWhileSearching() async {
+        let viewModel = await loadedViewModel()
+        viewModel.query.sortOrder = .size
+        #expect(viewModel.visibleApps == [zoom, notes])
+
+        viewModel.query.searchText = "o"
+        #expect(viewModel.visibleApps == [zoom, notes])
+
+        viewModel.query.sortOrder = .name
+        #expect(viewModel.visibleApps == [notes, zoom])
+    }
+
     @Test func selectionTotalsFollowEveryToggle() async {
         let viewModel = await loadedViewModel()
         #expect(!viewModel.hasSelection)

@@ -10,7 +10,9 @@ import Foundation
 public final class UninstallerViewModel: ObservableObject {
     @Published public private(set) var phase: UninstallerPhase = .intro
     @Published public private(set) var apps: [InstalledApp] = [] {
-        didSet { forgetDerivedState(visibleApps: true, selectedItems: true, allSelectionState: true) }
+        didSet {
+            forgetDerivedState(sortedApps: true, visibleApps: true, selectedItems: true, allSelectionState: true)
+        }
     }
     @Published public private(set) var selection = ItemSelection() {
         didSet { forgetDerivedState(selectedItems: true, allSelectionState: true) }
@@ -25,7 +27,13 @@ public final class UninstallerViewModel: ObservableObject {
     }
     @Published public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
     @Published public var query = AppListQuery() {
-        didSet { forgetDerivedState(visibleApps: true, allSelectionState: true) }
+        didSet {
+            forgetDerivedState(
+                sortedApps: query.sortOrder != oldValue.sortOrder,
+                visibleApps: true,
+                allSelectionState: true
+            )
+        }
     }
     @Published public var focusedAppID: InstalledApp.ID?
     /// Path of the app to focus once the list is loaded, asked for by another feature.
@@ -47,6 +55,10 @@ public final class UninstallerViewModel: ObservableObject {
     // the view model, and several of them read these values in each pass, which took several
     // frames with a few hundred apps. Each value is worked out on its first read and forgotten
     // by the `didSet` of every property it comes from.
+    //
+    // The apps are kept in order apart from the visible ones: ordering them compares names as
+    // the Finder does, most of a frame with a few hundred apps, and the search doesn't change it.
+    private var cachedSortedApps: [InstalledApp]?
     private var cachedVisibleApps: [InstalledApp]?
     private var cachedSelectedItems: [CleanableItem]?
     private var cachedAllSelectionState: ItemSelection.State?
@@ -71,7 +83,7 @@ public final class UninstallerViewModel: ObservableObject {
 
     public var visibleApps: [InstalledApp] {
         if let cachedVisibleApps { return cachedVisibleApps }
-        let visible = query.apply(to: apps)
+        let visible = query.filtered(sortedApps)
         cachedVisibleApps = visible
         return visible
     }
@@ -244,11 +256,21 @@ public final class UninstallerViewModel: ObservableObject {
         visibleApps.filter { !isRunning($0) }
     }
 
+    /// Every app in the order of the query, whatever the search.
+    private var sortedApps: [InstalledApp] {
+        if let cachedSortedApps { return cachedSortedApps }
+        let sorted = query.sorted(apps)
+        cachedSortedApps = sorted
+        return sorted
+    }
+
     private func forgetDerivedState(
+        sortedApps: Bool = false,
         visibleApps: Bool = false,
         selectedItems: Bool = false,
         allSelectionState: Bool = false
     ) {
+        if sortedApps { cachedSortedApps = nil }
         if visibleApps { cachedVisibleApps = nil }
         if selectedItems { cachedSelectedItems = nil }
         if allSelectionState { cachedAllSelectionState = nil }
