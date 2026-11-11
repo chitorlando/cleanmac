@@ -53,6 +53,10 @@ let package = Package(
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
         ),
+        .target(
+            name: "MonitorFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"]
+        ),
         .executableTarget(
             name: "CleanMacApp",
             dependencies: [
@@ -93,6 +97,10 @@ let package = Package(
         .testTarget(
             name: "DiskMapFeatureTests",
             dependencies: ["DiskMapFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "MonitorFeatureTests",
+            dependencies: ["MonitorFeature", "CleanMacCore"]
         ),
         .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacUI"]),
         .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI"]),
