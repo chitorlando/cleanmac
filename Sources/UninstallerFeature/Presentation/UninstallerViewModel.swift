@@ -380,7 +380,7 @@ public final class UninstallerViewModel: ObservableObject {
     }
 
     private func refreshRunningApps() {
-        let runningURLs = runningApps.runningAppURLs()
+        let runningURLs = Set(runningApps.runningApps().map(\.url))
         runningAppIDs = Set(apps.map(\.id).filter { runningURLs.contains($0.standardizedFileURL) })
         let lockedItems = apps.filter(isRunning).flatMap(\.allItems)
         lockedItemIDs = Set(lockedItems.map(\.id))

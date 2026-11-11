@@ -17,8 +17,11 @@ public struct WorkspaceRunningApps: RunningAppsProviding {
         self.pollInterval = pollInterval
     }
 
-    public func runningAppURLs() -> Set<URL> {
-        Set(workspace.runningApplications.compactMap { $0.bundleURL?.standardizedFileURL })
+    public func runningApps() -> [RunningApp] {
+        workspace.runningApplications.compactMap { app in
+            guard let url = app.bundleURL?.standardizedFileURL else { return nil }
+            return RunningApp(url: url, bundleID: app.bundleIdentifier)
+        }
     }
 
     public func quit(appAt url: URL) async -> Bool {

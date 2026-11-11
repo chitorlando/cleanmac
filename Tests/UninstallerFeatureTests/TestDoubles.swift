@@ -70,9 +70,13 @@ struct StubAppScanner: InstalledAppScanning {
 }
 
 /// Running apps kept in memory; quitting succeeds unless told otherwise.
+///
+/// The apps of `running` run from their own bundle. `runningElsewhere` has the ones that
+/// don't, such as those the system runs from a random path.
 @MainActor
 final class FakeRunningApps: RunningAppsProviding {
     var running: Set<URL>
+    var runningElsewhere: [RunningApp] = []
     var quitSucceeds = true
     private(set) var quitRequests: [URL] = []
 
@@ -80,12 +84,15 @@ final class FakeRunningApps: RunningAppsProviding {
         self.running = Set(running.map(\.standardizedFileURL))
     }
 
-    func runningAppURLs() -> Set<URL> { running }
+    func runningApps() -> [RunningApp] {
+        running.map { RunningApp(url: $0, bundleID: nil) } + runningElsewhere
+    }
 
     func quit(appAt url: URL) async -> Bool {
         quitRequests.append(url)
         guard quitSucceeds else { return false }
         running.remove(url.standardizedFileURL)
+        runningElsewhere.removeAll { $0.url == url }
         return true
     }
 }
