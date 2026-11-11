@@ -9,11 +9,17 @@ struct UninstallerFocusTests {
     private let affinity = InstalledAppFixtures.app("Affinity")
     private let zoom = InstalledAppFixtures.app("Zoom", size: 900)
     private let notes = InstalledAppFixtures.app("Notes", size: 10)
+    /// An app outside the application folders, which a scan only finds when asked to.
+    private let installer = InstalledAppFixtures.app("Installer", folder: "/home/Downloads")
 
     private func makeViewModel(finishes: Bool = true) -> UninstallerViewModel {
         let apps = [affinity, zoom, notes]
         return UninstallerViewModel(
-            scanner: StubAppScanner(events: [.discovered(count: apps.count)] + apps.map { .analyzed($0) }, finishes: finishes),
+            scanner: StubAppScanner(
+                events: [.discovered(count: apps.count)] + apps.map { .analyzed($0) },
+                finishes: finishes,
+                appsElsewhere: [installer]
+            ),
             runningApps: FakeRunningApps(),
             cleanupService: CleanupService(remover: RecordingRemover())
         )
@@ -91,8 +97,63 @@ struct UninstallerFocusTests {
         viewModel.focusedAppID = notes.id
 
         viewModel.focusApp(at: URL(filePath: "/Applications/Photoshop.app"))
+        await waitUntilBrowsing(viewModel)
 
         #expect(viewModel.focusedAppID == notes.id)
+    }
+
+    @Test func loadsTheListAgainToFocusAnAppFromElsewhere() async {
+        let viewModel = makeViewModel()
+        await viewModel.startLoading().value
+
+        viewModel.focusApp(at: installer.info.url)
+        #expect(viewModel.phase == .loading)
+        await waitUntilBrowsing(viewModel)
+
+        #expect(viewModel.apps.contains(installer))
+        #expect(viewModel.focusedAppID == installer.id)
+    }
+
+    @Test func loadsAnAppFromElsewhereStraightFromTheIntro() async {
+        let viewModel = makeViewModel()
+
+        viewModel.focusApp(at: installer.info.url)
+        await waitUntilBrowsing(viewModel)
+
+        #expect(viewModel.focusedAppID == installer.id)
+    }
+
+    @Test func loadsAgainForAnAppFromElsewhereAskedForDuringALoad() async {
+        let viewModel = makeViewModel()
+        let loading = viewModel.startLoading()
+
+        viewModel.focusApp(at: installer.info.url)
+        await loading.value
+        await waitUntilBrowsing(viewModel)
+
+        #expect(viewModel.focusedAppID == installer.id)
+    }
+
+    @Test func keepsAnAppFromElsewhereInLaterLoads() async {
+        let viewModel = makeViewModel()
+        viewModel.focusApp(at: installer.info.url)
+        await waitUntilBrowsing(viewModel)
+
+        await viewModel.startLoading().value
+
+        #expect(viewModel.apps.contains(installer))
+    }
+
+    @Test func loadsOnlyOnceForAPathWithNoApp() async {
+        let viewModel = makeViewModel()
+        let gone = URL(filePath: "/home/Downloads/Gone.app")
+        await viewModel.startLoading().value
+        viewModel.focusApp(at: gone)
+        await waitUntilBrowsing(viewModel)
+
+        viewModel.focusApp(at: gone)
+
+        #expect(viewModel.phase == .browsing)
     }
 
     @Test func cancellingTheLoadDropsTheRequest() async {

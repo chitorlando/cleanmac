@@ -30,6 +30,9 @@ public final class UninstallerViewModel: ObservableObject {
     @Published public var focusedAppID: InstalledApp.ID?
     /// Path of the app to focus once the list is loaded, asked for by another feature.
     private var pendingFocusPath: String?
+    /// Apps other features asked for, analyzed with the rest in case they're outside the
+    /// application folders. Kept for later loads, which skip the ones that are gone.
+    private var requestedApps: [URL] = []
     /// Items of running apps, updated whenever the running apps are refreshed.
     @Published private var lockedItemIDs: Set<CleanableItem.ID> = [] {
         didSet { forgetDerivedState(selectedItems: true) }
@@ -110,7 +113,8 @@ public final class UninstallerViewModel: ObservableObject {
         discoveredCount = nil
         analyzedCount = 0
         phase = .loading
-        let task = Task { await load() }
+        let includedApps = requestedApps
+        let task = Task { await load(including: includedApps) }
         activeTask = task
         return task
     }
@@ -125,12 +129,21 @@ public final class UninstallerViewModel: ObservableObject {
     ///
     /// When the list isn't loaded yet, it loads it first, starting from the intro if needed,
     /// and focuses the app when loading ends. The search is cleared if it hides the app.
-    /// Unknown apps leave the focus as it is.
+    ///
+    /// The app can be outside the application folders, such as in Downloads: the list is then
+    /// loaded again with it, which clears the selection, also when it's asked for during a load.
+    /// Paths with no app leave the focus as it is.
     public func focusApp(at url: URL) {
-        pendingFocusPath = url.standardizedFileURL.path
+        let app = url.standardizedFileURL
+        pendingFocusPath = app.path
+        let isNewRequest = request(app)
         switch phase {
         case .browsing:
-            applyPendingFocus()
+            if isNewRequest, !isListed(app) {
+                startLoading()
+            } else {
+                applyPendingFocus()
+            }
         case .intro:
             startLoading()
         case .loading, .uninstalling, .finished:
@@ -243,8 +256,10 @@ public final class UninstallerViewModel: ObservableObject {
 
     /// Shared leftovers are worked out once, when every app is in: they are only read while
     /// browsing, and rebuilding them after each app grew with the square of the app count.
-    private func load() async {
-        for await event in scanner.scan() {
+    ///
+    /// - Parameter includedApps: The requested apps this load analyzes with the rest.
+    private func load(including includedApps: [URL]) async {
+        for await event in scanner.scan(including: includedApps) {
             guard !Task.isCancelled else { return }
             switch event {
             case .discovered(let count):
@@ -255,6 +270,10 @@ public final class UninstallerViewModel: ObservableObject {
             }
         }
         guard !Task.isCancelled else { return }
+        guard !isMissingAnAppRequested(after: includedApps) else {
+            startLoading()
+            return
+        }
         sharedLeftovers = SharedLeftovers(apps: apps)
         refreshRunningApps()
         applyPendingFocus()
@@ -264,10 +283,31 @@ public final class UninstallerViewModel: ObservableObject {
         phase = .browsing
     }
 
+    /// Remembers that another feature asked for `app`. Returns `false` when it already had.
+    private func request(_ app: URL) -> Bool {
+        guard !requestedApps.contains(app) else { return false }
+        requestedApps.append(app)
+        return true
+    }
+
+    /// Whether the app to focus was asked for after a load began, so that load left it out.
+    private func isMissingAnAppRequested(after includedApps: [URL]) -> Bool {
+        guard let path = pendingFocusPath, requestedApps != includedApps else { return false }
+        return listedApp(atPath: path) == nil
+    }
+
+    private func isListed(_ app: URL) -> Bool {
+        listedApp(atPath: app.path) != nil
+    }
+
+    private func listedApp(atPath path: String) -> InstalledApp? {
+        apps.first { $0.id.standardizedFileURL.path == path }
+    }
+
     private func applyPendingFocus() {
         guard let path = pendingFocusPath else { return }
         pendingFocusPath = nil
-        guard let app = apps.first(where: { $0.id.standardizedFileURL.path == path }) else { return }
+        guard let app = listedApp(atPath: path) else { return }
         if !visibleApps.contains(where: { $0.id == app.id }) {
             query.searchText = ""
         }
