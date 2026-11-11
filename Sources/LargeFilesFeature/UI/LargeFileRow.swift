@@ -60,7 +60,7 @@ struct LargeFileRow: View {
         Button(action: reveal) {
             Text(verbatim: folderPath)
                 .font(.caption)
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.supportingText)
                 .lineLimit(1)
                 .truncationMode(.middle)
         }
