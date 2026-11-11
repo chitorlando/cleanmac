@@ -212,6 +212,33 @@ struct LargeFilesViewModelDerivedStateTests {
         #expect(viewModel.filterCounts.count(of: .audio) == 1)
     }
 
+    @Test func writingTheSameFilterAgainKeepsTheListAndANewOneUpdatesIt() async {
+        let viewModel = await scannedViewModel()
+        viewModel.filter.searchText = "tri"
+        #expect(viewModel.visibleFiles == [trip])
+        #expect(viewModel.filterCounts.count(of: .audio) == 0)
+
+        viewModel.filter.searchText = "tri"
+        #expect(viewModel.visibleFiles == [trip])
+        #expect(viewModel.filterCounts.count(of: .audio) == 0)
+
+        viewModel.filter.searchText = ""
+        #expect(viewModel.visibleFiles == [trip, backup, song])
+        #expect(viewModel.filterCounts.count(of: .audio) == 1)
+    }
+
+    @Test func choosingTheSameOrderAgainKeepsTheListAndANewOneUpdatesIt() async {
+        let viewModel = await scannedViewModel()
+        viewModel.sortOrder = .name
+        #expect(viewModel.visibleFiles == [backup, song, trip])
+
+        viewModel.sortOrder = .name
+        #expect(viewModel.visibleFiles == [backup, song, trip])
+
+        viewModel.sortOrder = .size
+        #expect(viewModel.visibleFiles == [trip, backup, song])
+    }
+
     // MARK: Selection
 
     @Test func selectionTotalsFollowEveryToggle() async {

@@ -25,11 +25,13 @@ public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var selection = ItemSelection() {
         didSet { selectionDidChange() }
     }
+    /// The search field writes its text back after showing it, so the same filter often comes
+    /// twice. Only a different one works the list out again.
     @Published public var filter = LargeFileFilter() {
-        didSet { forgetFilteredFiles() }
+        didSet { if filter != oldValue { forgetFilteredFiles() } }
     }
     @Published public var sortOrder = LargeFileSortOrder.size {
-        didSet { forgetSortedFiles() }
+        didSet { if sortOrder != oldValue { forgetSortedFiles() } }
     }
 
     private let scanner: any LargeFileScanning
