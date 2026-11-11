@@ -12,6 +12,7 @@ struct LargeFileTests {
         let file = LargeFile(record: record)
 
         #expect(file.id == url)
+        #expect(file.name == "movie.mov")
         #expect(file.item.size == 42)
         #expect(file.kind == .video)
         #expect(file.lastAccessDate == date)

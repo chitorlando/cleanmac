@@ -30,8 +30,13 @@ public struct AppSelectionRule: Sendable {
     }
 
     public func state(of apps: [InstalledApp], in selection: ItemSelection) -> ItemSelection.State {
-        let states = Set(apps.map { state(of: $0, in: selection) })
-        switch states {
+        Self.state(combining: apps.map { state(of: $0, in: selection) })
+    }
+
+    /// The state of several apps from the state of each one: `.all` when every app is fully
+    /// selected, `.none` when nothing of any of them is, and `.some` otherwise.
+    static func state(combining states: [ItemSelection.State]) -> ItemSelection.State {
+        switch Set(states) {
         case [.all]: return .all
         case [], [.none]: return .none
         default: return .some

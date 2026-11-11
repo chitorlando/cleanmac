@@ -25,13 +25,6 @@ struct UninstallerFocusTests {
         )
     }
 
-    /// Waits until the loading started by `focusApp(at:)` ends.
-    private func waitUntilBrowsing(_ viewModel: UninstallerViewModel) async {
-        while viewModel.phase != .browsing {
-            await Task.yield()
-        }
-    }
-
     @Test func focusesAnAppOfTheLoadedList() async {
         let viewModel = makeViewModel()
         await viewModel.startLoading().value
@@ -144,16 +137,25 @@ struct UninstallerFocusTests {
         #expect(viewModel.apps.contains(installer))
     }
 
-    @Test func loadsOnlyOnceForAPathWithNoApp() async {
+    @Test func keepsTheListAndItsSelectionForAPathWithNoApp() async {
         let viewModel = makeViewModel()
-        let gone = URL(filePath: "/home/Downloads/Gone.app")
         await viewModel.startLoading().value
-        viewModel.focusApp(at: gone)
-        await waitUntilBrowsing(viewModel)
+        viewModel.toggle(zoom)
 
-        viewModel.focusApp(at: gone)
+        viewModel.focusApp(at: URL(filePath: "/home/Downloads/Gone.app"))
 
         #expect(viewModel.phase == .browsing)
+        #expect(viewModel.selectedItems == [zoom.bundle])
+    }
+
+    @Test func loadsTheListFromTheIntroEvenForAPathWithNoApp() async {
+        let viewModel = makeViewModel()
+
+        viewModel.focusApp(at: URL(filePath: "/home/Downloads/Gone.app"))
+        #expect(viewModel.phase == .loading)
+        await waitUntilBrowsing(viewModel)
+
+        #expect(viewModel.focusedAppID == affinity.id)
     }
 
     @Test func cancellingTheLoadDropsTheRequest() async {
