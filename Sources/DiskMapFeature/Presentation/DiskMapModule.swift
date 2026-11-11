@@ -9,7 +9,7 @@ public final class DiskMapModule: FeatureModule {
     public let id = "disk-map"
     public let title = String(localized: "Disk Map", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "chart.pie.fill"
-    public let theme = FeatureTheme.neutral
+    public let theme = FeatureTheme.diskMap
     public let section = FeatureSection.files
 
     private let viewModel: DiskMapViewModel

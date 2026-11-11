@@ -41,12 +41,12 @@ struct DuplicateCopyRow: View, Equatable {
                 }
                 HStack(spacing: 6) {
                     Text(verbatim: folderPath)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.supportingText)
                         .lineLimit(1)
                         .truncationMode(.middle)
                     if file.creationDate != nil {
                         Text(verbatim: "·")
-                            .foregroundStyle(.tertiary)
+                            .foregroundStyle(.supportingText)
                             .accessibilityHidden(true)
                     }
                     CreationDateText(date: file.creationDate)
