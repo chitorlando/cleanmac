@@ -14,6 +14,27 @@ struct AllocatedSizeCalculatorTests {
         #expect(AllocatedSizeCalculator().size(of: root) >= 10_000)
     }
 
+    @Test func sumsEveryFileOfAFolder() throws {
+        let folder = try TemporaryFolder()
+        let files = try (0..<5).map { try folder.makeFile("nested/file\($0).bin", size: 10_000 * ($0 + 1)) }
+        let calculator = AllocatedSizeCalculator()
+
+        #expect(calculator.size(of: folder.root) == files.map(calculator.size(of:)).reduce(0, +))
+    }
+
+    @Test func stopsMeasuringAFolderWhenTheTaskIsCancelled() async throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("file.bin", size: 10_000)
+        let root = folder.root
+
+        let size = await Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return AllocatedSizeCalculator().size(of: root)
+        }.value
+
+        #expect(size == 0)
+    }
+
     @Test func returnsZeroForMissingItems() {
         let missing = URL(filePath: "/nonexistent/\(UUID().uuidString)")
         #expect(AllocatedSizeCalculator().size(of: missing) == 0)
