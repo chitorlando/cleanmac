@@ -177,6 +177,16 @@
         }
       }
     },
+    "Part" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parte"
+          }
+        }
+      }
+    },
     "Processor history" : {
       "comment" : "Accessibility label of the chart of recent processor use.",
       "localizations" : {
@@ -209,16 +219,6 @@
         }
       }
     },
-    "Start" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicio"
-          }
-        }
-      }
-    },
     "System" : {
       "comment" : "Processor time spent by the system.",
       "localizations" : {
@@ -236,17 +236,17 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Procesos principales"
+            "value" : "Procesos"
           }
         }
       }
     },
-    "Total" : {
+    "Usage" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Total"
+            "value" : "Uso"
           }
         }
       }

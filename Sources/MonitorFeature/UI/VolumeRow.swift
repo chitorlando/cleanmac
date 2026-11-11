@@ -19,6 +19,7 @@ struct VolumeRow: View {
             )
             .font(.caption)
             .foregroundStyle(.secondary)
+            .lineLimit(1)
         }
         .accessibilityElement(children: .combine)
     }

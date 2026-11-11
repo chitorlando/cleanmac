@@ -38,6 +38,7 @@ struct ProcessesCard: View {
             Text("Only your own processes are listed.", bundle: .module, comment: "Note under the busiest processes.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .lineLimit(2)
         }
     }
 }

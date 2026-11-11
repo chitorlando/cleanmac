@@ -13,6 +13,7 @@ struct MonitorHeader: View {
                 comment: "Subtitle of the monitor screen."
             )
             .foregroundStyle(.secondary)
+            .lineLimit(2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

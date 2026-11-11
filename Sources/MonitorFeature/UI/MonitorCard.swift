@@ -18,6 +18,8 @@ struct MonitorCard<Accessory: View, Content: View>: View {
                         .accessibilityHidden(true)
                     title
                         .font(.headline)
+                        .lineLimit(1)
+                        .layoutPriority(1)
                         .accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 4)
                     accessory

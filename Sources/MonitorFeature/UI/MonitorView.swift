@@ -4,6 +4,8 @@ import SwiftUI
 /// Root screen of the feature: readings of the processors, memory, disks and busiest
 /// processes, taken only while the screen is on view.
 struct MonitorView: View {
+    private static let minimumContentWidth: CGFloat = 540
+
     @ObservedObject var viewModel: MonitorViewModel
     let theme: FeatureTheme
     let diskMapFeatureID: String?
@@ -28,6 +30,8 @@ struct MonitorView: View {
                 }
                 .frame(maxHeight: .infinity, alignment: .top)
             }
+            // Wrapping text measured at a width near zero would ask for a very tall window.
+            .frame(minWidth: Self.minimumContentWidth)
             .padding(32)
             .frame(maxWidth: 1100, maxHeight: .infinity, alignment: .top)
         }

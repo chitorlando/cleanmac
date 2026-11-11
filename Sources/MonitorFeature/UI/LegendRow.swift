@@ -16,6 +16,7 @@ struct LegendRow: View {
                 .foregroundStyle(.secondary)
             PercentText(value: value)
         }
+        .lineLimit(1)
         .accessibilityElement(children: .combine)
     }
 }
