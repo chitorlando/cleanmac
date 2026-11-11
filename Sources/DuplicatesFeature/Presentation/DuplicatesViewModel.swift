@@ -10,7 +10,13 @@ import Foundation
 @MainActor
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
-    @Published public private(set) var groups: [DuplicateGroup] = [] {
+    /// Not `@Published`: its setter copies the whole array on every change, which made a scan
+    /// that finds thousands of groups slow down as it went. Every change goes through
+    /// `updateGroups(_:)`, which announces it and then edits the array in place.
+    ///
+    /// The `didSet` must not read `oldValue`: Swift would copy the array before every change
+    /// to have it.
+    public private(set) var groups: [DuplicateGroup] = [] {
         didSet { groupsDidChange() }
     }
     @Published public private(set) var progress = DuplicateScanProgress()
@@ -81,7 +87,7 @@ public final class DuplicatesViewModel: ObservableObject {
     @discardableResult
     public func startScan() -> Task<Void, Never> {
         activeTask?.cancel()
-        groups = []
+        updateGroups { $0 = [] }
         selection = ItemSelection()
         progress = DuplicateScanProgress()
         wasStoppedEarly = false
@@ -186,6 +192,12 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Private
 
+    /// The only way `groups` changes: tells the views, as `@Published` would, then edits in place.
+    private func updateGroups(_ change: (inout [DuplicateGroup]) -> Void) {
+        objectWillChange.send()
+        change(&groups)
+    }
+
     private func groupsDidChange() {
         visibleGroupsMemo.invalidate()
         focusedGroupMemo.invalidate()
@@ -212,7 +224,7 @@ public final class DuplicatesViewModel: ObservableObject {
             case .progress(let newProgress):
                 progress = newProgress
             case .found(let group):
-                groups.append(group)
+                updateGroups { $0.append(group) }
             }
         }
         guard !Task.isCancelled else { return }
@@ -229,7 +241,7 @@ public final class DuplicatesViewModel: ObservableObject {
     private func finishRemoval(of items: [CleanableItem], report: CleanupReport) {
         let failedIDs = Set(report.failures.map(\.item.id))
         let removedIDs = Set(items.map(\.id)).subtracting(failedIDs)
-        groups = groups.compactMap { $0.removing(removedIDs) }
+        updateGroups { $0 = $0.compactMap { $0.removing(removedIDs) } }
         selection = ItemSelection()
         if focusedGroup == nil {
             focusedGroupID = visibleGroups.first?.id

@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import DuplicatesFeature
 import Foundation
 import Testing
@@ -89,6 +90,28 @@ struct DuplicatesViewModelTests {
         #expect(viewModel.progress == DuplicateScanProgress(scannedFiles: 812, hashedBytes: 30_000_000))
         #expect(viewModel.focusedGroup == reports)
         #expect(!viewModel.wasStoppedEarly)
+    }
+
+    /// The groups aren't `@Published`, so the view model announces their changes itself.
+    /// Each number is how many groups there were when a change was announced.
+    @Test func announcesEveryChangeToTheGroupsBeforeMakingIt() async {
+        let viewModel = makeViewModel(events: [.found(photos), .found(reports)])
+        var groupCounts: [Int] = []
+        let observation = viewModel.objectWillChange.sink { groupCounts.append(viewModel.groups.count) }
+
+        await viewModel.startScan().value
+        // Clearing the groups, the selection, the progress, the warning and the focus, and
+        // starting; then each group found, the focus on the first group and the review.
+        #expect(groupCounts == [0, 0, 0, 0, 0, 0, 0, 1, 2, 2])
+
+        viewModel.toggle(reportDownload, in: reports)
+        viewModel.toggle(reportDesktop, in: reports)
+        groupCounts = []
+        await viewModel.remove()?.value
+        // Removing, the groups left, the selection, the focus on the group left and the report.
+        #expect(groupCounts == [2, 2, 1, 1, 1])
+        #expect(viewModel.groups == [photos])
+        observation.cancel()
     }
 
     @Test func countsClonesOnceInTheRecoverableSpace() async {
