@@ -51,6 +51,12 @@ public extension FeatureTheme {
         secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
     )
 
+    /// Coral to crimson, a hue no other feature uses.
+    static let loginItems = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.45, blue: 0.42),
+        secondary: Color(red: 0.88, green: 0.18, blue: 0.27)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)

@@ -1,7 +1,434 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-
+    "%lld items" : {
+      "comment" : "Number of login items found.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld items moved to the Trash" : {
+      "comment" : "Title after removing login items. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item moved to the Trash"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items moved to the Trash"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elemento movido a la Papelera"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld elementos movidos a la Papelera"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld orphaned" : {
+      "comment" : "Number of login items found whose program no longer exists, shown after the number of items.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld orphaned"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld orphaned"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld huérfano"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld huérfanos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "All Users" : {
+      "comment" : "Title of the login items shared by every user of the Mac.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los usuarios"
+          }
+        }
+      }
+    },
+    "Disabled" : {
+      "comment" : "Badge on a login item that launchd ignores.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        }
+      }
+    },
+    "Its program no longer exists. It’s probably left over from a deleted app." : {
+      "comment" : "Tooltip of the Orphaned badge.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su programa ya no existe. Probablemente es un resto de una app eliminada."
+          }
+        }
+      }
+    },
+    "Keeps running" : {
+      "comment" : "When a login item runs.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se mantiene en ejecución"
+          }
+        }
+      }
+    },
+    "List Again" : {
+      "comment" : "Button that reads the login items again.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a listar"
+          }
+        }
+      }
+    },
+    "Login Items" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ítems de inicio"
+          }
+        }
+      }
+    },
+    "Move %lld Items to Trash" : {
+      "comment" : "Button that moves the selected login items to the Trash. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld Item to Trash"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld Items to Trash"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld elemento a la Papelera"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Mover %lld elementos a la Papelera"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move to Trash" : {
+      "comment" : "Disabled button shown before any login item is selected.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "No app added login or background items that CleanMac can list. Apps can also add them in System Settings." : {
+      "comment" : "Message shown when no login items were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna app ha añadido ítems de inicio o en segundo plano que CleanMac pueda listar. Las apps también pueden añadirlos en Ajustes del Sistema."
+          }
+        }
+      }
+    },
+    "Nothing Found" : {
+      "comment" : "Title shown when no login items were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha encontrado nada"
+          }
+        }
+      }
+    },
+    "Only You" : {
+      "comment" : "Title of the login items that only run for the current user.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo tú"
+          }
+        }
+      }
+    },
+    "Open Login Items Settings" : {
+      "comment" : "Button that opens the Login Items pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de ítems de inicio"
+          }
+        }
+      }
+    },
+    "Orphaned" : {
+      "comment" : "Badge on a login item whose program no longer exists.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huérfano"
+          }
+        }
+      }
+    },
+    "Reading login items…" : {
+      "comment" : "Status shown while the login items are read.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leyendo los ítems de inicio…"
+          }
+        }
+      }
+    },
+    "Removing it needs an administrator." : {
+      "comment" : "Tooltip of the lock on a shared login item.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminarlo requiere un administrador."
+          }
+        }
+      }
+    },
+    "See what starts when you log in or runs in the background, and remove what deleted apps left behind." : {
+      "comment" : "Introduction of the login items feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira qué se abre al iniciar sesión o funciona en segundo plano, y elimina lo que dejaron las apps borradas."
+          }
+        }
+      }
+    },
+    "Shared by every user. Removing them needs an administrator, so here you can only show them in Finder." : {
+      "comment" : "Description of the login items shared by every user, which CleanMac can't remove.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartidos por todos los usuarios. Eliminarlos requiere un administrador, así que aquí solo puedes mostrarlos en Finder."
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Tooltip of the button that reveals a login item’s property list in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Some apps add items that only System Settings lists." : {
+      "comment" : "Tooltip of the button that opens the Login Items pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas apps añaden ítems que solo aparecen en Ajustes del Sistema."
+          }
+        }
+      }
+    },
+    "Starts automatically" : {
+      "comment" : "When a login item runs.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se inicia automáticamente"
+          }
+        }
+      }
+    },
+    "Starts automatically and keeps running" : {
+      "comment" : "When a login item runs.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se inicia automáticamente y se mantiene en ejecución"
+          }
+        }
+      }
+    },
+    "Starts when needed" : {
+      "comment" : "When a login item runs: launchd starts it on demand.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se inicia cuando hace falta"
+          }
+        }
+      }
+    },
+    "They stop running at your next login. Put them back from the Trash if you need them again." : {
+      "comment" : "Shown after removing login items, which keep running until the next login.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejarán de ejecutarse en tu próximo inicio de sesión. Recupéralos de la Papelera si vuelves a necesitarlos."
+          }
+        }
+      }
+    },
+    "View Login Items" : {
+      "comment" : "Button that lists the login items.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver ítems de inicio"
+          }
+        }
+      }
+    },
+    "Your own agents. Removed ones stop running at your next login." : {
+      "comment" : "Description of the login items that only run for the current user.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus propios agentes. Los que elimines dejarán de ejecutarse en tu próximo inicio de sesión."
+          }
+        }
+      }
+    }
   },
   "version" : "1.0"
 }
