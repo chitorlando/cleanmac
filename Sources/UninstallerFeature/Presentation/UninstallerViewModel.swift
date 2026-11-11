@@ -331,7 +331,7 @@ public final class UninstallerViewModel: ObservableObject {
             }
         }
         guard !Task.isCancelled else { return }
-        guard !isMissingAnAppRequested(after: includedApps) else {
+        guard !leftOutAnAppRequested(after: includedApps) else {
             startLoading()
             return
         }
@@ -353,10 +353,12 @@ public final class UninstallerViewModel: ObservableObject {
         }
     }
 
-    /// Whether the app to focus was asked for after a load began, so that load left it out.
-    private func isMissingAnAppRequested(after includedApps: [URL]) -> Bool {
-        guard let path = pendingFocusPath, requestedApps != includedApps else { return false }
-        return listedApp(atPath: path) == nil
+    /// Whether an app the scanner can analyze was asked for after a load began, so that load
+    /// left it out. It looks at every app asked for meanwhile, not only the last one.
+    private func leftOutAnAppRequested(after includedApps: [URL]) -> Bool {
+        requestedApps.contains { app in
+            !includedApps.contains(app) && !isListed(app) && scanner.canAnalyze(appAt: app)
+        }
     }
 
     private func isListed(_ app: URL) -> Bool {
