@@ -4,6 +4,9 @@ import SwiftUI
 
 /// One item of the focused folder: checkbox, icon in its branch's color, name with its number
 /// of files or a note on why it can't be removed, size and share, and buttons to open or reveal it.
+///
+/// The name gets the room left by the fixed columns and wraps to a second line before it's
+/// cut, so names like “Application Support” stay whole in the smallest window.
 struct DiskMapItemRow: View {
     let node: DiskNode
     let share: Double
@@ -17,7 +20,7 @@ struct DiskMapItemRow: View {
     let onOpen: () -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 6) {
             TriStateCheckbox(
                 state: isSelected ? .checked : .unchecked,
                 tint: theme.primary,
@@ -34,15 +37,17 @@ struct DiskMapItemRow: View {
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(verbatim: node.name)
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .truncationMode(.middle)
+                    .fixedSize(horizontal: false, vertical: true)
                 subtitle
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
+            .layoutPriority(1)
 
-            Spacer(minLength: 4)
+            Spacer(minLength: 0)
 
             VStack(alignment: .trailing, spacing: 1) {
                 Text(node.size.formattedByteCount)
@@ -55,7 +60,7 @@ struct DiskMapItemRow: View {
 
             actions
         }
-        .padding(.horizontal, 8)
+        .padding(.horizontal, 6)
         .padding(.vertical, 4)
         .background(SelectionHighlight(isSelected: isHighlighted, theme: theme))
         .contentShape(.rect)
@@ -79,7 +84,7 @@ struct DiskMapItemRow: View {
     }
 
     private var actions: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 4) {
             Button {
                 NSWorkspace.shared.activateFileViewerSelecting([node.url])
             } label: {
