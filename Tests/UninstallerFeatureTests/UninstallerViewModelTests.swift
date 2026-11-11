@@ -10,6 +10,9 @@ struct UninstallerViewModelTests {
     private let zoom = InstalledAppFixtures.app("Zoom", size: 900, leftovers: ["zoom-cache": 50])
     private let notes = InstalledAppFixtures.app("Notes", size: 10)
 
+    /// Where the system runs a quarantined copy of Zoom from, instead of from its bundle.
+    private let translocatedZoom = URL(filePath: "/private/var/folders/xy/T/AppTranslocation/1A2B/d/Zoom.app")
+
     private let remover = RecordingRemover()
 
     private func makeViewModel(
@@ -188,6 +191,36 @@ struct UninstallerViewModelTests {
         #expect(runningApps.quitRequests == [zoom.info.url])
         #expect(!viewModel.isRunning(zoom))
         #expect(!viewModel.isQuitting(zoom))
+        #expect(viewModel.selectionState(of: zoom) == .all)
+    }
+
+    @Test func anAppTheSystemRunsFromAnotherPlaceCannotBeSelected() async {
+        let runningApps = FakeRunningApps()
+        runningApps.runningElsewhere = [RunningApp(url: translocatedZoom, bundleID: "com.example.zoom")]
+        let viewModel = await loadedViewModel(runningApps: runningApps)
+
+        viewModel.toggle(zoom)
+        viewModel.toggle(item(zoom, "zoom-cache"))
+        viewModel.toggleAll()
+
+        #expect(viewModel.isRunning(zoom))
+        #expect(!viewModel.isRunning(notes))
+        #expect(!viewModel.canSelect(zoom.bundle))
+        #expect(!viewModel.selectedItems.contains(zoom.bundle))
+        #expect(!viewModel.selectedItems.contains(item(zoom, "zoom-cache")))
+    }
+
+    @Test func quittingAnAppTheSystemRunsFromAnotherPlaceMakesItSelectable() async {
+        let runningApps = FakeRunningApps()
+        runningApps.runningElsewhere = [RunningApp(url: translocatedZoom, bundleID: "com.example.zoom")]
+        let viewModel = await loadedViewModel(runningApps: runningApps)
+
+        let didQuit = await viewModel.quit(zoom)
+        viewModel.toggle(zoom)
+
+        #expect(didQuit)
+        #expect(runningApps.quitRequests == [zoom.info.url, translocatedZoom])
+        #expect(!viewModel.isRunning(zoom))
         #expect(viewModel.selectionState(of: zoom) == .all)
     }
 

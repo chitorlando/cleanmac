@@ -5,7 +5,8 @@ import Foundation
 /// Coordinates loading, browsing, selection and removal for the uninstaller screen.
 ///
 /// Items of running apps can never be selected or removed, and shared leftovers are
-/// only removed when the user marks them by hand (see `AppSelectionRule`).
+/// only removed when the user marks them by hand (see `AppSelectionRule`). An app also
+/// counts as running when the system runs it from another place (see `RunningAppMatcher`).
 @MainActor
 public final class UninstallerViewModel: ObservableObject {
     @Published public private(set) var phase: UninstallerPhase = .intro
@@ -186,12 +187,16 @@ public final class UninstallerViewModel: ObservableObject {
         }
     }
 
-    /// Asks a running app to quit, then refreshes which apps are open.
+    /// Asks a running app to quit, wherever it runs from, then refreshes which apps are open.
     @discardableResult
     public func quit(_ app: InstalledApp) async -> Bool {
         quittingAppIDs.insert(app.id)
         defer { quittingAppIDs.remove(app.id) }
-        let didQuit = await runningApps.quit(appAt: app.info.url)
+        let instancesElsewhere = runningAppMatcher().instancesElsewhere(of: app)
+        var didQuit = await runningApps.quit(appAt: app.info.url)
+        for instance in instancesElsewhere {
+            didQuit = await runningApps.quit(appAt: instance) && didQuit
+        }
         refreshRunningApps()
         return didQuit
     }
@@ -379,9 +384,13 @@ public final class UninstallerViewModel: ObservableObject {
         focusedAppID = app.id
     }
 
+    private func runningAppMatcher() -> RunningAppMatcher {
+        RunningAppMatcher(runningApps: runningApps.runningApps(), listedApps: apps)
+    }
+
     private func refreshRunningApps() {
-        let runningURLs = Set(runningApps.runningApps().map(\.url))
-        runningAppIDs = Set(apps.map(\.id).filter { runningURLs.contains($0.standardizedFileURL) })
+        let matcher = runningAppMatcher()
+        runningAppIDs = Set(apps.filter(matcher.isRunning).map(\.id))
         let lockedItems = apps.filter(isRunning).flatMap(\.allItems)
         lockedItemIDs = Set(lockedItems.map(\.id))
         changeSelection(of: lockedItems) { $0.deselect(lockedItems) }
