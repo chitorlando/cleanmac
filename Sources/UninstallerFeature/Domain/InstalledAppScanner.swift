@@ -30,19 +30,22 @@ public struct InstalledAppScanner: InstalledAppScanning {
         self.excludedBundleIDs = Set(excludedBundleIDs.map { $0.lowercased() })
     }
 
-    public func scan() -> AsyncStream<AppScanEvent> {
+    public func scan(including otherApps: [URL]) -> AsyncStream<AppScanEvent> {
         let scanner = self
         return AsyncStream { continuation in
             let task = Task {
-                await scanner.run(reportingTo: continuation)
+                await scanner.run(including: otherApps, reportingTo: continuation)
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }
         }
     }
 
-    private func run(reportingTo continuation: AsyncStream<AppScanEvent>.Continuation) async {
-        let apps = discoverApps()
+    private func run(
+        including otherApps: [URL],
+        reportingTo continuation: AsyncStream<AppScanEvent>.Continuation
+    ) async {
+        let apps = discoverApps(including: otherApps)
         continuation.yield(.discovered(count: apps.count))
         guard !Task.isCancelled else { return }
 
@@ -63,8 +66,12 @@ public struct InstalledAppScanner: InstalledAppScanning {
         }
     }
 
-    private func discoverApps() -> [AppBundleInfo] {
-        locator.applications(in: applicationFolders)
+    /// Apps of the application folders followed by the ones of `otherApps` that exist, once each.
+    private func discoverApps(including otherApps: [URL]) -> [AppBundleInfo] {
+        var seenPaths: Set<String> = []
+        let apps = locator.applications(in: applicationFolders) + otherApps.compactMap(locator.application(at:))
+        return apps
+            .filter { seenPaths.insert($0.standardizedFileURL.path).inserted }
             .compactMap(infoReader.info(forAppAt:))
             .filter { !excludedBundleIDs.contains($0.bundleID.lowercased()) }
     }

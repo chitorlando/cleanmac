@@ -18,11 +18,16 @@ struct FakeSizeCalculator: SizeCalculating {
     func size(of url: URL) -> Int64 { sizes[url] ?? 0 }
 }
 
-/// Returns a fixed list of apps regardless of the folders.
+/// Returns a fixed list of apps regardless of the folders, and knows of others elsewhere.
 struct FakeAppLocator: AppBundleLocating {
     let apps: [URL]
+    var appsElsewhere: [URL] = []
 
     func applications(in folders: [URL]) -> [URL] { apps }
+
+    func application(at url: URL) -> URL? {
+        (apps + appsElsewhere).contains(url) ? url : nil
+    }
 }
 
 /// Returns predefined identities keyed by app URL.
@@ -33,13 +38,19 @@ struct FakeAppInfoReader: AppInfoReading {
 }
 
 /// Emits a fixed list of scan events, optionally leaving the stream open.
+///
+/// Apps of `appsElsewhere` are only analyzed when the scan is asked to include them.
 struct StubAppScanner: InstalledAppScanning {
     let events: [AppScanEvent]
     var finishes = true
+    var appsElsewhere: [InstalledApp] = []
 
-    func scan() -> AsyncStream<AppScanEvent> {
-        AsyncStream { continuation in
+    func scan(including otherApps: [URL]) -> AsyncStream<AppScanEvent> {
+        let requestedPaths = Set(otherApps.map(\.standardizedFileURL.path))
+        let requestedApps = appsElsewhere.filter { requestedPaths.contains($0.id.standardizedFileURL.path) }
+        return AsyncStream { continuation in
             events.forEach { continuation.yield($0) }
+            requestedApps.forEach { continuation.yield(.analyzed($0)) }
             if finishes { continuation.finish() }
         }
     }

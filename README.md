@@ -17,7 +17,7 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | Estado | Función | Qué hace |
 | :----: | ------- | -------- |
 | ✅ | **Basura del sistema** | Encuentra cachés y registros de tu usuario y restos de Xcode (Derived Data, Device Support y cachés de los simuladores). Deja fuera las cachés de iCloud y de las cuentas, cuyo borrado podría forzar una resincronización o cerrar tu sesión. |
-| ✅ | **Desinstalador** | Lista las apps de `/Applications` y `~/Applications` con lo que ocupan y encuentra sus residuos en la Library de tu usuario: datos de soporte, cachés, preferencias, contenedores, estado guardado, registros, datos web, agentes de inicio y scripts. Permite buscar y ordenar por nombre o tamaño. |
+| ✅ | **Desinstalador** | Lista las apps de `/Applications` y `~/Applications` con lo que ocupan y encuentra sus residuos en la Library de tu usuario: datos de soporte, cachés, preferencias, contenedores, estado guardado, registros, datos web, agentes de inicio y scripts. Permite buscar y ordenar por nombre o tamaño. También recibe las apps que el Mapa del disco encuentra en otras carpetas, como Descargas. |
 | ✅ | **Archivos grandes y antiguos** | Recorre tu carpeta de inicio en busca de archivos de 50 MB o más y los filtra por tipo, tamaño, último uso y nombre. Puedes detener el análisis y revisar lo encontrado hasta entonces. |
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. |
 | ✅ | **Mantenimiento** | Cinco tareas a elegir: vaciar la caché DNS, liberar memoria, reindexar Spotlight, reconstruir Launch Services y restablecer la caché de Quick Look. |
