@@ -25,13 +25,6 @@ struct UninstallerFocusTests {
         )
     }
 
-    /// Waits until the loading started by `focusApp(at:)` ends.
-    private func waitUntilBrowsing(_ viewModel: UninstallerViewModel) async {
-        while viewModel.phase != .browsing {
-            await Task.yield()
-        }
-    }
-
     @Test func focusesAnAppOfTheLoadedList() async {
         let viewModel = makeViewModel()
         await viewModel.startLoading().value
