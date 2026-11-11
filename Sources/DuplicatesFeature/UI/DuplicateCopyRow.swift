@@ -38,6 +38,9 @@ struct DuplicateCopyRow: View, Equatable {
                     if isClone {
                         CloneBadge()
                     }
+                    if file.hasOtherNames {
+                        HardLinkBadge()
+                    }
                 }
                 HStack(spacing: 6) {
                     Text(verbatim: folderPath)
@@ -63,6 +66,7 @@ struct DuplicateCopyRow: View, Equatable {
     }
 
     /// Compares what the row shows. The action is left out: it acts on the same copy.
+    /// The hard link badge has no value of its own: it comes from `file`.
     nonisolated static func == (lhs: DuplicateCopyRow, rhs: DuplicateCopyRow) -> Bool {
         lhs.file == rhs.file
             && lhs.isSelected == rhs.isSelected

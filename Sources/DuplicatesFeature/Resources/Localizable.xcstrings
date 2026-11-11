@@ -179,6 +179,17 @@
         }
       }
     },
+    "Hard link" : {
+      "comment" : "Badge on a copy whose file has other names on the disk, its hard links.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace duro"
+          }
+        }
+      }
+    },
     "Keep" : {
       "comment" : "Badge on the copy of a group of duplicates suggested to keep.",
       "localizations" : {
@@ -439,6 +450,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta copia es un clon de APFS: comparte sus datos con otro archivo, así que moverla a la Papelera libera poco espacio o ninguno."
+          }
+        }
+      }
+    },
+    "This file has another name elsewhere on the disk, so moving this one to the Trash frees no space." : {
+      "comment" : "Explains the badge on a copy whose file has other names on the disk, its hard links.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este archivo tiene otro nombre en otro lugar del disco, así que mover esta copia a la Papelera no libera espacio."
           }
         }
       }
