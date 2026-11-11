@@ -39,7 +39,7 @@ public struct CleanableItemRow: View {
                 Text(verbatim: item.name).lineLimit(1)
                 Text(verbatim: parentPath)
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.supportingText)
                     .lineLimit(1)
                     .truncationMode(.middle)
             }

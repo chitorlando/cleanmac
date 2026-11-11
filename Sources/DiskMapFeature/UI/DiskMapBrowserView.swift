@@ -5,7 +5,8 @@ import SwiftUI
 /// that moves the selection to the Trash after asking.
 ///
 /// Keys: ↑ and ↓ move through the items, → or Return opens a folder, ← or ⌘↑ goes up.
-/// While something is selected, Return belongs to the bar's main button, which only asks.
+/// Return keeps opening folders while something is selected: the bar's main button only
+/// responds to a click, so a key press never starts a removal.
 struct DiskMapBrowserView: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
@@ -25,6 +26,7 @@ struct DiskMapBrowserView: View {
                 secondaryTitle: Text("Scan Again", bundle: .module, comment: "Button that measures the home folder again."),
                 primaryTitle: removeTitle,
                 isPrimaryEnabled: viewModel.hasSelection,
+                isPrimaryDefaultAction: false,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
                 onPrimary: { isConfirmingRemoval = true }
