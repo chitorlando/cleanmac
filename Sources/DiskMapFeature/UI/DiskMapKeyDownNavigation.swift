@@ -18,7 +18,7 @@ struct DiskMapKeyDownNavigation: ViewModifier {
     private func handleKeyDown(_ keyCode: UInt16) -> Bool {
         guard
             let key = DiskMapKey(keyCode: keyCode),
-            let action = bindings.action(for: key, hasSelection: viewModel.hasSelection)
+            let action = bindings.action(for: key)
         else { return false }
         viewModel.perform(action)
         return true

@@ -29,7 +29,7 @@ struct AppListRow: View {
                 if let version = app.info.version {
                     Text(verbatim: version)
                         .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.supportingText)
                         .lineLimit(1)
                 }
             }
