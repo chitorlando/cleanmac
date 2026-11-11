@@ -13,24 +13,33 @@ public final class DiskMapModule: FeatureModule {
     public let section = FeatureSection.files
 
     private let viewModel: DiskMapViewModel
+    private let uninstallerFeatureID: String?
 
-    public init(viewModel: DiskMapViewModel) {
+    /// - Parameter uninstallerFeatureID: Id of the feature that uninstalls apps, which the map
+    ///   opens for the apps it won't remove itself. Without it, the map only names that feature.
+    public init(viewModel: DiskMapViewModel, uninstallerFeatureID: String? = nil) {
         self.viewModel = viewModel
+        self.uninstallerFeatureID = uninstallerFeatureID
     }
 
     public func makeView() -> AnyView {
-        AnyView(DiskMapView(viewModel: viewModel, theme: theme))
+        AnyView(
+            DiskMapView(viewModel: viewModel, theme: theme)
+                .environment(\.uninstallerFeatureID, uninstallerFeatureID)
+        )
     }
 }
 
 public extension DiskMapModule {
     /// Module that maps the current user's whole home folder and moves what the policy allows to the Trash.
-    static func live() -> DiskMapModule {
+    ///
+    /// - Parameter uninstallerFeatureID: See `init(viewModel:uninstallerFeatureID:)`.
+    static func live(uninstallerFeatureID: String? = nil) -> DiskMapModule {
         let viewModel = DiskMapViewModel(
             scanner: DiskMapScanner.home(),
             cleanupService: CleanupService(remover: TrashItemRemover()),
             policy: DiskMapRemovalPolicy()
         )
-        return DiskMapModule(viewModel: viewModel)
+        return DiskMapModule(viewModel: viewModel, uninstallerFeatureID: uninstallerFeatureID)
     }
 }
