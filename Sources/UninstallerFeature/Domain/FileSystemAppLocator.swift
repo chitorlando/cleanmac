@@ -5,8 +5,13 @@ import Foundation
 /// Symbolic links (such as `/Applications/Safari.app`, which points into a system
 /// cryptex) and items protected by System Integrity Protection are skipped.
 /// URLs are returned standardized so they compare equal to those reported by `NSWorkspace`.
+///
+/// An app asked for by its path is also left out when it is in the Trash, where the user
+/// already threw it away, or inside the bundle of another app, which needs it to work.
 public struct FileSystemAppLocator: AppBundleLocating {
     private static let appExtension = "app"
+    /// The Trash of the home folder and the one of every other volume.
+    private static let trashFolderNames: Set<String> = [".Trash", ".Trashes"]
 
     public init() {}
 
@@ -23,12 +28,21 @@ public struct FileSystemAppLocator: AppBundleLocating {
     }
 
     public func application(at url: URL) -> URL? {
+        let app = url.standardizedFileURL
         guard let status = FileStatus(url: url),
               !status.isSymbolicLink,
               !status.isSystemRestricted,
-              isAppBundle(url)
+              isAppBundle(url),
+              !isInTheTrashOrInsideAnotherApp(app)
         else { return nil }
-        return url.standardizedFileURL
+        return app
+    }
+
+    private func isInTheTrashOrInsideAnotherApp(_ app: URL) -> Bool {
+        app.pathComponents.dropLast().contains { folder in
+            Self.trashFolderNames.contains(folder)
+                || (folder as NSString).pathExtension.lowercased() == Self.appExtension
+        }
     }
 
     private func applications(in folder: URL) -> [URL] {

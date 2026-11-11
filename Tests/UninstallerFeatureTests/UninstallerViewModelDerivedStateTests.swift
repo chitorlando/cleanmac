@@ -10,8 +10,11 @@ struct UninstallerViewModelDerivedStateTests {
     private let zoom = InstalledAppFixtures.app("Zoom", size: 900, leftovers: ["zoom-cache": 50])
     private let notes = InstalledAppFixtures.app("Notes", size: 10)
 
-    private func loadedViewModel(runningApps: FakeRunningApps = FakeRunningApps()) async -> UninstallerViewModel {
-        let apps = [zoom, notes]
+    private func loadedViewModel(
+        apps: [InstalledApp]? = nil,
+        runningApps: FakeRunningApps = FakeRunningApps()
+    ) async -> UninstallerViewModel {
+        let apps = apps ?? [zoom, notes]
         let viewModel = UninstallerViewModel(
             scanner: StubAppScanner(events: [.discovered(count: apps.count)] + apps.map { .analyzed($0) }),
             runningApps: runningApps,
@@ -33,6 +36,18 @@ struct UninstallerViewModelDerivedStateTests {
         #expect(viewModel.visibleApps == [zoom, notes])
     }
 
+    @Test func visibleAppsKeepTheirOrderWhileSearching() async {
+        let viewModel = await loadedViewModel()
+        viewModel.query.sortOrder = .size
+        #expect(viewModel.visibleApps == [zoom, notes])
+
+        viewModel.query.searchText = "o"
+        #expect(viewModel.visibleApps == [zoom, notes])
+
+        viewModel.query.sortOrder = .name
+        #expect(viewModel.visibleApps == [notes, zoom])
+    }
+
     @Test func selectionTotalsFollowEveryToggle() async {
         let viewModel = await loadedViewModel()
         #expect(!viewModel.hasSelection)
@@ -49,6 +64,34 @@ struct UninstallerViewModelDerivedStateTests {
         viewModel.toggleAll()
         #expect(!viewModel.hasSelection)
         #expect(viewModel.allSelectionState == .none)
+    }
+
+    @Test func selectedItemsKeepTheOrderOfTheListWhateverIsToggledFirst() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(notes)
+        #expect(viewModel.selectedItems == [notes.bundle])
+
+        viewModel.toggle(zoom)
+        #expect(viewModel.selectedItems == zoom.allItems + [notes.bundle])
+
+        viewModel.toggle(zoom.leftovers[0].item)
+        #expect(viewModel.selectedItems == [zoom.bundle, notes.bundle])
+    }
+
+    @Test func markingASharedLeftoverChangesEveryAppThatListsIt() async {
+        let copy = InstalledAppFixtures.app("Affinity", leftovers: ["shared": 30])
+        let otherCopy = InstalledAppFixtures.app("Affinity 2", leftovers: ["shared": 30])
+        let viewModel = await loadedViewModel(apps: [copy, otherCopy])
+        viewModel.query.searchText = "affinity 2"
+        #expect(viewModel.allSelectionState == .none)
+
+        viewModel.toggle(copy.leftovers[0].item)
+        #expect(viewModel.allSelectionState == .some)
+        #expect(viewModel.selectedItems == [copy.leftovers[0].item])
+
+        viewModel.toggle(otherCopy.leftovers[0].item)
+        #expect(viewModel.allSelectionState == .none)
+        #expect(!viewModel.hasSelection)
     }
 
     @Test func selectAllFollowsTheSearch() async {
