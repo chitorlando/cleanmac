@@ -112,9 +112,14 @@ public final class DiskMapViewModel: ObservableObject {
         highlightedID = items[next].id
     }
 
+    /// The highlighted item, or `nil` while the highlight is on none of the focused folder's items.
+    public var highlightedItem: DiskNode? {
+        items.first { $0.id == highlightedID }
+    }
+
     public func openHighlighted() {
-        guard let node = items.first(where: { $0.id == highlightedID }) else { return }
-        open(node)
+        guard let highlightedItem else { return }
+        open(highlightedItem)
     }
 
     // MARK: Selection

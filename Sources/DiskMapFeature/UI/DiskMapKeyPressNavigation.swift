@@ -5,7 +5,8 @@ import SwiftUI
 /// The map takes the keyboard focus as it appears, without a focus ring around it.
 @available(macOS 14, *)
 struct DiskMapKeyPressNavigation: ViewModifier {
-    let viewModel: DiskMapViewModel
+    /// Carries out what a key press asked for.
+    let perform: @MainActor (DiskMapKeyAction) -> Void
 
     @FocusState private var hasKeyboardFocus: Bool
 
@@ -15,10 +16,10 @@ struct DiskMapKeyPressNavigation: ViewModifier {
             .focused($hasKeyboardFocus)
             .focusEffectDisabled()
             .onAppear { hasKeyboardFocus = true }
-            .onKeyPress(.downArrow) { viewModel.moveHighlight(by: 1); return .handled }
-            .onKeyPress(.upArrow) { viewModel.moveHighlight(by: -1); return .handled }
-            .onKeyPress(.rightArrow) { viewModel.openHighlighted(); return .handled }
-            .onKeyPress(.return) { viewModel.openHighlighted(); return .handled }
-            .onKeyPress(.leftArrow) { viewModel.goUp(); return .handled }
+            .onKeyPress(.downArrow) { perform(.moveHighlight(by: 1)); return .handled }
+            .onKeyPress(.upArrow) { perform(.moveHighlight(by: -1)); return .handled }
+            .onKeyPress(.rightArrow) { perform(.openHighlighted); return .handled }
+            .onKeyPress(.return) { perform(.openHighlighted); return .handled }
+            .onKeyPress(.leftArrow) { perform(.goUp); return .handled }
     }
 }

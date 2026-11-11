@@ -202,6 +202,27 @@ struct DiskMapViewModelTests {
         #expect(viewModel.breadcrumbs.map(\.name) == ["test", "Movies"])
     }
 
+    @Test func tellsWhichItemIsHighlighted() async {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.highlightedItem == nil)
+
+        viewModel.highlightedID = url("Applications/Tool.app")
+        #expect(viewModel.highlightedItem?.name == "Tool.app")
+
+        viewModel.highlightedID = url("Movies/clip.mov")
+        #expect(viewModel.highlightedItem == nil)
+    }
+
+    @Test func leavesAHighlightedAppUnopened() async {
+        let viewModel = await scannedViewModel()
+        viewModel.highlightedID = url("Applications/Tool.app")
+
+        viewModel.openHighlighted()
+
+        #expect(viewModel.focusPath.isEmpty)
+        #expect(viewModel.highlightedItem?.name == "Tool.app")
+    }
+
     // MARK: Selection
 
     @Test func selectsOnlyWhatThePolicyAllows() async throws {

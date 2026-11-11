@@ -4,7 +4,8 @@ import SwiftUI
 /// The map: breadcrumbs on top, the rings with the list of items beside them, and the bar
 /// that moves the selection to the Trash after asking.
 ///
-/// Keys: ↑ and ↓ move through the items, → or Return opens a folder, ← or ⌘↑ goes up.
+/// Keys: ↑ and ↓ move through the items, → or Return opens a folder or shows an app in the
+/// Uninstaller, ← or ⌘↑ goes up.
 /// Return keeps opening folders while something is selected: the bar's main button only
 /// responds to a click, so a key press never starts a removal.
 struct DiskMapBrowserView: View {
