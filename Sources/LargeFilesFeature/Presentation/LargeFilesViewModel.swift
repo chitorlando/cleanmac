@@ -59,6 +59,11 @@ public final class LargeFilesViewModel: ObservableObject {
         filter.kindOptions(for: files)
     }
 
+    /// Size ranges shown in the filter column, from the smallest size the scanner looks for.
+    public var sizeBuckets: [SizeBucket] {
+        SizeBucket.buckets(forMinimumSize: minimumSize)
+    }
+
     public var filterCounts: LargeFileFilterCounts {
         LargeFileFilterCounts(files: files, filter: filter, now: now(), calendar: calendar)
     }

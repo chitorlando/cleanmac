@@ -1,14 +1,21 @@
+import CleanMacUI
 import Foundation
 
 extension SizeBucket {
-    var title: String {
-        switch self {
-        case .from50MBTo100MB:
-            String(localized: "50 to 100 MB", bundle: .module, comment: "Size filter: files from 50 MB up to 100 MB.")
-        case .from100MBTo1GB:
-            String(localized: "100 MB to 1 GB", bundle: .module, comment: "Size filter: files from 100 MB up to 1 GB.")
-        case .over1GB:
-            String(localized: "More than 1 GB", bundle: .module, comment: "Size filter: files of 1 GB or more.")
+    /// Name of the range, starting at the smallest size the scan looks for, such as “50 MB to 100 MB”.
+    func title(forMinimumSize minimumSize: Int64) -> String {
+        let lower = lowerLimit(forMinimumSize: minimumSize).formattedByteCount
+        guard let upperLimit else {
+            return String(
+                localized: "More than \(lower)",
+                bundle: .module,
+                comment: "Size filter for the largest files. The argument is a size, such as “1 GB”."
+            )
         }
+        return String(
+            localized: "\(lower) to \(upperLimit.formattedByteCount)",
+            bundle: .module,
+            comment: "Size filter: files from one size up to another. The arguments are sizes, such as “50 MB” and “100 MB”."
+        )
     }
 }
