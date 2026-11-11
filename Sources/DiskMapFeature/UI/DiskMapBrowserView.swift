@@ -52,27 +52,27 @@ struct DiskMapBrowserView: View {
     @ViewBuilder
     private var chart: some View {
         if let folder = viewModel.focusedFolder {
-            SunburstChart(
-                folder: folder,
-                segments: viewModel.segments,
-                ringCount: SunburstLayout.defaultRingCount,
-                highlightedBranch: highlightedBranch,
-                onPoint: { segment in
-                    if let branch = segment?.branch, viewModel.items.indices.contains(branch) {
-                        viewModel.highlightedID = viewModel.items[branch].id
-                    }
-                },
-                onOpen: { segment in
-                    guard viewModel.items.indices.contains(segment.branch) else { return }
-                    viewModel.open(viewModel.items[segment.branch])
-                },
-                onCenter: { viewModel.goUp() }
-            )
+            // Laid out here, once per folder, and not each time the highlight moves.
+            let segments = viewModel.segments
+            DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
+                SunburstChart(
+                    folder: folder,
+                    segments: segments,
+                    ringCount: SunburstLayout.defaultRingCount,
+                    highlightedBranch: folder.children.firstIndex { $0.id == highlightedID },
+                    onPoint: { segment in
+                        if let branch = segment?.branch, viewModel.items.indices.contains(branch) {
+                            viewModel.highlightedID = viewModel.items[branch].id
+                        }
+                    },
+                    onOpen: { segment in
+                        guard viewModel.items.indices.contains(segment.branch) else { return }
+                        viewModel.open(viewModel.items[segment.branch])
+                    },
+                    onCenter: { viewModel.goUp() }
+                )
+            }
         }
-    }
-
-    private var highlightedBranch: Int? {
-        viewModel.items.firstIndex { $0.id == viewModel.highlightedID }
     }
 
     private var confirmationTitle: Text {

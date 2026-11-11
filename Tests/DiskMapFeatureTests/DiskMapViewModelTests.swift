@@ -133,21 +133,41 @@ struct DiskMapViewModelTests {
 
     // MARK: Highlight
 
-    @Test func announcesTheHighlightOnlyWhenItChanges() async {
+    @Test func movesTheHighlightWithoutAnnouncingItself() async {
         let viewModel = await scannedViewModel()
         var announcements = 0
         let observation = viewModel.objectWillChange.sink { announcements += 1 }
 
+        viewModel.highlightedID = url("notes.txt")
+        viewModel.moveHighlight(by: -1)
+        viewModel.highlightedID = nil
+
+        #expect(announcements == 0)
+        observation.cancel()
+    }
+
+    @Test func announcesEachMoveThroughItsHighlight() async {
+        let viewModel = await scannedViewModel()
+        var announcements = 0
+        let observation = viewModel.highlight.objectWillChange.sink { announcements += 1 }
+
         viewModel.highlightedID = url("Movies")
         viewModel.highlightedID = url("Movies")
         #expect(announcements == 1)
+        #expect(viewModel.highlight.itemID == url("Movies"))
 
-        viewModel.highlightedID = url("notes.txt")
-        viewModel.highlightedID = nil
-        viewModel.highlightedID = nil
-        #expect(announcements == 3)
-        #expect(viewModel.highlightedID == nil)
+        viewModel.moveHighlight(by: 1)
+        #expect(announcements == 2)
+        #expect(viewModel.highlight.itemID == url("Library"))
         observation.cancel()
+    }
+
+    @Test func followsAHighlightMovedByItsViews() async {
+        let viewModel = await scannedViewModel()
+
+        viewModel.highlight.itemID = url("Library")
+
+        #expect(viewModel.highlightedID == url("Library"))
     }
 
     // MARK: Keyboard

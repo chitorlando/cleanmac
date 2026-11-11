@@ -20,20 +20,15 @@ public final class DiskMapViewModel: ObservableObject {
         didSet { knownSelectedItems = nil }
     }
 
-    /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
-    ///
-    /// Pointing at another slice of the same branch sets the same item again. A published
-    /// property redraws every view that observes the model on each assignment, even of the
-    /// value it already holds, so only a different item is stored.
-    public var highlightedID: DiskNode.ID? {
-        get { storedHighlightedID }
-        set {
-            guard newValue != storedHighlightedID else { return }
-            storedHighlightedID = newValue
-        }
-    }
+    /// Where the highlight is, for the views that draw it. The model doesn't announce its
+    /// moves: a view that follows the highlight observes this instead.
+    public let highlight = DiskMapHighlight()
 
-    @Published private var storedHighlightedID: DiskNode.ID?
+    /// Item pointed at with the mouse or the keyboard, shown both in the rings and in the list.
+    public var highlightedID: DiskNode.ID? {
+        get { highlight.itemID }
+        set { highlight.itemID = newValue }
+    }
 
     private let scanner: any DiskMapScanning
     private let cleanupService: CleanupService
