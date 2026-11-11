@@ -4,6 +4,9 @@ import SwiftUI
 /// Size range of the files. Only one range can be chosen.
 struct LargeFileSizeFilter: View {
     @Binding var sizeBucket: SizeBucket?
+    /// Ranges worth offering, which depend on the smallest size the scan looks for.
+    let buckets: [SizeBucket]
+    let minimumSize: Int64
     let counts: LargeFileFilterCounts
     let theme: FeatureTheme
 
@@ -16,9 +19,9 @@ struct LargeFileSizeFilter: View {
             onSelectAny: { sizeBucket = nil }
         ) {
             VStack(spacing: 1) {
-                ForEach(SizeBucket.allCases, id: \.self) { bucket in
+                ForEach(buckets, id: \.self) { bucket in
                     FilterOptionRow(
-                        title: bucket.title,
+                        title: bucket.title(forMinimumSize: minimumSize),
                         count: counts.count(of: bucket),
                         isSelected: sizeBucket == bucket,
                         theme: theme

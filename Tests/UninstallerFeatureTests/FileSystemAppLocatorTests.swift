@@ -64,4 +64,28 @@ struct FileSystemAppLocatorTests {
         #expect(apps.count == 1)
         #expect(apps.allSatisfy { $0 == $0.standardizedFileURL })
     }
+
+    @Test func findsAnAppOutsideTheApplicationFolders() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let app = try folder.makeFolder("Downloads/Installer/Tool.app/Contents").deletingLastPathComponent()
+
+        let found = FileSystemAppLocator().application(at: app.appending(path: "../Tool.app/"))
+
+        #expect(found?.path == app.standardizedFileURL.path)
+    }
+
+    @Test func findsNoAppAtPlainFoldersLinksOrMissingPaths() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        try folder.makeFolder("Downloads/Real.app/Contents")
+        let plainFolder = try folder.makeFolder("Downloads/Photos")
+        let link = try folder.makeLink("Downloads/Linked.app", to: "Downloads/Real.app")
+        let missing = folder.root.appending(path: "Downloads/Gone.app")
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: plainFolder) == nil)
+        #expect(locator.application(at: link) == nil)
+        #expect(locator.application(at: missing) == nil)
+    }
 }

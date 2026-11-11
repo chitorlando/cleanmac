@@ -36,7 +36,7 @@ struct LargeFileFilterTests {
     }
 
     @Test func keepsOnlyTheChosenSize() {
-        #expect(names(LargeFileFilter(sizeBucket: .from50MBTo100MB)) == ["Canción.mp3", "old.dmg"])
+        #expect(names(LargeFileFilter(sizeBucket: .upTo100MB)) == ["Canción.mp3", "old.dmg"])
         #expect(names(LargeFileFilter(sizeBucket: .over1GB)) == ["Vacaciones.mov"])
     }
 
@@ -60,7 +60,7 @@ struct LargeFileFilterTests {
     }
 
     @Test func combinesEveryCondition() {
-        let filter = LargeFileFilter(kinds: [.audio, .diskImage], sizeBucket: .from50MBTo100MB, searchText: "old")
+        let filter = LargeFileFilter(kinds: [.audio, .diskImage], sizeBucket: .upTo100MB, searchText: "old")
         #expect(names(filter) == ["old.dmg"])
     }
 }

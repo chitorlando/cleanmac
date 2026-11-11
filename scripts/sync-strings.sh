@@ -9,8 +9,10 @@ shopt -s nullglob
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 INTERMEDIATES="$ROOT/.build/out/Intermediates.noindex"
 
-# Building emits one .stringsdata file per Swift source file.
-swift build --package-path "$ROOT" >/dev/null
+# Building emits one .stringsdata file per Swift source file. Tests are built too:
+# their build compiles some modules again, and stale .stringsdata left by an older
+# test build would keep deleted strings from being marked as stale.
+swift build --package-path "$ROOT" --build-tests >/dev/null
 
 catalogs=("$ROOT"/Sources/*/Resources/Localizable.xcstrings)
 if [ ${#catalogs[@]} -eq 0 ]; then

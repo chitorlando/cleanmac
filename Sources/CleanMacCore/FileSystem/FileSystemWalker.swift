@@ -9,6 +9,8 @@ import Foundation
 ///   reported as a single record with its whole size, for features that only measure space.
 /// - Excluded folders, `~/Library` by default, are skipped with everything inside,
 ///   because other features take care of them.
+/// - Files and folders that are only in the cloud, such as in iCloud Drive, are never
+///   downloaded (see `DatalessFilePolicy`).
 public struct FileSystemWalker: FileWalking {
     private static let resourceKeys: [URLResourceKey] = [
         .isRegularFileKey,
@@ -35,6 +37,12 @@ public struct FileSystemWalker: FileWalking {
     }
 
     public func walk(_ root: URL, visit: (FileRecord) -> Bool) {
+        DatalessFilePolicy.withoutMaterializing {
+            walkLocally(root, visit: visit)
+        }
+    }
+
+    private func walkLocally(_ root: URL, visit: (FileRecord) -> Bool) {
         guard let enumerator = FileManager.default.enumerator(
             at: root,
             includingPropertiesForKeys: Self.resourceKeys,

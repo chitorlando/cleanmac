@@ -22,6 +22,15 @@ public struct FileSystemAppLocator: AppBundleLocating {
         return apps
     }
 
+    public func application(at url: URL) -> URL? {
+        guard let status = FileStatus(url: url),
+              !status.isSymbolicLink,
+              !status.isSystemRestricted,
+              isAppBundle(url)
+        else { return nil }
+        return url.standardizedFileURL
+    }
+
     private func applications(in folder: URL) -> [URL] {
         guard let enumerator = FileManager.default.enumerator(
             at: folder,

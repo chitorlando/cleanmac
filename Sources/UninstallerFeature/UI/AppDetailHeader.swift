@@ -20,7 +20,7 @@ struct AppDetailHeader: View {
                 }
                 Text(verbatim: app.info.bundleID)
                     .font(.caption.monospaced())
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.supportingText)
                     .textSelection(.enabled)
             }
 

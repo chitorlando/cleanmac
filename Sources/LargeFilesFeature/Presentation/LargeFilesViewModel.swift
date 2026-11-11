@@ -10,7 +10,10 @@ import Foundation
 @MainActor
 public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var phase: LargeFilesPhase = .intro
-    @Published public private(set) var files: [LargeFile] = []
+    /// Not `@Published`: its setter copies the whole array on every change, which made a scan
+    /// that finds thousands of files slow down as it went. Every change goes through
+    /// `updateFiles(_:)`, which announces it and then edits the array in place.
+    public private(set) var files: [LargeFile] = []
     @Published public private(set) var scannedFileCount = 0
     /// The user stopped the scan, so the list only has the files found until then.
     @Published public private(set) var wasStoppedEarly = false
@@ -56,6 +59,11 @@ public final class LargeFilesViewModel: ObservableObject {
         filter.kindOptions(for: files)
     }
 
+    /// Size ranges shown in the filter column, from the smallest size the scanner looks for.
+    public var sizeBuckets: [SizeBucket] {
+        SizeBucket.buckets(forMinimumSize: minimumSize)
+    }
+
     public var filterCounts: LargeFileFilterCounts {
         LargeFileFilterCounts(files: files, filter: filter, now: now(), calendar: calendar)
     }
@@ -74,7 +82,7 @@ public final class LargeFilesViewModel: ObservableObject {
     @discardableResult
     public func startScan() -> Task<Void, Never> {
         activeTask?.cancel()
-        files = []
+        updateFiles { $0 = [] }
         selection = ItemSelection()
         scannedFileCount = 0
         wasStoppedEarly = false
@@ -148,17 +156,23 @@ public final class LargeFilesViewModel: ObservableObject {
             case .progress(let scannedFiles):
                 scannedFileCount = scannedFiles
             case .found(let file):
-                files.append(file)
+                updateFiles { $0.append(file) }
             }
         }
         guard !Task.isCancelled else { return }
         phase = .review
     }
 
+    /// The only way `files` changes: tells the views, as `@Published` would, then edits in place.
+    private func updateFiles(_ change: (inout [LargeFile]) -> Void) {
+        objectWillChange.send()
+        change(&files)
+    }
+
     private func finishRemoval(of items: [CleanableItem], report: CleanupReport) {
         let failedIDs = Set(report.failures.map(\.item.id))
         let removedIDs = Set(items.map(\.id)).subtracting(failedIDs)
-        files.removeAll { removedIDs.contains($0.id) }
+        updateFiles { $0.removeAll { removedIDs.contains($0.id) } }
         selection = ItemSelection()
         phase = .finished(report)
     }

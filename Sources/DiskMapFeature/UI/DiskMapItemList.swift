@@ -8,6 +8,9 @@ struct DiskMapItemList: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
+    @Environment(\.openFeature) private var openFeature
+    @Environment(\.uninstallerFeatureID) private var uninstallerFeatureID
+
     var body: some View {
         GlassCard {
             if let folder = viewModel.focusedFolder, folder.size > 0 {
@@ -34,18 +37,22 @@ struct DiskMapItemList: View {
     @ViewBuilder
     private func rows(in folder: DiskNode) -> some View {
         ForEach(Array(folder.children.enumerated()), id: \.element.id) { index, node in
+            let advice = viewModel.advice(for: node)
             DiskMapItemRow(
                 node: node,
                 share: share(of: node.size, in: folder),
                 color: SegmentPalette.color(forBranch: index),
-                advice: viewModel.advice(for: node),
+                advice: advice,
                 isSelected: viewModel.isSelected(node),
                 isHighlighted: viewModel.highlightedID == node.id,
                 canOpen: viewModel.canOpen(node),
+                canShowInUninstaller: advice == .useUninstaller && uninstallerFeatureID != nil,
                 theme: theme,
                 onToggle: { viewModel.toggle(node) },
-                onOpen: { viewModel.open(node) }
+                onOpen: { viewModel.open(node) },
+                onShowInUninstaller: { showInUninstaller(node) }
             )
+            .equatable()
             .id(node.id)
             .onHover { inside in
                 if inside { viewModel.highlightedID = node.id }
@@ -54,6 +61,11 @@ struct DiskMapItemList: View {
         if let other = folder.otherItems {
             OtherItemsRow(itemCount: other.itemCount, size: other.size, share: share(of: other.size, in: folder))
         }
+    }
+
+    private func showInUninstaller(_ app: DiskNode) {
+        guard let uninstallerFeatureID else { return }
+        openFeature(uninstallerFeatureID, showing: app.url)
     }
 
     private func share(of size: Int64, in folder: DiskNode) -> Double {
