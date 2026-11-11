@@ -34,7 +34,7 @@ public enum LargeFileSortOrder: String, CaseIterable, Hashable, Sendable {
 
     /// By name, then by path so files with the same name keep a stable order.
     private static func isAlphabeticallyBefore(_ lhs: LargeFile, _ rhs: LargeFile) -> Bool {
-        switch lhs.item.name.localizedStandardCompare(rhs.item.name) {
+        switch lhs.name.localizedStandardCompare(rhs.name) {
         case .orderedAscending: true
         case .orderedDescending: false
         case .orderedSame: lhs.item.url.path < rhs.item.url.path

@@ -13,19 +13,44 @@ public final class LargeFilesViewModel: ObservableObject {
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of files slow down as it went. Every change goes through
     /// `updateFiles(_:)`, which announces it and then edits the array in place.
-    public private(set) var files: [LargeFile] = []
+    ///
+    /// The `didSet` must not read `oldValue`: Swift would copy the array before every change
+    /// to have it.
+    public private(set) var files: [LargeFile] = [] {
+        didSet { filesDidChange() }
+    }
     @Published public private(set) var scannedFileCount = 0
     /// The user stopped the scan, so the list only has the files found until then.
     @Published public private(set) var wasStoppedEarly = false
-    @Published public private(set) var selection = ItemSelection()
-    @Published public var filter = LargeFileFilter()
-    @Published public var sortOrder = LargeFileSortOrder.size
+    @Published public private(set) var selection = ItemSelection() {
+        didSet { selectionDidChange() }
+    }
+    /// The search field writes its text back after showing it, so the same filter often comes
+    /// twice. Only a different one works the list out again.
+    @Published public var filter = LargeFileFilter() {
+        didSet { if filter != oldValue { forgetFilteredFiles() } }
+    }
+    @Published public var sortOrder = LargeFileSortOrder.size {
+        didSet { if sortOrder != oldValue { forgetSortedFiles() } }
+    }
 
     private let scanner: any LargeFileScanning
     private let cleanupService: CleanupService
     private let now: () -> Date
     private let calendar: Calendar
     private var activeTask: Task<Void, Never>?
+
+    // Derived state kept between reads. Every change re-renders all the views that observe
+    // the view model, and several of them read these values in each pass, which took several
+    // frames with a few thousand files. Each value is worked out on its first read and
+    // forgotten when something it comes from changes: the files, the selection, the filter,
+    // the order or, for the values that group files by age, the clock (see `ageBoundaries`).
+    private var cachedFoundSize: Int64?
+    private var cachedSortedFiles: [LargeFile]?
+    private var cachedFilteredFiles: FilteredLargeFiles?
+    private var cachedSelectedItems: [CleanableItem]?
+    private var cachedAllSelectionState: ItemSelection.State?
+    private var cachedAges: AgeBucketSnapshot?
 
     /// - Parameters:
     ///   - now: Current date, used to group files by age.
@@ -47,12 +72,16 @@ public final class LargeFilesViewModel: ObservableObject {
     public var minimumSize: Int64 { scanner.criteria.minimumSize }
 
     public var foundCount: Int { files.count }
-    public var foundSize: Int64 { files.map(\.item).totalSize }
+
+    public var foundSize: Int64 {
+        if let cachedFoundSize { return cachedFoundSize }
+        let size = files.map(\.item).totalSize
+        cachedFoundSize = size
+        return size
+    }
 
     /// Files that pass the filter, in the chosen order.
-    public var visibleFiles: [LargeFile] {
-        sortOrder.sorted(filter.apply(to: files, now: now(), calendar: calendar))
-    }
+    public var visibleFiles: [LargeFile] { filteredFiles.files }
 
     /// Kinds shown in the filter column: those of the files found, plus the chosen ones.
     public var kindOptions: [FileKind] {
@@ -64,13 +93,14 @@ public final class LargeFilesViewModel: ObservableObject {
         SizeBucket.buckets(forMinimumSize: minimumSize)
     }
 
-    public var filterCounts: LargeFileFilterCounts {
-        LargeFileFilterCounts(files: files, filter: filter, now: now(), calendar: calendar)
-    }
+    public var filterCounts: LargeFileFilterCounts { filteredFiles.counts }
 
     /// Items that `remove()` would move to the Trash.
     public var selectedItems: [CleanableItem] {
-        selection.selectedItems(in: files.map(\.item))
+        if let cachedSelectedItems { return cachedSelectedItems }
+        let items = selection.selectedItems(in: files.map(\.item))
+        cachedSelectedItems = items
+        return items
     }
 
     public var selectedSize: Int64 { selectedItems.totalSize }
@@ -139,12 +169,74 @@ public final class LargeFilesViewModel: ObservableObject {
 
     /// State of the "select all" checkbox, over the visible files.
     public var allSelectionState: ItemSelection.State {
-        selection.state(of: visibleFiles.map(\.item))
+        // Read first: the state is forgotten if the age ranges it was worked out with are outdated.
+        let visible = visibleFiles
+        if let cachedAllSelectionState { return cachedAllSelectionState }
+        let state = selection.state(of: visible.map(\.item))
+        cachedAllSelectionState = state
+        return state
     }
 
     /// Selects every visible file, or clears them when all are already selected.
     public func toggleAll() {
         selection.toggleAll(visibleFiles.map(\.item))
+    }
+
+    // MARK: Derived state kept between reads
+
+    /// Every file in the chosen order. Sorting is the slowest step and filtering keeps the
+    /// order, so a change of the filter, such as a keystroke in the search field, reuses it.
+    private var sortedFiles: [LargeFile] {
+        if let cachedSortedFiles { return cachedSortedFiles }
+        let sorted = sortOrder.sorted(files)
+        cachedSortedFiles = sorted
+        return sorted
+    }
+
+    /// The visible files and the counts of the filter options. They share the files, the
+    /// filter and the age ranges, so they always agree.
+    private var filteredFiles: FilteredLargeFiles {
+        let ages = ageBoundaries
+        if let cachedFilteredFiles { return cachedFilteredFiles }
+        let filtered = FilteredLargeFiles(files: sortedFiles, filter: filter, ages: ages)
+        cachedFilteredFiles = filtered
+        return filtered
+    }
+
+    /// The age ranges that every value that groups files by age is worked out with.
+    ///
+    /// They follow the clock, which announces nothing, so every read checks them: once they
+    /// are a minute old they're worked out again and what came from the old ones is forgotten
+    /// (see `AgeBucketSnapshot` for why a minute goes unnoticed).
+    private var ageBoundaries: AgeBucketBoundaries {
+        let date = now()
+        if let cachedAges, cachedAges.isCurrent(at: date) { return cachedAges.boundaries }
+        let ages = AgeBucketSnapshot(now: date, calendar: calendar)
+        cachedAges = ages
+        forgetFilteredFiles()
+        return ages.boundaries
+    }
+
+    private func filesDidChange() {
+        cachedFoundSize = nil
+        cachedSelectedItems = nil
+        forgetSortedFiles()
+    }
+
+    private func selectionDidChange() {
+        cachedSelectedItems = nil
+        cachedAllSelectionState = nil
+    }
+
+    private func forgetSortedFiles() {
+        cachedSortedFiles = nil
+        forgetFilteredFiles()
+    }
+
+    /// The state of "select all" is over the visible files, so it's forgotten with them.
+    private func forgetFilteredFiles() {
+        cachedFilteredFiles = nil
+        cachedAllSelectionState = nil
     }
 
     // MARK: Private
