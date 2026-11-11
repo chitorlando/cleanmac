@@ -3,6 +3,7 @@ import DiskMapFeature
 import DuplicatesFeature
 import LargeFilesFeature
 import MaintenanceFeature
+import MonitorFeature
 import SystemJunkFeature
 import UninstallerFeature
 
@@ -11,13 +12,15 @@ import UninstallerFeature
 enum AppComposition {
     static func makeModules() -> [any FeatureModule] {
         let uninstaller = UninstallerModule.live()
+        let diskMap = DiskMapModule.live(uninstallerFeatureID: uninstaller.id)
         return [
             SystemJunkModule.live(),
             uninstaller,
             LargeFilesModule.live(),
-            DiskMapModule.live(uninstallerFeatureID: uninstaller.id),
+            diskMap,
             DuplicatesModule.live(),
-            MaintenanceModule.live()
+            MaintenanceModule.live(),
+            MonitorModule.live(diskMapFeatureID: diskMap.id)
         ]
     }
 }

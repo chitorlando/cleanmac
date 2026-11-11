@@ -62,7 +62,8 @@ let package = Package(
             name: "CleanMacApp",
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
-                "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature"
+                "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
+                "MonitorFeature"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
