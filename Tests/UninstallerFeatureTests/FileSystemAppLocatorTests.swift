@@ -72,7 +72,7 @@ struct FileSystemAppLocatorTests {
 
         let found = FileSystemAppLocator().application(at: app.appending(path: "../Tool.app/"))
 
-        #expect(found == app.standardizedFileURL)
+        #expect(found?.path == app.standardizedFileURL.path)
     }
 
     @Test func findsNoAppAtPlainFoldersLinksOrMissingPaths() throws {
