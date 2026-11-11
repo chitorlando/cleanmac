@@ -10,7 +10,8 @@ import SwiftUI
 ///
 /// The screen uses the system's increased-contrast label colors, the same ones as the Increase
 /// Contrast accessibility setting: secondary and tertiary text get brighter while keeping their
-/// order, and native buttons keep their labels readable under the glows.
+/// order, and native buttons keep their labels readable under the glows. Text that must reach
+/// 4.5:1 everywhere, such as paths and versions, uses `.supportingText`.
 public struct FeatureScreen<Content: View>: View {
     private let theme: FeatureTheme
     private let content: Content
