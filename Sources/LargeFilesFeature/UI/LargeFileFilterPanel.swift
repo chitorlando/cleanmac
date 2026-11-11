@@ -8,6 +8,8 @@ import SwiftUI
 struct LargeFileFilterPanel: View {
     @Binding var filter: LargeFileFilter
     let kindOptions: [FileKind]
+    let sizeBuckets: [SizeBucket]
+    let minimumSize: Int64
     let counts: LargeFileFilterCounts
     let theme: FeatureTheme
 
@@ -16,7 +18,13 @@ struct LargeFileFilterPanel: View {
             VStack(alignment: .leading, spacing: 10) {
                 LargeFileKindFilter(kinds: $filter.kinds, options: kindOptions, counts: counts, theme: theme)
                 LargeFileAgeFilter(ageBucket: $filter.ageBucket, counts: counts, theme: theme)
-                LargeFileSizeFilter(sizeBucket: $filter.sizeBucket, counts: counts, theme: theme)
+                LargeFileSizeFilter(
+                    sizeBucket: $filter.sizeBucket,
+                    buckets: sizeBuckets,
+                    minimumSize: minimumSize,
+                    counts: counts,
+                    theme: theme
+                )
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }

@@ -33,7 +33,7 @@ struct DuplicateGroupRow: View, Equatable {
                     .truncationMode(.middle)
                 Text("\(group.files.count) copies", bundle: .module, comment: "Number of identical copies in a group of duplicates.")
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.supportingText)
                     .lineLimit(1)
             }
 

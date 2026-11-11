@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ to %@" : {
+      "comment" : "Size filter: files from one size up to another. The arguments are sizes, such as “50 MB” and “100 MB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De %@ a %@"
+          }
+        }
+      }
+    },
     "%lld files analyzed" : {
       "comment" : "Status shown while scanning. The argument is the number of files looked at so far.",
       "localizations" : {
@@ -49,28 +60,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "De 1 a 6 meses"
-          }
-        }
-      }
-    },
-    "100 MB to 1 GB" : {
-      "comment" : "Size filter: files from 100 MB up to 1 GB.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De 100 MB a 1 GB"
-          }
-        }
-      }
-    },
-    "50 to 100 MB" : {
-      "comment" : "Size filter: files from 50 MB up to 100 MB.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De 50 a 100 MB"
           }
         }
       }
@@ -240,13 +229,13 @@
         }
       }
     },
-    "More than 1 GB" : {
-      "comment" : "Size filter: files of 1 GB or more.",
+    "More than %@" : {
+      "comment" : "Size filter for the largest files. The argument is a size, such as “1 GB”.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Más de 1 GB"
+            "value" : "Más de %@"
           }
         }
       }

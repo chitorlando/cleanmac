@@ -45,6 +45,12 @@ public extension FeatureTheme {
         secondary: Color(red: 0.84, green: 0.24, blue: 0.72)
     )
 
+    /// Chartreuse to leaf green, a hue no other feature uses.
+    static let diskMap = FeatureTheme(
+        primary: Color(red: 0.82, green: 0.92, blue: 0.32),
+        secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)

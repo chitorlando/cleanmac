@@ -1,6 +1,10 @@
 import Foundation
 
 /// Sums the space actually allocated on disk, which is what gets freed when an item is removed.
+///
+/// Measuring a huge package, such as a photo library, can take seconds, so a folder's walk
+/// stops as soon as the current task is cancelled. The partial size it then returns is
+/// meant to be discarded, as callers do with every cancelled scan.
 public struct AllocatedSizeCalculator: SizeCalculating {
     private static let resourceKeys: [URLResourceKey] = [
         .isRegularFileKey,
@@ -26,6 +30,7 @@ public struct AllocatedSizeCalculator: SizeCalculating {
 
         var total: Int64 = 0
         for case let fileURL as URL in enumerator {
+            guard !Task.isCancelled else { break }
             total += regularFileSize(of: fileURL) ?? 0
         }
         return total

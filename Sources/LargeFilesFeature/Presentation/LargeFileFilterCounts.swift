@@ -26,8 +26,8 @@ public struct LargeFileFilterCounts: Equatable, Sendable {
                let age = boundaries.bucket(forLastAccessDate: file.lastAccessDate) {
                 ages[age, default: 0] += 1
             }
-            if anySize.matches(file, ages: boundaries), let size = SizeBucket(size: file.item.size) {
-                sizes[size, default: 0] += 1
+            if anySize.matches(file, ages: boundaries) {
+                sizes[SizeBucket(size: file.item.size), default: 0] += 1
             }
         }
     }

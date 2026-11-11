@@ -20,6 +20,8 @@ struct LargeFilesReviewView: View {
                 LargeFileFilterPanel(
                     filter: $viewModel.filter,
                     kindOptions: viewModel.kindOptions,
+                    sizeBuckets: viewModel.sizeBuckets,
+                    minimumSize: viewModel.minimumSize,
                     counts: viewModel.filterCounts,
                     theme: theme
                 )
