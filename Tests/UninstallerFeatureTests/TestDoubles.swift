@@ -18,11 +18,16 @@ struct FakeSizeCalculator: SizeCalculating {
     func size(of url: URL) -> Int64 { sizes[url] ?? 0 }
 }
 
-/// Returns a fixed list of apps regardless of the folders.
+/// Returns a fixed list of apps regardless of the folders, and knows of others elsewhere.
 struct FakeAppLocator: AppBundleLocating {
     let apps: [URL]
+    var appsElsewhere: [URL] = []
 
     func applications(in folders: [URL]) -> [URL] { apps }
+
+    func application(at url: URL) -> URL? {
+        (apps + appsElsewhere).contains(url) ? url : nil
+    }
 }
 
 /// Returns predefined identities keyed by app URL.
