@@ -10,11 +10,12 @@ import UninstallerFeature
 @MainActor
 enum AppComposition {
     static func makeModules() -> [any FeatureModule] {
-        [
+        let uninstaller = UninstallerModule.live()
+        return [
             SystemJunkModule.live(),
-            UninstallerModule.live(),
+            uninstaller,
             LargeFilesModule.live(),
-            DiskMapModule.live(),
+            DiskMapModule.live(uninstallerFeatureID: uninstaller.id),
             DuplicatesModule.live(),
             MaintenanceModule.live()
         ]
