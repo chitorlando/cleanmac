@@ -163,22 +163,26 @@ public final class UninstallerViewModel: ObservableObject {
     ///
     /// The app can be outside the application folders, such as in Downloads: the list is then
     /// loaded again with it, which clears the selection, also when it's asked for during a load.
-    /// Paths with no app leave the focus as it is.
+    ///
+    /// A loaded list is only loaded again when the scanner can analyze the app. Otherwise it
+    /// stays as it is, selection and focus included: there is no app at that path, or it is
+    /// one the uninstaller never lists.
     public func focusApp(at url: URL) {
         let app = url.standardizedFileURL
-        pendingFocusPath = app.path
-        let isNewRequest = request(app)
         switch phase {
         case .browsing:
-            if isNewRequest, !isListed(app) {
-                startLoading()
-            } else {
+            if isListed(app) {
+                pendingFocusPath = app.path
                 applyPendingFocus()
+            } else if scanner.canAnalyze(appAt: app) {
+                request(app)
+                startLoading()
             }
         case .intro:
+            request(app)
             startLoading()
         case .loading, .uninstalling, .finished:
-            break
+            request(app)
         }
     }
 
@@ -340,11 +344,13 @@ public final class UninstallerViewModel: ObservableObject {
         phase = .browsing
     }
 
-    /// Remembers that another feature asked for `app`. Returns `false` when it already had.
-    private func request(_ app: URL) -> Bool {
-        guard !requestedApps.contains(app) else { return false }
-        requestedApps.append(app)
-        return true
+    /// Remembers that another feature asked for `app`, so that loads analyze it with the
+    /// rest and the next one to end focuses it.
+    private func request(_ app: URL) {
+        pendingFocusPath = app.path
+        if !requestedApps.contains(app) {
+            requestedApps.append(app)
+        }
     }
 
     /// Whether the app to focus was asked for after a load began, so that load left it out.
