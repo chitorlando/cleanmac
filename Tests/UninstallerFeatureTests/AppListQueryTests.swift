@@ -10,7 +10,7 @@ struct AppListQueryTests {
     ]
 
     private func names(_ query: AppListQuery) -> [String] {
-        query.apply(to: apps).map(\.info.name)
+        query.filtered(query.sorted(apps)).map(\.info.name)
     }
 
     @Test func sortsByNameLikeTheFinder() {
@@ -19,6 +19,12 @@ struct AppListQueryTests {
 
     @Test func sortsByTotalSizeDescending() {
         #expect(names(AppListQuery(sortOrder: .size)) == ["App 10", "Zoom", "App 2", "Café"])
+    }
+
+    @Test func filteringKeepsTheOrderItIsGiven() {
+        let matches = AppListQuery(searchText: "app").filtered(apps)
+
+        #expect(matches.map(\.info.name) == ["App 10", "App 2"])
     }
 
     @Test func searchIgnoresCaseAndAccents() {

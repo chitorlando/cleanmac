@@ -88,4 +88,27 @@ struct FileSystemAppLocatorTests {
         #expect(locator.application(at: link) == nil)
         #expect(locator.application(at: missing) == nil)
     }
+
+    @Test func findsNoAppInTheTrash() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let trashed = try folder.makeFolder("Home/.Trash/Old.app/Contents").deletingLastPathComponent()
+        let trashedOnAVolume = try folder.makeFolder("Volume/.Trashes/501/Old.app/Contents").deletingLastPathComponent()
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: trashed) == nil)
+        #expect(locator.application(at: trashedOnAVolume) == nil)
+    }
+
+    @Test func findsNoAppInsideAnotherApp() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let helper = try folder.makeFolder("Downloads/Host.app/Contents/Helpers/Helper.app/Contents")
+            .deletingLastPathComponent()
+        let host = folder.root.appending(path: "Downloads/Host.app")
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: helper) == nil)
+        #expect(locator.application(at: host)?.path == host.standardizedFileURL.path)
+    }
 }

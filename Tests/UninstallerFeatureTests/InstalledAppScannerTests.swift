@@ -92,6 +92,21 @@ struct InstalledAppScannerTests {
         #expect(Set(analyzedApps(in: events).keys) == [alpha.id, beta.id])
     }
 
+    @Test func canAnalyzeAnAppWhereverItIs() {
+        let scanner = makeScanner()
+
+        #expect(scanner.canAnalyze(appAt: alpha.url))
+        #expect(scanner.canAnalyze(appAt: gamma.url))
+    }
+
+    @Test func cannotAnalyzeAnAppThatIsMissingUnreadableOrExcluded() {
+        let scanner = makeScanner()
+
+        #expect(!scanner.canAnalyze(appAt: URL(filePath: "/home/Downloads/Gone.app")))
+        #expect(!scanner.canAnalyze(appAt: unreadable))
+        #expect(!scanner.canAnalyze(appAt: cleanMac.url))
+    }
+
     @Test func listsOnceAnAppOfTheApplicationFoldersAskedForAgain() async {
         let events = await collectEvents(including: [alpha.url])
 
