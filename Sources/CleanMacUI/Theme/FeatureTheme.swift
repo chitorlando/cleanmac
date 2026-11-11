@@ -51,6 +51,12 @@ public extension FeatureTheme {
         secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
     )
 
+    /// Coral to crimson, a hue no other feature uses.
+    static let monitor = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.45, blue: 0.40),
+        secondary: Color(red: 0.80, green: 0.14, blue: 0.30)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)
