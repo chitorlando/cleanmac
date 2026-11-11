@@ -32,9 +32,9 @@ public struct LargeFileFilter: Equatable, Sendable {
     /// Like `matches(_:now:calendar:)`, with the age buckets and the search already worked out,
     /// for passes over many files.
     func matches(_ file: LargeFile, ages: AgeBucketBoundaries, search: LargeFileNameSearch) -> Bool {
-        matchesKind(file)
-            && matchesAge(file, ages: ages)
-            && matchesSize(file)
+        allowsKind(file.kind)
+            && allowsAge(ages.bucket(forLastAccessDate: file.lastAccessDate))
+            && allowsSize(SizeBucket(size: file.item.size))
             && search.matches(file)
     }
 
@@ -51,17 +51,18 @@ public struct LargeFileFilter: Equatable, Sendable {
         return FileKind.allCases.filter(offered.contains)
     }
 
-    private func matchesKind(_ file: LargeFile) -> Bool {
-        kinds.isEmpty || kinds.contains(file.kind)
+    // Each condition on its own, for passes that need them apart, such as `FilteredLargeFiles`.
+
+    func allowsKind(_ kind: FileKind) -> Bool {
+        kinds.isEmpty || kinds.contains(kind)
     }
 
-    private func matchesAge(_ file: LargeFile, ages: AgeBucketBoundaries) -> Bool {
-        guard let ageBucket else { return true }
-        return ages.bucket(forLastAccessDate: file.lastAccessDate) == ageBucket
+    /// Files with no known date, whose bucket is `nil`, only pass when no age is chosen.
+    func allowsAge(_ age: AgeBucket?) -> Bool {
+        ageBucket == nil || ageBucket == age
     }
 
-    private func matchesSize(_ file: LargeFile) -> Bool {
-        guard let sizeBucket else { return true }
-        return SizeBucket(size: file.item.size) == sizeBucket
+    func allowsSize(_ size: SizeBucket) -> Bool {
+        sizeBucket == nil || sizeBucket == size
     }
 }

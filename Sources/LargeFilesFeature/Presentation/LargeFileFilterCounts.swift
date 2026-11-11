@@ -5,32 +5,19 @@ import Foundation
 /// Each group ignores its own condition and applies the rest of the filter,
 /// so choosing videos still tells how many images there are.
 public struct LargeFileFilterCounts: Equatable, Sendable {
-    public private(set) var kinds: [FileKind: Int] = [:]
-    public private(set) var ages: [AgeBucket: Int] = [:]
-    public private(set) var sizes: [SizeBucket: Int] = [:]
+    public let kinds: [FileKind: Int]
+    public let ages: [AgeBucket: Int]
+    public let sizes: [SizeBucket: Int]
 
     public init(files: [LargeFile], filter: LargeFileFilter, now: Date, calendar: Calendar = .current) {
-        var anyKind = filter
-        anyKind.kinds = []
-        var anyAge = filter
-        anyAge.ageBucket = nil
-        var anySize = filter
-        anySize.sizeBucket = nil
         let boundaries = AgeBucketBoundaries(now: now, calendar: calendar)
-        let search = LargeFileNameSearch(filter.searchText)
+        self = FilteredLargeFiles(files: files, filter: filter, ages: boundaries).counts
+    }
 
-        for file in files {
-            if anyKind.matches(file, ages: boundaries, search: search) {
-                kinds[file.kind, default: 0] += 1
-            }
-            if anyAge.matches(file, ages: boundaries, search: search),
-               let age = boundaries.bucket(forLastAccessDate: file.lastAccessDate) {
-                ages[age, default: 0] += 1
-            }
-            if anySize.matches(file, ages: boundaries, search: search) {
-                sizes[SizeBucket(size: file.item.size), default: 0] += 1
-            }
-        }
+    init(kinds: [FileKind: Int], ages: [AgeBucket: Int], sizes: [SizeBucket: Int]) {
+        self.kinds = kinds
+        self.ages = ages
+        self.sizes = sizes
     }
 
     public func count(of kind: FileKind) -> Int { kinds[kind] ?? 0 }
