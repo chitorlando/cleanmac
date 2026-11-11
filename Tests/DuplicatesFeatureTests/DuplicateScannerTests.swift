@@ -106,7 +106,7 @@ struct DuplicateScannerTests {
         try folder.write(content, to: "Downloads/report.pdf")
 
         let group = try #require(groups(await scan(folder)).first)
-        let linkedCopy = try #require(group.files.first(where: \.hasOtherNames))
+        let linkedCopy = try #require(group.files.first { $0.hasOtherNames })
 
         #expect(group.physicalCopy(containing: linkedCopy)?.freeableSize == 0)
         #expect(group.recoverableSize == group.fileSize)
@@ -121,7 +121,7 @@ struct DuplicateScannerTests {
         try folder.write(content, to: "Downloads/report.pdf")
 
         let group = try #require(groups(await scan(folder)).first)
-        let linkedCopy = try #require(group.files.first(where: \.hasOtherNames))
+        let linkedCopy = try #require(group.files.first { $0.hasOtherNames })
 
         #expect(group.files.count == 2)
         #expect(group.physicalCopy(containing: linkedCopy)?.freeableSize == 0)
