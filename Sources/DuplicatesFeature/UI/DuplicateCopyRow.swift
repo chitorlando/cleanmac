@@ -28,7 +28,7 @@ struct DuplicateCopyRow: View, Equatable {
             .disabled(!canSelect)
 
             VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
+                BadgedTitleLayout {
                     Text(verbatim: file.item.name)
                         .lineLimit(1)
                         .truncationMode(.middle)
