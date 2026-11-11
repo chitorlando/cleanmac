@@ -100,6 +100,8 @@ struct DiskMapItemRow: View {
         }
         .buttonStyle(.plain)
         .help(advice.explanation ?? title)
+        // The note doesn't name the app, so VoiceOver gets its name as the button's value.
+        .accessibilityValue(Text(verbatim: node.name))
     }
 
     private var actions: some View {

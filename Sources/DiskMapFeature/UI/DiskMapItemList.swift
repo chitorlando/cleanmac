@@ -21,10 +21,7 @@ struct DiskMapItemList: View {
                         }
                         .padding(.trailing, 8)
                     }
-                    .onValueChange(of: viewModel.highlightedID) { id in
-                        guard let id else { return }
-                        proxy.scrollTo(id)
-                    }
+                    .modifier(DiskMapHighlightScrolling(highlight: viewModel.highlight, proxy: proxy))
                 }
             } else {
                 Text("This folder is empty", bundle: .module, comment: "Shown in the disk map for a folder with nothing inside.")
@@ -37,22 +34,29 @@ struct DiskMapItemList: View {
     @ViewBuilder
     private func rows(in folder: DiskNode) -> some View {
         ForEach(Array(folder.children.enumerated()), id: \.element.id) { index, node in
+            // Worked out here, once per item, and not each time the highlight moves.
             let advice = viewModel.advice(for: node)
-            DiskMapItemRow(
-                node: node,
-                share: share(of: node.size, in: folder),
-                color: SegmentPalette.color(forBranch: index),
-                advice: advice,
-                isSelected: viewModel.isSelected(node),
-                isHighlighted: viewModel.highlightedID == node.id,
-                canOpen: viewModel.canOpen(node),
-                canShowInUninstaller: advice == .useUninstaller && uninstallerFeatureID != nil,
-                theme: theme,
-                onToggle: { viewModel.toggle(node) },
-                onOpen: { viewModel.open(node) },
-                onShowInUninstaller: { showInUninstaller(node) }
-            )
-            .equatable()
+            let nodeShare = share(of: node.size, in: folder)
+            let isSelected = viewModel.isSelected(node)
+            let canOpen = viewModel.canOpen(node)
+            let canShowInUninstaller = advice == .useUninstaller && uninstallerFeatureID != nil
+            DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
+                DiskMapItemRow(
+                    node: node,
+                    share: nodeShare,
+                    color: SegmentPalette.color(forBranch: index),
+                    advice: advice,
+                    isSelected: isSelected,
+                    isHighlighted: highlightedID == node.id,
+                    canOpen: canOpen,
+                    canShowInUninstaller: canShowInUninstaller,
+                    theme: theme,
+                    onToggle: { viewModel.toggle(node) },
+                    onOpen: { viewModel.open(node) },
+                    onShowInUninstaller: { showInUninstaller(node) }
+                )
+                .equatable()
+            }
             .id(node.id)
             .onHover { inside in
                 if inside { viewModel.highlightedID = node.id }
