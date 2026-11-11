@@ -5,6 +5,9 @@ import SwiftUI
 /// One item of the focused folder: checkbox, icon in its branch's color, name with its number
 /// of files or a note on why it can't be removed, size and share, and buttons to open or reveal it.
 ///
+/// On an app, the note that points to the Uninstaller is a button that shows the app there,
+/// when the row is told it can.
+///
 /// The name gets the room left by the fixed columns and wraps to a second line before it's
 /// cut, so names like “Application Support” stay whole in the smallest window.
 struct DiskMapItemRow: View {
@@ -15,9 +18,11 @@ struct DiskMapItemRow: View {
     let isSelected: Bool
     let isHighlighted: Bool
     let canOpen: Bool
+    let canShowInUninstaller: Bool
     let theme: FeatureTheme
     let onToggle: () -> Void
     let onOpen: () -> Void
+    let onShowInUninstaller: () -> Void
 
     var body: some View {
         HStack(spacing: 6) {
@@ -71,7 +76,11 @@ struct DiskMapItemRow: View {
     @ViewBuilder
     private var subtitle: some View {
         if let note = advice.note {
-            note
+            if canShowInUninstaller {
+                uninstallerButton(titled: note)
+            } else {
+                note
+            }
         } else if node.kind == .folder {
             Text(
                 "\(node.fileCount) files",
@@ -81,6 +90,16 @@ struct DiskMapItemRow: View {
         } else {
             Text(verbatim: "")
         }
+    }
+
+    private func uninstallerButton(titled title: Text) -> some View {
+        Button(action: onShowInUninstaller) {
+            title
+                .underline()
+                .foregroundStyle(theme.primary)
+        }
+        .buttonStyle(.plain)
+        .help(advice.explanation ?? title)
     }
 
     private var actions: some View {

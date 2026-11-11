@@ -11,6 +11,7 @@ extension DiskMapItemRow: Equatable {
         lhs.isHighlighted == rhs.isHighlighted
             && lhs.isSelected == rhs.isSelected
             && lhs.canOpen == rhs.canOpen
+            && lhs.canShowInUninstaller == rhs.canShowInUninstaller
             && lhs.advice == rhs.advice
             && lhs.share == rhs.share
             && lhs.color == rhs.color
