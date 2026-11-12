@@ -163,6 +163,17 @@
         }
       }
     },
+    "Find Large Files in This Folder" : {
+      "comment" : "Action offered for a folder shown by another feature, such as in the disk map. It looks for large files only in that folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar archivos grandes en esta carpeta"
+          }
+        }
+      }
+    },
     "Find the files that take up the most space and the ones you haven’t opened in a long time." : {
       "comment" : "Introduction of the large files feature.",
       "localizations" : {
