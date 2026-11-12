@@ -218,7 +218,7 @@ public final class DuplicatesViewModel: ObservableObject {
     }
 
     private func scan() async {
-        for await event in scanner.scan() {
+        for await event in scanner.scan(.home) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let newProgress):

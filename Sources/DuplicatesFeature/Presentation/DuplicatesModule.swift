@@ -26,9 +26,11 @@ public final class DuplicatesModule: FeatureModule {
 public extension DuplicatesModule {
     /// Module that walks the current user's home folder and moves copies to the Trash.
     static func live() -> DuplicatesModule {
+        let excludedDirectories = [FileSystemWalker.userLibrary]
         let scanner = DuplicateScanner(
-            root: FileManager.default.homeDirectoryForCurrentUser,
-            walker: FileSystemWalker()
+            home: FileManager.default.homeDirectoryForCurrentUser,
+            walker: FileSystemWalker(excludedDirectories: excludedDirectories),
+            excludedDirectories: excludedDirectories
         )
         let viewModel = DuplicatesViewModel(
             scanner: scanner,
