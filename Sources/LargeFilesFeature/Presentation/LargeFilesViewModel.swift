@@ -10,6 +10,9 @@ import Foundation
 @MainActor
 public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var phase: LargeFilesPhase = .intro
+    /// Where the scan looks: the whole home folder, until another feature sends a folder to
+    /// look in (see `scanFolder(at:)`). The files on screen are the ones found there.
+    @Published public private(set) var scope = LargeFileScanScope.home
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of files slow down as it went. Every change goes through
     /// `updateFiles(_:)`, which announces it and then edits the array in place.
@@ -39,6 +42,9 @@ public final class LargeFilesViewModel: ObservableObject {
     private let now: () -> Date
     private let calendar: Calendar
     private var activeTask: Task<Void, Never>?
+    /// Scope asked for while files were being removed or their report was on screen, which
+    /// `done()` scans.
+    private var pendingScope: LargeFileScanScope?
 
     // Derived state kept between reads. Every change re-renders all the views that observe
     // the view model, and several of them read these values in each pass, which took several
@@ -109,17 +115,38 @@ public final class LargeFilesViewModel: ObservableObject {
 
     // MARK: Actions
 
+    /// Scans where the last scan looked: the home folder, or the folder the scan is limited to.
     @discardableResult
     public func startScan() -> Task<Void, Never> {
-        activeTask?.cancel()
-        updateFiles { $0 = [] }
-        selection = ItemSelection()
-        scannedFileCount = 0
-        wasStoppedEarly = false
-        phase = .scanning
-        let task = Task { await scan() }
-        activeTask = task
-        return task
+        startScan(in: scope)
+    }
+
+    /// Scans the whole home folder, leaving the folder the scan was limited to.
+    @discardableResult
+    public func scanHome() -> Task<Void, Never> {
+        startScan(in: .home)
+    }
+
+    /// Looks for large files only in the folder at `url`, as when another feature sends it.
+    ///
+    /// The scan starts right away, in place of the scan in progress or of the results on
+    /// screen. While files are being moved to the Trash, and while their report is on screen,
+    /// neither is disturbed: the folder waits and `done()` scans it.
+    ///
+    /// Ignored when the scanner can't look in `url`: it's not a folder, or it's one the scan
+    /// of the home folder never enters.
+    ///
+    /// - Returns: The scan, or `nil` when the folder is ignored or left for later.
+    @discardableResult
+    public func scanFolder(at url: URL) -> Task<Void, Never>? {
+        guard let scope = scanner.scope(limitedTo: url) else { return nil }
+        switch phase {
+        case .intro, .scanning, .review:
+            return startScan(in: scope)
+        case .removing, .finished:
+            pendingScope = scope
+            return nil
+        }
     }
 
     /// Stops the scan and reviews the files found so far.
@@ -152,9 +179,18 @@ public final class LargeFilesViewModel: ObservableObject {
     ///
     /// Scanning again would take minutes and find the same files, because the Trash is
     /// skipped like any hidden folder. Going back also keeps the user's filters.
-    public func done() {
-        guard case .finished = phase else { return }
-        phase = .review
+    ///
+    /// When a folder was sent meanwhile (see `scanFolder(at:)`), it's scanned instead.
+    ///
+    /// - Returns: The scan of that folder, or `nil` when it goes back to the list.
+    @discardableResult
+    public func done() -> Task<Void, Never>? {
+        guard case .finished = phase else { return nil }
+        guard let pendingScope else {
+            phase = .review
+            return nil
+        }
+        return startScan(in: pendingScope)
     }
 
     // MARK: Selection
@@ -241,8 +277,30 @@ public final class LargeFilesViewModel: ObservableObject {
 
     // MARK: Private
 
-    private func scan() async {
-        for await event in scanner.scan(.home) {
+    /// Starts a scan of `newScope` in place of whatever the screen shows.
+    ///
+    /// The scope and the filter only change, and are only announced, when the scan looks
+    /// somewhere else: the filter was chosen over the files of another place, and it could
+    /// hide every file found in this one. Scanning the same place again keeps it.
+    private func startScan(in newScope: LargeFileScanScope) -> Task<Void, Never> {
+        activeTask?.cancel()
+        pendingScope = nil
+        if newScope != scope {
+            scope = newScope
+            filter = LargeFileFilter()
+        }
+        updateFiles { $0 = [] }
+        selection = ItemSelection()
+        scannedFileCount = 0
+        wasStoppedEarly = false
+        phase = .scanning
+        let task = Task { await scan(newScope) }
+        activeTask = task
+        return task
+    }
+
+    private func scan(_ scope: LargeFileScanScope) async {
+        for await event in scanner.scan(scope) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let scannedFiles):
