@@ -127,6 +127,28 @@
         }
       }
     },
+    "Copy Path" : {
+      "comment" : "Context menu item that copies an item’s full path.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar ruta"
+          }
+        }
+      }
+    },
+    "Deselect" : {
+      "comment" : "Context menu item that unmarks an item.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deseleccionar"
+          }
+        }
+      }
+    },
     "Done" : {
       "comment" : "Button that closes a result screen.",
       "localizations" : {
@@ -171,6 +193,17 @@
         }
       }
     },
+    "Open" : {
+      "comment" : "Context menu item that opens a file with its app, or a folder in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir"
+          }
+        }
+      }
+    },
     "Partially selected" : {
       "comment" : "Accessibility value of a checkbox whose group is partly selected.",
       "localizations" : {
@@ -200,6 +233,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progreso"
+          }
+        }
+      }
+    },
+    "Select" : {
+      "comment" : "Context menu item that marks an item for removal.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar"
           }
         }
       }
