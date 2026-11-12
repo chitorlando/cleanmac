@@ -11,7 +11,7 @@ import Foundation
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
     /// What the scan on screen covers: the whole home folder, or a folder another feature sent.
-    @Published public private(set) var scope = DuplicateScanScope.home
+    @Published public private(set) var scope = ScanScope.home
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of groups slow down as it went. Every change goes through
     /// `updateGroups(_:)`, which announces it and then edits the array in place.
@@ -227,7 +227,7 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Private
 
-    private func startScan(_ newScope: DuplicateScanScope) -> Task<Void, Never> {
+    private func startScan(_ newScope: ScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingFolder = nil
         if newScope != scope {
@@ -271,7 +271,7 @@ public final class DuplicatesViewModel: ObservableObject {
         canToggleDuplicatesMemo.invalidate()
     }
 
-    private func scan(_ scope: DuplicateScanScope) async {
+    private func scan(_ scope: ScanScope) async {
         for await event in scanner.scan(scope) {
             guard !Task.isCancelled else { return }
             switch event {

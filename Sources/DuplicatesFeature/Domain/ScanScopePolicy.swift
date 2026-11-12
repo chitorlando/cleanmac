@@ -48,7 +48,7 @@ public struct ScanScopePolicy: Sendable {
     ///
     /// The folder of the scope is spelled from the home folder as given, like the excluded
     /// folders, whichever spelling of the home folder `url` uses.
-    public func scope(limitedTo url: URL) -> DuplicateScanScope? {
+    public func scope(limitedTo url: URL) -> ScanScope? {
         guard let names = namesBelowHome(of: url) else { return nil }
         guard !names.isEmpty else { return .home }
         return DatalessFilePolicy.withoutMaterializing {

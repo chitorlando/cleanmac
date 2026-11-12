@@ -1,3 +1,4 @@
+import CleanMacCore
 import DuplicatesFeature
 import Foundation
 import os
@@ -9,7 +10,7 @@ struct StubDuplicateScanner: DuplicateScanning {
     static let home = URL(filePath: "/Users/test")
 
     private struct State: Sendable {
-        var scannedScopes: [DuplicateScanScope] = []
+        var scannedScopes: [ScanScope] = []
         var refusedFolders: Set<URL>
     }
 
@@ -25,19 +26,19 @@ struct StubDuplicateScanner: DuplicateScanning {
     }
 
     /// The scope of every scan started so far, in order.
-    var scannedScopes: [DuplicateScanScope] { state.withLock { $0.scannedScopes } }
+    var scannedScopes: [ScanScope] { state.withLock { $0.scannedScopes } }
 
     /// From now on, the folder at `url` can't be scanned on its own, as if it were gone.
     func refuse(_ url: URL) {
         state.withLock { _ = $0.refusedFolders.insert(url) }
     }
 
-    func scope(limitedTo url: URL) -> DuplicateScanScope? {
+    func scope(limitedTo url: URL) -> ScanScope? {
         guard !state.withLock({ $0.refusedFolders.contains(url) }) else { return nil }
         return url == Self.home ? .home : .folder(url)
     }
 
-    func scan(_ scope: DuplicateScanScope) -> AsyncStream<DuplicateScanEvent> {
+    func scan(_ scope: ScanScope) -> AsyncStream<DuplicateScanEvent> {
         state.withLock { $0.scannedScopes.append(scope) }
         return AsyncStream { continuation in
             events.forEach { continuation.yield($0) }

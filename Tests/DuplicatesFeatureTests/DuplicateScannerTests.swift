@@ -23,7 +23,7 @@ struct DuplicateScannerTests {
         )
     }
 
-    private func events(of scanner: DuplicateScanner, scanning scope: DuplicateScanScope) async -> [DuplicateScanEvent] {
+    private func events(of scanner: DuplicateScanner, scanning scope: ScanScope) async -> [DuplicateScanEvent] {
         var events: [DuplicateScanEvent] = []
         for await event in scanner.scan(scope) {
             events.append(event)
@@ -33,7 +33,7 @@ struct DuplicateScannerTests {
 
     private func scan(
         _ home: TemporaryFolder,
-        scope: DuplicateScanScope = .home,
+        scope: ScanScope = .home,
         excluding excluded: [String] = [],
         minimumSize: Int64 = 100_000,
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()

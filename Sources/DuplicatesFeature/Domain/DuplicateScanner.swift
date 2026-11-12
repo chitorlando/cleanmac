@@ -47,14 +47,14 @@ public struct DuplicateScanner: DuplicateScanning {
         self.progressInterval = max(1, progressInterval)
     }
 
-    public func scope(limitedTo url: URL) -> DuplicateScanScope? {
+    public func scope(limitedTo url: URL) -> ScanScope? {
         scopePolicy.scope(limitedTo: url)
     }
 
     /// Starts scanning `scope`. Ending the iteration of the stream cancels the scan.
     ///
     /// A folder that can't be scanned on its own, or no longer can, reports nothing.
-    public func scan(_ scope: DuplicateScanScope) -> AsyncStream<DuplicateScanEvent> {
+    public func scan(_ scope: ScanScope) -> AsyncStream<DuplicateScanEvent> {
         let scanner = self
         return AsyncStream { continuation in
             let task = Task.detached(priority: .utility) {
@@ -71,7 +71,7 @@ public struct DuplicateScanner: DuplicateScanning {
     ///
     /// The folder is checked again here, right before walking it: it may have changed since
     /// its scope was made, and the scope may not come from `scope(limitedTo:)`.
-    private func root(of scope: DuplicateScanScope) -> URL? {
+    private func root(of scope: ScanScope) -> URL? {
         switch scope {
         case .home: home
         case .folder(let folder): scopePolicy.allows(folder) ? folder : nil
