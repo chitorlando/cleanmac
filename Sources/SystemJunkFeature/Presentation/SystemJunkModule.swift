@@ -33,7 +33,7 @@ public extension SystemJunkModule {
         )
         let viewModel = SystemJunkViewModel(
             scanService: JunkScanService(scanners: scanners),
-            cleanupService: CleanupService(remover: TrashItemRemover())
+            cleanupService: CleanupService(remover: MissingItemTolerantRemover(TrashItemRemover()))
         )
         return SystemJunkModule(viewModel: viewModel)
     }
