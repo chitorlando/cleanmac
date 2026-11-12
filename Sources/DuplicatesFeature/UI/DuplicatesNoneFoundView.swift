@@ -1,9 +1,12 @@
 import CleanMacUI
+import Foundation
 import SwiftUI
 
 /// Shown when the scan found no duplicates, or every duplicate has been removed.
 struct DuplicatesNoneFoundView: View {
     let wasStoppedEarly: Bool
+    /// The folder the scan was limited to, or `nil` when it covered the whole home folder.
+    let folder: URL?
     let theme: FeatureTheme
     let onScanAgain: () -> Void
 
@@ -29,6 +32,12 @@ struct DuplicatesNoneFoundView: View {
                 localized: "The scan was stopped before finding any duplicates.",
                 bundle: .module,
                 comment: "Message shown when the user stopped the scan before any duplicate was found."
+            )
+        } else if let folder {
+            String(
+                localized: "No file of \(DuplicateScanner.defaultMinimumSize.formattedByteCount) or more in the folder “\(folder.folderDisplayName)” has an identical copy.",
+                bundle: .module,
+                comment: "Message shown when a complete scan of one folder found no duplicates. The arguments are the smallest size compared, such as “1 MB”, and the name of the folder."
             )
         } else {
             String(

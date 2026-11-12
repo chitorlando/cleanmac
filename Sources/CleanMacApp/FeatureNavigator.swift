@@ -28,6 +28,11 @@ final class FeatureNavigator: ObservableObject {
         }
     }
 
+    /// What every feature offers to do with items shown by the others, in the order of the features.
+    var itemActions: [FeatureItemAction] {
+        modules.flatMap { $0.itemActions }
+    }
+
     /// The action features use to open each other.
     var openFeatureAction: OpenFeatureAction {
         OpenFeatureAction { [weak self] featureID, itemURL in self?.open(featureID, showing: itemURL) }

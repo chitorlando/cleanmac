@@ -168,6 +168,17 @@
         }
       }
     },
+    "Find Duplicates in This Folder" : {
+      "comment" : "Action offered on a folder shown by another feature, such as the disk map. It looks for duplicate files only in that folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar duplicados en esta carpeta"
+          }
+        }
+      }
+    },
     "Find identical copies of your files and choose which ones to move to the Trash." : {
       "comment" : "Introduction of the duplicates feature.",
       "localizations" : {
@@ -289,6 +300,17 @@
         }
       }
     },
+    "No file of %@ or more in the folder “%@” has an identical copy." : {
+      "comment" : "Message shown when a complete scan of one folder found no duplicates. The arguments are the smallest size compared, such as “1 MB”, and the name of the folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún archivo de %@ o más de la carpeta «%@» tiene una copia idéntica."
+          }
+        }
+      }
+    },
     "No file of %@ or more in your home folder has an identical copy." : {
       "comment" : "Message shown when a complete scan found no duplicates. The argument is the smallest size compared, such as “1 MB”.",
       "localizations" : {
@@ -296,6 +318,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ningún archivo de %@ o más de tu carpeta de inicio tiene una copia idéntica."
+          }
+        }
+      }
+    },
+    "Only in: %@" : {
+      "comment" : "Label of the pill shown while only one folder is scanned. The argument is the name of the folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo en: %@"
           }
         }
       }
@@ -318,6 +351,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Scan the Whole Home Folder" : {
+      "comment" : "Button on the pill of the folder being scanned. It leaves the folder and scans the whole home folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizar toda la carpeta de inicio"
           }
         }
       }
