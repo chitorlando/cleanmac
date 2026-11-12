@@ -22,9 +22,9 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. |
 | ✅ | **Mantenimiento** | Cinco tareas a elegir: vaciar la caché DNS, liberar memoria, reindexar Spotlight, reconstruir Launch Services y restablecer la caché de Quick Look. |
 | ✅ | **Mapa del disco** | Dibuja en anillos lo que ocupa cada carpeta de tu carpeta de inicio, `~/Library` incluida, junto a una lista ordenada por tamaño. Puedes entrar en las carpetas, volver con las migas y mover a la Papelera lo que no necesites. |
+| ✅ | **Monitor** | Muestra en directo el uso de la CPU con su historial, la memoria y su presión, el espacio del disco de arranque y del de tu carpeta de inicio, y tus procesos que más CPU o memoria usan. Solo lee: no cierra ni cambia nada, y deja de medir cuando no está a la vista. |
 | 🗓️ | **Privacidad** | Prevista. Limpiará cachés e historial de los navegadores. |
 | 🗓️ | **Ítems de inicio** | Prevista. Gestionará las apps y los agentes que arrancan con el sistema. |
-| 🗓️ | **Monitor** | Prevista. CPU, memoria y disco desde la barra de menús. |
 
 ✅ disponible · 🗓️ prevista. Las funciones previstas aparecen en la barra lateral
 con la etiqueta «Pronto».
@@ -123,6 +123,7 @@ Sources/
 ├── DuplicatesFeature/    Duplicados
 ├── DiskMapFeature/      Mapa del disco
 ├── MaintenanceFeature/   Mantenimiento
+├── MonitorFeature/       Monitor
 └── CleanMacApp/          Punto de entrada, barra lateral y composición de dependencias
 ```
 

@@ -12,17 +12,6 @@
         }
       }
     },
-    "Monitor" : {
-      "comment" : "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Monitor"
-          }
-        }
-      }
-    },
     "Privacy" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {

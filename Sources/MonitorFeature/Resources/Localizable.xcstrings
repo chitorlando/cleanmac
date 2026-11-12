@@ -1,0 +1,278 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ available of %@" : {
+      "comment" : "Free space of a volume. The arguments are sizes, such as “120 GB” and “500 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ disponibles de %@"
+          }
+        }
+      }
+    },
+    "%@ of %@ used" : {
+      "comment" : "Memory in use out of the installed memory. The arguments are sizes, such as “9 GB” and “16 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de %@ en uso"
+          }
+        }
+      }
+    },
+    "App Memory" : {
+      "comment" : "Memory that apps allocated.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memoria de apps"
+          }
+        }
+      }
+    },
+    "Available" : {
+      "comment" : "Memory apps can still get.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponible"
+          }
+        }
+      }
+    },
+    "CPU" : {
+      "comment" : "Title of the processor section of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU"
+          }
+        }
+      }
+    },
+    "Compressed" : {
+      "comment" : "Memory held compressed.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprimida"
+          }
+        }
+      }
+    },
+    "Critical pressure" : {
+      "comment" : "Badge: memory is short and apps may slow down.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presión crítica"
+          }
+        }
+      }
+    },
+    "Disk" : {
+      "comment" : "Title of the disk section of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disco"
+          }
+        }
+      }
+    },
+    "High pressure" : {
+      "comment" : "Badge: macOS is compressing memory and dropping caches.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presión alta"
+          }
+        }
+      }
+    },
+    "Measuring…" : {
+      "comment" : "Shown before the first readings of the busiest processes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Midiendo…"
+          }
+        }
+      }
+    },
+    "Memory" : {
+      "comment" : "Title of the memory section of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memoria"
+          }
+        }
+      }
+    },
+    "Monitor" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor"
+          }
+        }
+      }
+    },
+    "Normal pressure" : {
+      "comment" : "Badge: macOS has enough memory.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presión normal"
+          }
+        }
+      }
+    },
+    "Only your own processes are listed." : {
+      "comment" : "Note under the busiest processes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se muestran tus propios procesos."
+          }
+        }
+      }
+    },
+    "Open Disk Map" : {
+      "comment" : "Button that opens the disk map feature from the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Mapa del disco"
+          }
+        }
+      }
+    },
+    "Order by" : {
+      "comment" : "Label of the control that orders the busiest processes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar por"
+          }
+        }
+      }
+    },
+    "Part" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parte"
+          }
+        }
+      }
+    },
+    "Processor history" : {
+      "comment" : "Accessibility label of the chart of recent processor use.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial del procesador"
+          }
+        }
+      }
+    },
+    "Processor, memory and disks of this Mac, updated every few seconds." : {
+      "comment" : "Subtitle of the monitor screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procesador, memoria y discos de este Mac, actualizados cada pocos segundos."
+          }
+        }
+      }
+    },
+    "Reading" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lectura"
+          }
+        }
+      }
+    },
+    "System" : {
+      "comment" : "Processor time spent by the system.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        }
+      }
+    },
+    "Top Processes" : {
+      "comment" : "Title of the list of the busiest processes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procesos"
+          }
+        }
+      }
+    },
+    "Usage" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uso"
+          }
+        }
+      }
+    },
+    "User" : {
+      "comment" : "Processor time spent on apps and other user code.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuario"
+          }
+        }
+      }
+    },
+    "Wired" : {
+      "comment" : "Memory the system keeps locked.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No paginable"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
