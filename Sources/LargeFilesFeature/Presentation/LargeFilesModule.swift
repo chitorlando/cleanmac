@@ -25,10 +25,17 @@ public final class LargeFilesModule: FeatureModule {
 
 public extension LargeFilesModule {
     /// Module that walks the current user's home folder and moves files to the Trash.
+    ///
+    /// `~/Library` is left out, as other features take care of it. The walker and the scope
+    /// policy get the same excluded folders, so a scan limited to one folder can't start inside them.
     static func live() -> LargeFilesModule {
+        let excludedDirectories = [FileSystemWalker.userLibrary]
         let scanner = LargeFileScanner(
-            root: FileManager.default.homeDirectoryForCurrentUser,
-            walker: FileSystemWalker()
+            scopePolicy: ScanScopePolicy(
+                home: FileManager.default.homeDirectoryForCurrentUser,
+                excludedDirectories: excludedDirectories
+            ),
+            walker: FileSystemWalker(excludedDirectories: excludedDirectories)
         )
         let viewModel = LargeFilesViewModel(
             scanner: scanner,
