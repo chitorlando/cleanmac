@@ -26,12 +26,19 @@ enum DuplicateFixtures {
         Date(timeIntervalSince1970: 1_767_225_600 + TimeInterval(day) * 86_400)
     }
 
-    static func file(_ path: String, created: Date? = date(1), storage: Storage = .own) -> DuplicateFile {
+    /// - Parameter linkCount: Names the file has on its volume: more than one for a hard link.
+    static func file(
+        _ path: String,
+        created: Date? = date(1),
+        storage: Storage = .own,
+        linkCount: Int = 1
+    ) -> DuplicateFile {
         let url = URL(filePath: path)
         return DuplicateFile(
             item: CleanableItem(url: url, size: fileSize),
             creationDate: created,
-            cloneInfo: cloneInfo(for: storage, url: url)
+            cloneInfo: cloneInfo(for: storage, url: url),
+            linkCount: linkCount
         )
     }
 

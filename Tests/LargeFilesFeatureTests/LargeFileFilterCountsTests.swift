@@ -24,7 +24,7 @@ struct LargeFileFilterCountsTests {
         #expect(counts.count(of: .audio) == 0)
         #expect(counts.count(of: .lessThanOneMonth) == 2)
         #expect(counts.count(of: .overOneYear) == 1)
-        #expect(counts.count(of: .from50MBTo100MB) == 2)
+        #expect(counts.count(of: .upTo100MB) == 2)
         #expect(counts.count(of: .over1GB) == 1)
     }
 
@@ -33,7 +33,7 @@ struct LargeFileFilterCountsTests {
 
         #expect(counts.count(of: .image) == 1)
         #expect(counts.count(of: .lessThanOneMonth) == 1)
-        #expect(counts.count(of: .from50MBTo100MB) == 1)
+        #expect(counts.count(of: .upTo100MB) == 1)
     }
 
     @Test func appliesTheOtherConditions() {
@@ -43,6 +43,6 @@ struct LargeFileFilterCountsTests {
         #expect(counts.count(of: .image) == 0)
         #expect(counts.count(of: .overOneYear) == 1)
         #expect(counts.count(of: .lessThanOneMonth) == 0)
-        #expect(counts.count(of: .from50MBTo100MB) == 2)
+        #expect(counts.count(of: .upTo100MB) == 2)
     }
 }

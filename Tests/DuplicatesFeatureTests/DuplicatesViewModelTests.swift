@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import DuplicatesFeature
 import Foundation
 import Testing
@@ -91,12 +92,61 @@ struct DuplicatesViewModelTests {
         #expect(!viewModel.wasStoppedEarly)
     }
 
+    /// The groups aren't `@Published`, so the view model announces their changes itself.
+    /// Each number is how many groups there were when a change was announced.
+    @Test func announcesEveryChangeToTheGroupsBeforeMakingIt() async {
+        let viewModel = makeViewModel(events: [.found(photos), .found(reports)])
+        var groupCounts: [Int] = []
+        let observation = viewModel.objectWillChange.sink { groupCounts.append(viewModel.groups.count) }
+
+        await viewModel.startScan().value
+        // Clearing the groups, the selection, the progress, the warning and the focus, and
+        // starting; then each group found, the focus on the first group and the review.
+        #expect(groupCounts == [0, 0, 0, 0, 0, 0, 0, 1, 2, 2])
+
+        viewModel.toggle(reportDownload, in: reports)
+        viewModel.toggle(reportDesktop, in: reports)
+        groupCounts = []
+        await viewModel.remove()?.value
+        // Removing, the groups left, the selection, the focus on the group left and the report.
+        #expect(groupCounts == [2, 2, 1, 1, 1])
+        #expect(viewModel.groups == [photos])
+        observation.cancel()
+    }
+
     @Test func countsClonesOnceInTheRecoverableSpace() async {
         let viewModel = await scannedViewModel()
 
         #expect(photos.recoverableSize == size)
         #expect(reports.recoverableSize == size * 2)
         #expect(viewModel.recoverableSize == size * 3)
+    }
+
+    @Test func theFocusedGroupFollowsTheFocus() async {
+        let viewModel = await scannedViewModel()
+        #expect(viewModel.focusedGroup == reports)
+
+        viewModel.focusedGroupID = photos.id
+
+        #expect(viewModel.focusedGroup == photos)
+    }
+
+    @Test func derivedValuesFollowTheGroupsLeftAfterARemoval() async {
+        let viewModel = await scannedViewModel()
+        viewModel.focusedGroupID = photos.id
+        viewModel.toggle(photoCopy, in: photos)
+        #expect(viewModel.visibleGroups == [reports, photos])
+        #expect(viewModel.recoverableSize == size * 3)
+        #expect(viewModel.focusedGroup == photos)
+        #expect(viewModel.selectedCount == 1)
+
+        await viewModel.remove()?.value
+
+        let remainingPhotos = Fixtures.group(photo, photoClone)
+        #expect(viewModel.visibleGroups == [reports, remainingPhotos])
+        #expect(viewModel.recoverableSize == size * 2)
+        #expect(viewModel.focusedGroup == remainingPhotos)
+        #expect(!viewModel.hasSelection)
     }
 
     @Test func stoppingTheScanReviewsTheGroupsFoundSoFar() async {
@@ -154,6 +204,18 @@ struct DuplicatesViewModelTests {
         viewModel.query.searchText = "pictures"
 
         #expect(viewModel.visibleGroups == [photos])
+    }
+
+    @Test func writingTheSameQueryAgainKeepsTheListAndANewOneUpdatesIt() async {
+        let viewModel = await scannedViewModel()
+        viewModel.query.searchText = "pictures"
+        #expect(viewModel.visibleGroups == [photos])
+
+        viewModel.query.searchText = "pictures"
+        #expect(viewModel.visibleGroups == [photos])
+
+        viewModel.query.searchText = ""
+        #expect(viewModel.visibleGroups == [reports, photos])
     }
 
     // MARK: Selection

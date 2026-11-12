@@ -6,7 +6,8 @@ import SwiftUI
 /// An AppKit view behind the map takes the keyboard as the map appears and asks
 /// `DiskMapKeyBindings` what each key does.
 struct DiskMapKeyDownNavigation: ViewModifier {
-    let viewModel: DiskMapViewModel
+    /// Carries out what a key press asked for.
+    let perform: @MainActor (DiskMapKeyAction) -> Void
 
     private let bindings = DiskMapKeyBindings()
 
@@ -18,9 +19,9 @@ struct DiskMapKeyDownNavigation: ViewModifier {
     private func handleKeyDown(_ keyCode: UInt16) -> Bool {
         guard
             let key = DiskMapKey(keyCode: keyCode),
-            let action = bindings.action(for: key, hasSelection: viewModel.hasSelection)
+            let action = bindings.action(for: key)
         else { return false }
-        viewModel.perform(action)
+        perform(action)
         return true
     }
 }

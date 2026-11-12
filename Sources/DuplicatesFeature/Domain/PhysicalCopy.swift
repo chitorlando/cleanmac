@@ -5,8 +5,8 @@ public struct PhysicalCopy: Hashable, Sendable {
     /// Space freed once every file of this copy is removed.
     ///
     /// Zero whenever that isn't certain: when a volume couldn't tell how the data is shared
-    /// or how many files share it, when files outside the group share it too, or when part
-    /// of it may be shared.
+    /// or how many files share it, when files outside the group share it too, when part
+    /// of it may be shared, or when one of its files has names the group doesn't hold.
     public let freeableSize: Int64
 
     init(files: [DuplicateFile], fileSize: Int64) {
@@ -15,6 +15,8 @@ public struct PhysicalCopy: Hashable, Sendable {
     }
 
     private static func freesItsData(_ files: [DuplicateFile]) -> Bool {
+        // A hard link keeps its data on disk under its other names.
+        guard !files.contains(where: \.hasOtherNames) else { return false }
         let infos = files.compactMap(\.cloneInfo)
         guard infos.count == files.count, let info = infos.first else { return false }
         return info.cloneCount == files.count && !infos.contains(where: \.mayShareSomeData)

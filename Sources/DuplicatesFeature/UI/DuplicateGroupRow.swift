@@ -1,24 +1,29 @@
+import CleanMacCore
 import CleanMacUI
 import SwiftUI
 
 /// One group of duplicates in the list, with the space it can free, or a badge when its copies are all clones.
 /// Clicking it shows its copies; the checkbox marks its duplicates.
-struct DuplicateGroupRow: View {
+///
+/// It takes plain values instead of the view model, and two rows are equal when they show
+/// the same, so wrapped in `.equatable()` a row is only evaluated again when it changes,
+/// not on every change of the screen.
+struct DuplicateGroupRow: View, Equatable {
     let group: DuplicateGroup
-    @ObservedObject var viewModel: DuplicatesViewModel
+    let isFocused: Bool
+    let selectionState: ItemSelection.State
     let theme: FeatureTheme
-
-    private var isFocused: Bool { viewModel.focusedGroupID == group.id }
+    let onToggle: () -> Void
+    let onFocus: () -> Void
 
     var body: some View {
         HStack(spacing: 10) {
             TriStateCheckbox(
-                state: CheckState(viewModel.selectionState(of: group)),
+                state: CheckState(selectionState),
                 tint: theme.primary,
-                label: Text(verbatim: group.name)
-            ) {
-                viewModel.toggle(group)
-            }
+                label: Text(verbatim: group.name),
+                action: onToggle
+            )
 
             DuplicateFileIcon(group: group, size: 32)
 
@@ -28,7 +33,7 @@ struct DuplicateGroupRow: View {
                     .truncationMode(.middle)
                 Text("\(group.files.count) copies", bundle: .module, comment: "Number of identical copies in a group of duplicates.")
                     .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.supportingText)
                     .lineLimit(1)
             }
 
@@ -47,9 +52,18 @@ struct DuplicateGroupRow: View {
         .padding(.vertical, 6)
         .background(SelectionHighlight(isSelected: isFocused, theme: theme))
         .contentShape(.rect(cornerRadius: 10))
-        .onTapGesture { viewModel.focusedGroupID = group.id }
+        .onTapGesture(perform: onFocus)
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(isFocused ? [.isButton, .isSelected] : .isButton)
-        .accessibilityAction { viewModel.focusedGroupID = group.id }
+        .accessibilityAction { onFocus() }
+    }
+
+    /// Compares what the row shows. The actions are left out: they act on the same group.
+    nonisolated static func == (lhs: DuplicateGroupRow, rhs: DuplicateGroupRow) -> Bool {
+        lhs.group == rhs.group
+            && lhs.isFocused == rhs.isFocused
+            && lhs.selectionState == rhs.selectionState
+            && lhs.theme.primary == rhs.theme.primary
+            && lhs.theme.secondary == rhs.theme.secondary
     }
 }

@@ -83,6 +83,51 @@ struct DuplicateScannerTests {
         #expect(groups(await scan(folder)).isEmpty)
     }
 
+    @Test func tellsWhichCopiesHaveOtherNames() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        let linked = try folder.write(content, to: "Documents/report.pdf")
+        // A hidden name, which the walk skips like any hidden file.
+        try folder.makeHardLink(".report.pdf", to: linked)
+        try folder.write(content, to: "Downloads/report.pdf")
+
+        let group = try #require(groups(await scan(folder)).first)
+
+        #expect(group.files.count == 2)
+        let linkedFolders = group.files.filter(\.hasOtherNames).map { $0.item.url.deletingLastPathComponent().lastPathComponent }
+        #expect(linkedFolders == ["Documents"])
+    }
+
+    @Test func promisesNoSpaceForAFileWithANameTheScanSkips() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        let linked = try folder.write(content, to: "Documents/report.pdf")
+        try folder.makeHardLink(".report.pdf", to: linked)
+        try folder.write(content, to: "Downloads/report.pdf")
+
+        let group = try #require(groups(await scan(folder)).first)
+        let linkedCopy = try #require(group.files.first { $0.hasOtherNames })
+
+        #expect(group.physicalCopy(containing: linkedCopy)?.freeableSize == 0)
+        #expect(group.recoverableSize == group.fileSize)
+        #expect(DuplicateKeeper.keeper(in: group) == linkedCopy)
+    }
+
+    @Test func promisesNoSpaceForAFileWithTwoScannedNames() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        let linked = try folder.write(content, to: "Documents/report.pdf")
+        try folder.makeHardLink("report link.pdf", to: linked)
+        try folder.write(content, to: "Downloads/report.pdf")
+
+        let group = try #require(groups(await scan(folder)).first)
+        let linkedCopy = try #require(group.files.first { $0.hasOtherNames })
+
+        #expect(group.files.count == 2)
+        #expect(group.physicalCopy(containing: linkedCopy)?.freeableSize == 0)
+        #expect(group.recoverableSize == group.fileSize)
+    }
+
     @Test func countsClonesOfEachOtherAsOnePhysicalCopy() async throws {
         let folder = try TemporaryFolder()
         let content = Data.pattern(count: Self.fileSize, seed: 1)

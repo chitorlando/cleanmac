@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import Foundation
 import LargeFilesFeature
 import Testing
@@ -72,10 +73,36 @@ struct LargeFilesViewModelTests {
         #expect(viewModel.foundSize == 2_360_000_000)
     }
 
+    @Test func announcesEveryChangeToTheFilesFound() async {
+        let viewModel = makeViewModel(events: allFiles.map { .found($0) })
+        var announcements = 0
+        let observation = viewModel.objectWillChange.sink { announcements += 1 }
+
+        await viewModel.startScan().value
+        // Clearing the files, the selection, the count and the warning, starting, three files
+        // found and the review.
+        #expect(announcements == 9)
+
+        viewModel.toggle(trip)
+        announcements = 0
+        await viewModel.remove()?.value
+        // Removing, the files left, the selection and the report.
+        #expect(announcements == 4)
+        #expect(viewModel.files == [song, backup])
+        observation.cancel()
+    }
+
     @Test func aCompleteScanIsNotMarkedAsStopped() async {
         let viewModel = await scannedViewModel()
 
         #expect(!viewModel.wasStoppedEarly)
+    }
+
+    @Test func offersSizeBucketsFromTheMinimumSizeTheScannerLooksFor() {
+        let scanner = StubLargeFileScanner(events: [], criteria: LargeFileCriteria(minimumSize: 200_000_000))
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+
+        #expect(viewModel.sizeBuckets == [.from100MBTo1GB, .over1GB])
     }
 
     @Test func exposesTheMinimumSizeTheScannerLooksFor() {

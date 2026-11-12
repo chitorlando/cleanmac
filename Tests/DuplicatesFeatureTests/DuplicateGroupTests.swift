@@ -120,6 +120,29 @@ struct DuplicateGroupTests {
         #expect(families.recoverableSize == 0)
     }
 
+    @Test func doesNotCountAFileWithNamesTheGroupDoesNotHold() {
+        // Removing one name of a hard link leaves its data on disk under the others.
+        let linked = Fixtures.file("/linked", linkCount: 2)
+        let own = Fixtures.file("/own")
+        let group = Fixtures.group(linked, own)
+
+        #expect(linked.hasOtherNames)
+        #expect(!own.hasOtherNames)
+        #expect(group.physicalCopies.map(\.freeableSize) == [0, size])
+        #expect(group.recoverableSize == size)
+        #expect(group.freedSize(removing: [linked.id]) == 0)
+        #expect(group.freedSize(removing: [own.id]) == size)
+    }
+
+    @Test func doesNotCountClonesOfAFileWithNamesTheGroupDoesNotHold() {
+        let linked = Fixtures.file("/a", storage: .clone(stream: 7, count: 2), linkCount: 2)
+        let clone = Fixtures.file("/b", storage: .clone(stream: 7, count: 2))
+        let group = Fixtures.group(linked, clone, Fixtures.file("/own"))
+
+        #expect(group.physicalCopies.map(\.freeableSize) == [0, size])
+        #expect(group.freedSize(removing: [linked.id, clone.id]) == 0)
+    }
+
     @Test func doesNotCountCopiesWhoseVolumeCouldNotTell() {
         let group = Fixtures.group(
             Fixtures.file("/a", storage: .unknown),

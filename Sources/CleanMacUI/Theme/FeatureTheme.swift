@@ -45,6 +45,32 @@ public extension FeatureTheme {
         secondary: Color(red: 0.84, green: 0.24, blue: 0.72)
     )
 
+    /// Chartreuse to leaf green, a hue no other feature uses.
+    static let diskMap = FeatureTheme(
+        primary: Color(red: 0.82, green: 0.92, blue: 0.32),
+        secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
+    )
+
+    /// Coral to crimson, a hue no other feature uses.
+    static let loginItems = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.45, blue: 0.42),
+        secondary: Color(red: 0.88, green: 0.18, blue: 0.27)
+    )
+
+    /// Aqua to cerulean, a hue no other feature uses: bluer than the junk's mint and teal,
+    /// greener than the uninstaller's blue. Dark button labels keep at least 8.6:1 across it.
+    static let monitor = FeatureTheme(
+        primary: Color(red: 0.45, green: 0.94, blue: 0.98),
+        secondary: Color(red: 0.18, green: 0.74, blue: 0.95)
+    )
+
+    /// Blush to rose, a hue no other feature uses: lighter and pinker than the lavender
+    /// and magenta of the duplicates. Dark button labels keep at least 8.5:1 across it.
+    static let privacy = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.72, blue: 0.85),
+        secondary: Color(red: 0.98, green: 0.55, blue: 0.76)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)

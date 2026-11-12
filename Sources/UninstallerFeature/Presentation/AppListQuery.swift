@@ -1,6 +1,9 @@
 import Foundation
 
 /// Filters and orders the installed apps shown in the list.
+///
+/// Ordering compares names as the Finder does, which costs far more than matching the search.
+/// The two steps are separate so the list can be ordered once and only filtered as the user types.
 public struct AppListQuery: Equatable, Sendable {
     public var searchText: String
     public var sortOrder: AppSortOrder
@@ -10,8 +13,14 @@ public struct AppListQuery: Equatable, Sendable {
         self.sortOrder = sortOrder
     }
 
-    public func apply(to apps: [InstalledApp]) -> [InstalledApp] {
-        apps.filter(matchesSearch).sorted(by: isOrderedBefore)
+    /// The apps in the chosen order.
+    public func sorted(_ apps: [InstalledApp]) -> [InstalledApp] {
+        apps.sorted(by: isOrderedBefore)
+    }
+
+    /// The apps that match the search, in the order they come in.
+    public func filtered(_ apps: [InstalledApp]) -> [InstalledApp] {
+        apps.filter(matchesSearch)
     }
 
     /// Matches the app name, its alternate names or its bundle ID, ignoring case and accents.

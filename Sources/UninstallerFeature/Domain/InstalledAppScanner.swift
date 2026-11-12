@@ -30,19 +30,26 @@ public struct InstalledAppScanner: InstalledAppScanning {
         self.excludedBundleIDs = Set(excludedBundleIDs.map { $0.lowercased() })
     }
 
-    public func scan() -> AsyncStream<AppScanEvent> {
+    public func scan(including otherApps: [URL]) -> AsyncStream<AppScanEvent> {
         let scanner = self
         return AsyncStream { continuation in
             let task = Task {
-                await scanner.run(reportingTo: continuation)
+                await scanner.run(including: otherApps, reportingTo: continuation)
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }
         }
     }
 
-    private func run(reportingTo continuation: AsyncStream<AppScanEvent>.Continuation) async {
-        let apps = discoverApps()
+    public func canAnalyze(appAt url: URL) -> Bool {
+        locator.application(at: url).flatMap(analyzableInfo(forAppAt:)) != nil
+    }
+
+    private func run(
+        including otherApps: [URL],
+        reportingTo continuation: AsyncStream<AppScanEvent>.Continuation
+    ) async {
+        let apps = discoverApps(including: otherApps)
         continuation.yield(.discovered(count: apps.count))
         guard !Task.isCancelled else { return }
 
@@ -63,9 +70,20 @@ public struct InstalledAppScanner: InstalledAppScanning {
         }
     }
 
-    private func discoverApps() -> [AppBundleInfo] {
-        locator.applications(in: applicationFolders)
-            .compactMap(infoReader.info(forAppAt:))
-            .filter { !excludedBundleIDs.contains($0.bundleID.lowercased()) }
+    /// Apps of the application folders followed by the ones of `otherApps` that exist, once each.
+    private func discoverApps(including otherApps: [URL]) -> [AppBundleInfo] {
+        var seenPaths: Set<String> = []
+        let apps = locator.applications(in: applicationFolders) + otherApps.compactMap(locator.application(at:))
+        return apps
+            .filter { seenPaths.insert($0.standardizedFileURL.path).inserted }
+            .compactMap(analyzableInfo(forAppAt:))
+    }
+
+    /// The identity of the app at `url`, unless it can't be read or the app is one to leave out.
+    private func analyzableInfo(forAppAt url: URL) -> AppBundleInfo? {
+        guard let info = infoReader.info(forAppAt: url),
+              !excludedBundleIDs.contains(info.bundleID.lowercased())
+        else { return nil }
+        return info
     }
 }

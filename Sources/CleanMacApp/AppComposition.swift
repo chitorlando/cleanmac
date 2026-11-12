@@ -2,7 +2,10 @@ import CleanMacUI
 import DiskMapFeature
 import DuplicatesFeature
 import LargeFilesFeature
+import LoginItemsFeature
 import MaintenanceFeature
+import MonitorFeature
+import PrivacyFeature
 import SystemJunkFeature
 import UninstallerFeature
 
@@ -10,13 +13,18 @@ import UninstallerFeature
 @MainActor
 enum AppComposition {
     static func makeModules() -> [any FeatureModule] {
-        [
+        let uninstaller = UninstallerModule.live()
+        let diskMap = DiskMapModule.live(uninstallerFeatureID: uninstaller.id)
+        return [
             SystemJunkModule.live(),
-            UninstallerModule.live(),
+            PrivacyModule.live(),
+            uninstaller,
             LargeFilesModule.live(),
-            DiskMapModule.live(),
+            diskMap,
             DuplicatesModule.live(),
-            MaintenanceModule.live()
+            MaintenanceModule.live(),
+            LoginItemsModule.live(),
+            MonitorModule.live(diskMapFeatureID: diskMap.id)
         ]
     }
 }

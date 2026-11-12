@@ -13,6 +13,8 @@ struct InstalledAppScannerTests {
     private let beta = AppBundleInfo(url: URL(filePath: "/Applications/Beta.app"), bundleID: "com.example.beta", name: "Beta")
     private let cleanMac = AppBundleInfo(url: URL(filePath: "/Applications/CleanMac.app"), bundleID: "io.github.cleanmac", name: "CleanMac")
     private let unreadable = URL(filePath: "/Applications/Broken.app")
+    /// An app outside the application folders.
+    private let gamma = AppBundleInfo(url: URL(filePath: "/home/Downloads/Gamma.app"), bundleID: "com.example.gamma", name: "Gamma")
 
     private func cache(_ name: String) -> URL { caches.url.appending(path: name) }
 
@@ -21,8 +23,8 @@ struct InstalledAppScannerTests {
         let cacheItems = [cache("com.example.alpha"), cache("Alpha"), cache("com.example.beta.helper"), cache("CleanMac"), cache("Unrelated")]
         return InstalledAppScanner(
             applicationFolders: [URL(filePath: "/Applications")],
-            locator: FakeAppLocator(apps: apps.map(\.url) + [unreadable]),
-            infoReader: FakeAppInfoReader(infos: Dictionary(uniqueKeysWithValues: apps.map { ($0.url, $0) })),
+            locator: FakeAppLocator(apps: apps.map(\.url) + [unreadable], appsElsewhere: [gamma.url]),
+            infoReader: FakeAppInfoReader(infos: Dictionary(uniqueKeysWithValues: (apps + [gamma]).map { ($0.url, $0) })),
             leftoverLocations: [caches],
             reader: FakeDirectoryReader(tree: [caches.url: cacheItems]),
             sizer: FakeSizeCalculator(sizes: [
@@ -36,9 +38,9 @@ struct InstalledAppScannerTests {
         )
     }
 
-    private func collectEvents() async -> [AppScanEvent] {
+    private func collectEvents(including otherApps: [URL] = []) async -> [AppScanEvent] {
         var events: [AppScanEvent] = []
-        for await event in makeScanner().scan() {
+        for await event in makeScanner().scan(including: otherApps) {
             events.append(event)
         }
         return events
@@ -75,5 +77,40 @@ struct InstalledAppScannerTests {
         #expect(scannedAlpha.totalSize == 1_040)
         #expect(scannedBeta.allItems.map(\.name) == ["Beta.app", "com.example.beta.helper"])
         #expect(scannedBeta.totalSize == 2_050)
+    }
+
+    @Test func analyzesAnAppFromElsewhereWhenAsked() async {
+        let events = await collectEvents(including: [gamma.url])
+
+        #expect(events.first == .discovered(count: 3))
+        #expect(Set(analyzedApps(in: events).keys) == [alpha.id, beta.id, gamma.id])
+    }
+
+    @Test func ignoresOtherAppsThatAreNotThere() async {
+        let events = await collectEvents(including: [URL(filePath: "/home/Downloads/Gone.app")])
+
+        #expect(Set(analyzedApps(in: events).keys) == [alpha.id, beta.id])
+    }
+
+    @Test func canAnalyzeAnAppWhereverItIs() {
+        let scanner = makeScanner()
+
+        #expect(scanner.canAnalyze(appAt: alpha.url))
+        #expect(scanner.canAnalyze(appAt: gamma.url))
+    }
+
+    @Test func cannotAnalyzeAnAppThatIsMissingUnreadableOrExcluded() {
+        let scanner = makeScanner()
+
+        #expect(!scanner.canAnalyze(appAt: URL(filePath: "/home/Downloads/Gone.app")))
+        #expect(!scanner.canAnalyze(appAt: unreadable))
+        #expect(!scanner.canAnalyze(appAt: cleanMac.url))
+    }
+
+    @Test func listsOnceAnAppOfTheApplicationFoldersAskedForAgain() async {
+        let events = await collectEvents(including: [alpha.url])
+
+        #expect(events.first == .discovered(count: 2))
+        #expect(events.count == 3)
     }
 }

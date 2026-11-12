@@ -5,6 +5,7 @@ public struct ActionBar: View {
     private let secondaryTitle: Text?
     private let primaryTitle: Text
     private let isPrimaryEnabled: Bool
+    private let isPrimaryDefaultAction: Bool
     private let theme: FeatureTheme
     private let onSecondary: (() -> Void)?
     private let onPrimary: () -> Void
@@ -12,11 +13,14 @@ public struct ActionBar: View {
     /// - Parameters:
     ///   - secondaryTitle: Title of the quiet action on the left, such as “Scan Again”.
     ///     Without it, or without `onSecondary`, the bar shows only the main action.
+    ///   - isPrimaryDefaultAction: Whether Return triggers the main button. Turn it off when the
+    ///     screen uses Return for something else, such as opening the highlighted folder.
     ///   - onSecondary: What the secondary action does.
     public init(
         secondaryTitle: Text? = nil,
         primaryTitle: Text,
         isPrimaryEnabled: Bool = true,
+        isPrimaryDefaultAction: Bool = true,
         theme: FeatureTheme,
         onSecondary: (() -> Void)? = nil,
         onPrimary: @escaping () -> Void
@@ -24,6 +28,7 @@ public struct ActionBar: View {
         self.secondaryTitle = secondaryTitle
         self.primaryTitle = primaryTitle
         self.isPrimaryEnabled = isPrimaryEnabled
+        self.isPrimaryDefaultAction = isPrimaryDefaultAction
         self.theme = theme
         self.onSecondary = onSecondary
         self.onPrimary = onPrimary
@@ -40,7 +45,7 @@ public struct ActionBar: View {
             }
             .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
             .disabled(!isPrimaryEnabled)
-            .keyboardShortcut(.defaultAction)
+            .keyboardShortcut(isPrimaryDefaultAction ? .defaultAction : nil)
         }
     }
 

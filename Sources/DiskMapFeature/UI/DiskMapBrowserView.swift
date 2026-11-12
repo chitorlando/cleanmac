@@ -4,8 +4,10 @@ import SwiftUI
 /// The map: breadcrumbs on top, the rings with the list of items beside them, and the bar
 /// that moves the selection to the Trash after asking.
 ///
-/// Keys: ↑ and ↓ move through the items, → or Return opens a folder, ← or ⌘↑ goes up.
-/// While something is selected, Return belongs to the bar's main button, which only asks.
+/// Keys: ↑ and ↓ move through the items, → or Return opens a folder or shows an app in the
+/// Uninstaller, ← or ⌘↑ goes up.
+/// Return keeps opening folders while something is selected: the bar's main button only
+/// responds to a click, so a key press never starts a removal.
 struct DiskMapBrowserView: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
@@ -25,6 +27,7 @@ struct DiskMapBrowserView: View {
                 secondaryTitle: Text("Scan Again", bundle: .module, comment: "Button that measures the home folder again."),
                 primaryTitle: removeTitle,
                 isPrimaryEnabled: viewModel.hasSelection,
+                isPrimaryDefaultAction: false,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
                 onPrimary: { isConfirmingRemoval = true }
@@ -50,27 +53,27 @@ struct DiskMapBrowserView: View {
     @ViewBuilder
     private var chart: some View {
         if let folder = viewModel.focusedFolder {
-            SunburstChart(
-                folder: folder,
-                segments: viewModel.segments,
-                ringCount: SunburstLayout.defaultRingCount,
-                highlightedBranch: highlightedBranch,
-                onPoint: { segment in
-                    if let branch = segment?.branch, viewModel.items.indices.contains(branch) {
-                        viewModel.highlightedID = viewModel.items[branch].id
-                    }
-                },
-                onOpen: { segment in
-                    guard viewModel.items.indices.contains(segment.branch) else { return }
-                    viewModel.open(viewModel.items[segment.branch])
-                },
-                onCenter: { viewModel.goUp() }
-            )
+            // Laid out here, once per folder, and not each time the highlight moves.
+            let segments = viewModel.segments
+            DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
+                SunburstChart(
+                    folder: folder,
+                    segments: segments,
+                    ringCount: SunburstLayout.defaultRingCount,
+                    highlightedBranch: folder.children.firstIndex { $0.id == highlightedID },
+                    onPoint: { segment in
+                        if let branch = segment?.branch, viewModel.items.indices.contains(branch) {
+                            viewModel.highlightedID = viewModel.items[branch].id
+                        }
+                    },
+                    onOpen: { segment in
+                        guard viewModel.items.indices.contains(segment.branch) else { return }
+                        viewModel.open(viewModel.items[segment.branch])
+                    },
+                    onCenter: { viewModel.goUp() }
+                )
+            }
         }
-    }
-
-    private var highlightedBranch: Int? {
-        viewModel.items.firstIndex { $0.id == viewModel.highlightedID }
     }
 
     private var confirmationTitle: Text {

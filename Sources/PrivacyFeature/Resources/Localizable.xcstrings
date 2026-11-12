@@ -1,0 +1,171 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ cleared" : {
+      "comment" : "Title after clearing browser caches. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ liberados"
+          }
+        }
+      }
+    },
+    "All Clean" : {
+      "comment" : "Title shown when no browser caches were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo limpio"
+          }
+        }
+      }
+    },
+    "Clear %@" : {
+      "comment" : "Button that clears the selected browser caches. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borrar %@"
+          }
+        }
+      }
+    },
+    "Clear the caches your browsers keep of the pages you visit. History, passwords and cookies stay untouched." : {
+      "comment" : "Introduction of the privacy feature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Borra las cachés que tus navegadores guardan de las páginas que visitas. El historial, las contraseñas y las cookies no se tocan."
+          }
+        }
+      }
+    },
+    "Hide caches" : {
+      "comment" : "Accessibility label of the button that collapses a browser.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocultar las cachés"
+          }
+        }
+      }
+    },
+    "Looking for browser caches…" : {
+      "comment" : "Status shown while browser caches are measured.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando las cachés de los navegadores…"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "Quit %@" : {
+      "comment" : "Button that asks an open browser to quit. The argument is its name.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de %@"
+          }
+        }
+      }
+    },
+    "Quit %@ to clear its caches." : {
+      "comment" : "Notice shown on an open browser, whose caches can't be cleared. The argument is its name.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sal de %@ para borrar sus cachés."
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "comment" : "Button that starts looking for browser caches.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan Again" : {
+      "comment" : "Button that repeats the browser caches scan.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Show caches" : {
+      "comment" : "Accessibility label of the button that expands a browser.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar las cachés"
+          }
+        }
+      }
+    },
+    "The caches are in the Trash. Your browsers rebuild them when they need them." : {
+      "comment" : "Shown after clearing browser caches.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las cachés están en la Papelera. Tus navegadores las vuelven a crear cuando las necesitan."
+          }
+        }
+      }
+    },
+    "Your browsers have no caches to clear." : {
+      "comment" : "Message shown when no browser caches were found.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus navegadores no tienen cachés que borrar."
+          }
+        }
+      }
+    },
+    "of browser caches found. Review what you want to clear." : {
+      "comment" : "Shown below the total size of browser caches found, as in “1.2 GB of browser caches found”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "de cachés de navegadores encontrados. Revisa lo que quieres borrar."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

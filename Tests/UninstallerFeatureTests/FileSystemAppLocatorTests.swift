@@ -64,4 +64,51 @@ struct FileSystemAppLocatorTests {
         #expect(apps.count == 1)
         #expect(apps.allSatisfy { $0 == $0.standardizedFileURL })
     }
+
+    @Test func findsAnAppOutsideTheApplicationFolders() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let app = try folder.makeFolder("Downloads/Installer/Tool.app/Contents").deletingLastPathComponent()
+
+        let found = FileSystemAppLocator().application(at: app.appending(path: "../Tool.app/"))
+
+        #expect(found?.path == app.standardizedFileURL.path)
+    }
+
+    @Test func findsNoAppAtPlainFoldersLinksOrMissingPaths() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        try folder.makeFolder("Downloads/Real.app/Contents")
+        let plainFolder = try folder.makeFolder("Downloads/Photos")
+        let link = try folder.makeLink("Downloads/Linked.app", to: "Downloads/Real.app")
+        let missing = folder.root.appending(path: "Downloads/Gone.app")
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: plainFolder) == nil)
+        #expect(locator.application(at: link) == nil)
+        #expect(locator.application(at: missing) == nil)
+    }
+
+    @Test func findsNoAppInTheTrash() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let trashed = try folder.makeFolder("Home/.Trash/Old.app/Contents").deletingLastPathComponent()
+        let trashedOnAVolume = try folder.makeFolder("Volume/.Trashes/501/Old.app/Contents").deletingLastPathComponent()
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: trashed) == nil)
+        #expect(locator.application(at: trashedOnAVolume) == nil)
+    }
+
+    @Test func findsNoAppInsideAnotherApp() throws {
+        let folder = try TemporaryFolder()
+        defer { folder.remove() }
+        let helper = try folder.makeFolder("Downloads/Host.app/Contents/Helpers/Helper.app/Contents")
+            .deletingLastPathComponent()
+        let host = folder.root.appending(path: "Downloads/Host.app")
+        let locator = FileSystemAppLocator()
+
+        #expect(locator.application(at: helper) == nil)
+        #expect(locator.application(at: host)?.path == host.standardizedFileURL.path)
+    }
 }

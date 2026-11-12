@@ -41,6 +41,13 @@ struct SidebarSectionsTests {
         #expect(sections.visibleSections == [.performance])
     }
 
+    @Test func noPlannedFeaturesLeaveNoPlannedRows() {
+        let sections = SidebarSections(modules: [FakeFeature("privacy", in: .cleanup)], upcoming: [])
+
+        #expect(sections.visibleSections == [.cleanup])
+        #expect(FeatureSection.allCases.allSatisfy { sections.upcoming(in: $0).isEmpty })
+    }
+
     @Test func noFeaturesMeansNothingToSelect() {
         #expect(SidebarSections(modules: [], upcoming: []).firstModule == nil)
     }
