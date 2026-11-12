@@ -21,6 +21,7 @@ enum AppComposition {
             diskMap,
             DuplicatesModule.live(),
             MaintenanceModule.live(),
+            LoginItemsModule.live(),
             MonitorModule.live(diskMapFeatureID: diskMap.id)
         ]
     }

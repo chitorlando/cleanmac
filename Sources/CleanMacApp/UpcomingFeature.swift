@@ -26,11 +26,6 @@ extension UpcomingFeature {
             title: String(localized: "Privacy", bundle: .module, comment: "Upcoming feature name in the sidebar."),
             symbolName: "hand.raised.fill",
             section: .cleanup
-        ),
-        UpcomingFeature(
-            title: String(localized: "Login Items", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "power",
-            section: .performance
         )
     ]
 }
