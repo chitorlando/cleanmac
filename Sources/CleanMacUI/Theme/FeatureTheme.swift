@@ -77,8 +77,25 @@ public extension FeatureTheme {
         secondary: Color(red: 0.98, green: 0.55, blue: 0.76)
     )
 
+    /// The background of planned features and of the empty detail pane. No button uses it.
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)
     )
+}
+
+extension FeatureTheme {
+    /// Every theme a feature's buttons use, by name. Glow buttons draw dark labels on them,
+    /// so a test checks their contrast: add each new feature theme here.
+    static let featureThemes: [String: FeatureTheme] = [
+        "systemJunk": .systemJunk,
+        "uninstaller": .uninstaller,
+        "largeFiles": .largeFiles,
+        "maintenance": .maintenance,
+        "duplicates": .duplicates,
+        "diskMap": .diskMap,
+        "loginItems": .loginItems,
+        "monitor": .monitor,
+        "privacy": .privacy
+    ]
 }
