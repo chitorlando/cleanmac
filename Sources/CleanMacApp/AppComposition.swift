@@ -2,6 +2,7 @@ import CleanMacUI
 import DiskMapFeature
 import DuplicatesFeature
 import LargeFilesFeature
+import LoginItemsFeature
 import MaintenanceFeature
 import MonitorFeature
 import SystemJunkFeature
@@ -20,6 +21,7 @@ enum AppComposition {
             diskMap,
             DuplicatesModule.live(),
             MaintenanceModule.live(),
+            LoginItemsModule.live(),
             MonitorModule.live(diskMapFeatureID: diskMap.id)
         ]
     }

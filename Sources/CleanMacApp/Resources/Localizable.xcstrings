@@ -1,17 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Login Items" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ítems de inicio"
-          }
-        }
-      }
-    },
     "Privacy" : {
       "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {
