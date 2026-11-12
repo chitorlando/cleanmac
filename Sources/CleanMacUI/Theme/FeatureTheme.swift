@@ -51,10 +51,11 @@ public extension FeatureTheme {
         secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
     )
 
-    /// Coral to crimson, a hue no other feature uses.
-    static let loginItems = FeatureTheme(
-        primary: Color(red: 1.00, green: 0.45, blue: 0.42),
-        secondary: Color(red: 0.88, green: 0.18, blue: 0.27)
+    /// Aqua to cerulean, a hue no other feature uses: bluer than the junk's mint and teal,
+    /// greener than the uninstaller's blue. Dark button labels keep at least 8.6:1 across it.
+    static let monitor = FeatureTheme(
+        primary: Color(red: 0.45, green: 0.94, blue: 0.98),
+        secondary: Color(red: 0.18, green: 0.74, blue: 0.95)
     )
 
     static let neutral = FeatureTheme(

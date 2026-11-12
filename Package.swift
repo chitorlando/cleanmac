@@ -54,7 +54,7 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
-            name: "LoginItemsFeature",
+            name: "MonitorFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
         ),
@@ -63,7 +63,7 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature"
+                "MonitorFeature"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
@@ -101,8 +101,8 @@ let package = Package(
             dependencies: ["DiskMapFeature", "CleanMacCore"]
         ),
         .testTarget(
-            name: "LoginItemsFeatureTests",
-            dependencies: ["LoginItemsFeature", "CleanMacCore"]
+            name: "MonitorFeatureTests",
+            dependencies: ["MonitorFeature", "CleanMacCore"]
         ),
         .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacUI"]),
         .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI"]),

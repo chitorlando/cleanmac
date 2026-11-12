@@ -1,13 +1,13 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Monitor" : {
-      "comment" : "Upcoming feature name in the sidebar: system monitor for CPU, memory and disk.",
+    "Login Items" : {
+      "comment" : "Upcoming feature name in the sidebar.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monitor"
+            "value" : "Ítems de inicio"
           }
         }
       }
