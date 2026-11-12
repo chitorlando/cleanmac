@@ -20,9 +20,10 @@ public struct FeatureTheme: Sendable {
 }
 
 public extension FeatureTheme {
+    /// Mint to teal, greener than the monitor's aqua and cerulean.
     static let systemJunk = FeatureTheme(
         primary: Color(red: 0.30, green: 0.87, blue: 0.62),
-        secondary: Color(red: 0.05, green: 0.52, blue: 0.70)
+        secondary: Color(red: 0.00, green: 0.77, blue: 0.65)
     )
 
     static let uninstaller = FeatureTheme(
