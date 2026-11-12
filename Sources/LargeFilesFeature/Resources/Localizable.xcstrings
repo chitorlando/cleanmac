@@ -347,6 +347,17 @@
         }
       }
     },
+    "Nothing in the folder “%@” takes up more than %@." : {
+      "comment" : "Message shown when a complete scan limited to one folder found no large files. The arguments are the name of the folder and the smallest size looked for, such as “50 MB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada en la carpeta «%@» ocupa más de %@."
+          }
+        }
+      }
+    },
     "Nothing in your home folder takes up more than %@." : {
       "comment" : "Message shown when a complete scan found no large files. The argument is the smallest size looked for, such as “50 MB”.",
       "localizations" : {
@@ -354,6 +365,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nada en tu carpeta de inicio ocupa más de %@."
+          }
+        }
+      }
+    },
+    "Only in: %@" : {
+      "comment" : "Pill shown while the scan is limited to one folder. The argument is the name of the folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo en: %@"
           }
         }
       }
@@ -387,6 +409,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volver a escanear"
+          }
+        }
+      }
+    },
+    "Scan the Whole Home Folder" : {
+      "comment" : "Tooltip and accessibility label of the button, in the pill that names the folder a scan is limited to, that scans the whole home folder instead.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizar toda la carpeta de inicio"
           }
         }
       }
