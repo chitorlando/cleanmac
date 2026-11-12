@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-import UninstallerFeature
+import CleanMacCore
 
 @MainActor
 struct WorkspaceRunningAppsTests {

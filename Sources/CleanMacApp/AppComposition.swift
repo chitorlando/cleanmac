@@ -5,6 +5,7 @@ import LargeFilesFeature
 import LoginItemsFeature
 import MaintenanceFeature
 import MonitorFeature
+import PrivacyFeature
 import SystemJunkFeature
 import UninstallerFeature
 
@@ -16,6 +17,7 @@ enum AppComposition {
         let diskMap = DiskMapModule.live(uninstallerFeatureID: uninstaller.id)
         return [
             SystemJunkModule.live(),
+            PrivacyModule.live(),
             uninstaller,
             LargeFilesModule.live(),
             diskMap,

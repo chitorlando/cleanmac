@@ -1,17 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Privacy" : {
-      "comment" : "Upcoming feature name in the sidebar.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privacidad"
-          }
-        }
-      }
-    },
     "Soon" : {
       "comment" : "Badge on sidebar features that are not available yet.",
       "localizations" : {

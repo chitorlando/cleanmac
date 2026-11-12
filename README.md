@@ -17,6 +17,7 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | Estado | Función | Qué hace |
 | :----: | ------- | -------- |
 | ✅ | **Basura del sistema** | Encuentra cachés y registros de tu usuario y restos de Xcode (Derived Data, Device Support y cachés de los simuladores). Deja fuera las cachés de iCloud y de las cuentas, cuyo borrado podría forzar una resincronización o cerrar tu sesión. |
+| ✅ | **Privacidad** | Borra las cachés de Safari, Chrome, Edge, Brave, Arc, Vivaldi, Opera y Firefox, agrupadas por navegador con su icono. Solo toca carpetas de caché conocidas: el historial, las cookies, las contraseñas, las sesiones y los marcadores nunca se listan. Las cachés de un navegador abierto quedan bloqueadas hasta que sales de él. |
 | ✅ | **Desinstalador** | Lista las apps de `/Applications` y `~/Applications` con lo que ocupan y encuentra sus residuos en la Library de tu usuario: datos de soporte, cachés, preferencias, contenedores, estado guardado, registros, datos web, agentes de inicio y scripts. Permite buscar y ordenar por nombre o tamaño. También recibe las apps que el Mapa del disco encuentra en otras carpetas, como Descargas. |
 | ✅ | **Archivos grandes y antiguos** | Recorre tu carpeta de inicio en busca de archivos de 50 MB o más y los filtra por tipo, tamaño, último uso y nombre. Puedes detener el análisis y revisar lo encontrado hasta entonces. |
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. |
@@ -24,10 +25,6 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | ✅ | **Mapa del disco** | Dibuja en anillos lo que ocupa cada carpeta de tu carpeta de inicio, `~/Library` incluida, junto a una lista ordenada por tamaño. Puedes entrar en las carpetas, volver con las migas y mover a la Papelera lo que no necesites. |
 | ✅ | **Ítems de inicio** | Lista lo que arranca al iniciar sesión o funciona en segundo plano: los agentes de `~/Library/LaunchAgents` («Solo tú») y los agentes y daemons de `/Library` («Todos los usuarios»), con la app a la que pertenecen. Marca como huérfanos los que apuntan a un programa que ya no existe. Tus agentes se pueden mover a la Papelera; los de `/Library` solo se muestran en Finder. Abre también los ajustes de ítems de inicio de macOS. |
 | ✅ | **Monitor** | Muestra en directo el uso de la CPU con su historial, la memoria y su presión, el espacio del disco de arranque y del de tu carpeta de inicio, y tus procesos que más CPU o memoria usan. Solo lee: no cierra ni cambia nada, y deja de medir cuando no está a la vista. |
-| 🗓️ | **Privacidad** | Prevista. Limpiará cachés e historial de los navegadores. |
-
-✅ disponible · 🗓️ prevista. Las funciones previstas aparecen en la barra lateral
-con la etiqueta «Pronto».
 
 ## Seguridad primero
 
@@ -35,21 +32,24 @@ con la etiqueta «Pronto».
   Las apps protegidas, como las de la App Store, se mueven a través de Finder con tu contraseña
   de administrador y conservan la opción «Devolver».
 - **Siempre revisas antes de limpiar.** Ves cada elemento y puedes desmarcar lo que quieras.
-  En Basura del sistema todo sale marcado; en el Desinstalador, Archivos grandes, Duplicados e Ítems de inicio
-  no se marca nada hasta que lo eliges tú.
+  En Basura del sistema y Privacidad todo sale marcado, salvo las cachés de un navegador abierto; en el Desinstalador,
+  Archivos grandes, Duplicados e Ítems de inicio no se marca nada hasta que lo eliges tú.
 - **Apps abiertas y residuos compartidos.** No se puede desinstalar una app abierta: hay que cerrarla antes.
   Los residuos que comparten varias copias de una misma app nunca se marcan solos.
 - **Mapa del disco con candado.** Dentro de `~/Library` solo se puede borrar el contenido de Caches y Logs;
   lo demás se abre en Finder. Llaveros, Mail, Mensajes, iCloud Drive y los contenedores de apps nunca se tocan,
   las fototecas y las carpetas estándar como Documentos no se borran enteras, y las apps se eliminan
   con el Desinstalador.
+- **Privacidad solo con cachés.** Cada navegador tiene una lista de carpetas de caché permitidas: todo lo que
+  no está en ella, como el historial, las cookies o las contraseñas, nunca aparece. Si el navegador está abierto,
+  CleanMac te pide que salgas de él y nunca lo cierra a la fuerza.
 - **Duplicados sin riesgo.** Siempre queda al menos una copia de cada grupo, y los clones de APFS,
   que comparten sus datos en el disco, cuentan como una sola copia física.
 - **Fuera de los archivos del sistema.** CleanMac trabaja con tu carpeta de usuario y las apps instaladas,
-  y nunca modifica `/Library` ni `/System`: Ítems de inicio solo lee los de `/Library`.
+  y nunca modifica `/Library` ni `/System`: Ítems de inicio solo lee los de `/Library`. Mantenimiento solo actúa
+  cuando eliges y ejecutas sus tareas, y pide la contraseña de administrador una sola vez.
 - **Ítems de inicio sin sorpresas.** CleanMac no habla con launchd: solo lee sus listas de propiedades.
-  Un agente que mueves a la Papelera deja de ejecutarse en tu próximo inicio de sesión. Mantenimiento solo actúa cuando eliges y ejecutas sus tareas,
-  y pide la contraseña de administrador una sola vez.
+  Un agente que mueves a la Papelera deja de ejecutarse en tu próximo inicio de sesión.
 - **Sin red.** La app no se conecta a internet.
 
 ## Requisitos
@@ -120,6 +120,7 @@ Sources/
 ├── CleanMacCore/         Lógica sin interfaz: recorrido de archivos, tamaños, selección, Papelera y procesos
 ├── CleanMacUI/           Sistema de diseño, componentes comunes y contrato de las funciones
 ├── SystemJunkFeature/    Basura del sistema
+├── PrivacyFeature/       Privacidad
 ├── UninstallerFeature/   Desinstalador
 ├── LargeFilesFeature/    Archivos grandes y antiguos
 ├── DuplicatesFeature/    Duplicados
