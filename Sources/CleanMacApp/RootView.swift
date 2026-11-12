@@ -5,7 +5,8 @@ import SwiftUI
 ///
 /// Opens on the available feature at the top of the sidebar, whatever the order
 /// in which the features were registered. Features can open each other through
-/// the `openFeature` environment value.
+/// the `openFeature` environment value, and find what the others offer to do with
+/// their items in `featureItemActions`.
 struct RootView: View {
     let sections: SidebarSections
 
@@ -24,6 +25,7 @@ struct RootView: View {
         } detail: {
             detail
                 .environment(\.openFeature, navigator.openFeatureAction)
+                .environment(\.featureItemActions, navigator.itemActions)
         }
     }
 
