@@ -21,11 +21,7 @@ struct UpcomingFeature: Identifiable {
 }
 
 extension UpcomingFeature {
-    static let roadmap: [UpcomingFeature] = [
-        UpcomingFeature(
-            title: String(localized: "Privacy", bundle: .module, comment: "Upcoming feature name in the sidebar."),
-            symbolName: "hand.raised.fill",
-            section: .cleanup
-        )
-    ]
+    /// Every planned feature is available now. Add one here to show it in the sidebar
+    /// with the "Soon" badge until it's implemented.
+    static let roadmap: [UpcomingFeature] = []
 }
