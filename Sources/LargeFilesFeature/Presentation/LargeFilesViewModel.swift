@@ -12,7 +12,7 @@ public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var phase: LargeFilesPhase = .intro
     /// Where the scan looks: the whole home folder, until another feature sends a folder to
     /// look in (see `scanFolder(at:)`). The files on screen are the ones found there.
-    @Published public private(set) var scope = LargeFileScanScope.home
+    @Published public private(set) var scope = ScanScope.home
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of files slow down as it went. Every change goes through
     /// `updateFiles(_:)`, which announces it and then edits the array in place.
@@ -44,7 +44,7 @@ public final class LargeFilesViewModel: ObservableObject {
     private var activeTask: Task<Void, Never>?
     /// Scope asked for while files were being removed or their report was on screen, which
     /// `done()` scans.
-    private var pendingScope: LargeFileScanScope?
+    private var pendingScope: ScanScope?
 
     // Derived state kept between reads. Every change re-renders all the views that observe
     // the view model, and several of them read these values in each pass, which took several
@@ -282,7 +282,7 @@ public final class LargeFilesViewModel: ObservableObject {
     /// The scope and the filter only change, and are only announced, when the scan looks
     /// somewhere else: the filter was chosen over the files of another place, and it could
     /// hide every file found in this one. Scanning the same place again keeps it.
-    private func startScan(in newScope: LargeFileScanScope) -> Task<Void, Never> {
+    private func startScan(in newScope: ScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingScope = nil
         if newScope != scope {
@@ -299,7 +299,7 @@ public final class LargeFilesViewModel: ObservableObject {
         return task
     }
 
-    private func scan(_ scope: LargeFileScanScope) async {
+    private func scan(_ scope: ScanScope) async {
         for await event in scanner.scan(scope) {
             guard !Task.isCancelled else { return }
             switch event {

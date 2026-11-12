@@ -8,7 +8,7 @@ struct LargeFileScannerTests {
 
     private func events(
         of scanner: LargeFileScanner,
-        in scope: LargeFileScanScope = .home
+        in scope: ScanScope = .home
     ) async -> [LargeFileScanEvent] {
         var events: [LargeFileScanEvent] = []
         for await event in scanner.scan(scope) {

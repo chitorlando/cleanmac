@@ -29,7 +29,7 @@ public struct ScanScopePolicy: Sendable {
     ///
     /// - Returns: `nil` when `url` is not a folder, which includes a symbolic link to one and a
     ///   folder that's gone, or when the scan of the home folder would never enter it.
-    public func scope(limitedTo url: URL) -> LargeFileScanScope? {
+    public func scope(limitedTo url: URL) -> ScanScope? {
         guard let names = folderNames(fromHomeTo: url) else { return nil }
         return names.isEmpty ? .home : .folder(folder(named: names))
     }
@@ -38,7 +38,7 @@ public struct ScanScopePolicy: Sendable {
     ///
     /// - Returns: `nil` when the scope is a folder the scan may no longer look in, for instance
     ///   because it was removed or replaced after the scope was made.
-    public func folder(of scope: LargeFileScanScope) -> URL? {
+    public func folder(of scope: ScanScope) -> URL? {
         switch scope {
         case .home: home
         case .folder(let url): folderNames(fromHomeTo: url).map(folder(named:))
