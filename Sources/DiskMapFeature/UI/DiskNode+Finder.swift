@@ -6,4 +6,12 @@ extension DiskNode {
     func showInFinder() {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
+
+    /// Puts the item's path on the clipboard, in place of what was there.
+    @MainActor
+    func copyPath() {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(url.path, forType: .string)
+    }
 }
