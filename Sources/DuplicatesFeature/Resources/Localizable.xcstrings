@@ -168,6 +168,17 @@
         }
       }
     },
+    "Find Duplicates in This Folder" : {
+      "comment" : "Action offered on a folder shown by another feature, such as the disk map. It looks for duplicate files only in that folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar duplicados en esta carpeta"
+          }
+        }
+      }
+    },
     "Find identical copies of your files and choose which ones to move to the Trash." : {
       "comment" : "Introduction of the duplicates feature.",
       "localizations" : {
