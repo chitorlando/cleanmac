@@ -38,9 +38,10 @@ public extension FeatureTheme {
         secondary: Color(red: 1.00, green: 0.50, blue: 0.87)
     )
 
+    /// Amber to orange.
     static let maintenance = FeatureTheme(
         primary: Color(red: 1.00, green: 0.75, blue: 0.25),
-        secondary: Color(red: 0.94, green: 0.50, blue: 0.12)
+        secondary: Color(red: 1.00, green: 0.57, blue: 0.16)
     )
 
     static let duplicates = FeatureTheme(
