@@ -32,9 +32,10 @@ public extension FeatureTheme {
         secondary: Color(red: 0.67, green: 0.64, blue: 1.00)
     )
 
+    /// Orange to magenta, warmer at the start than login items and more purple at the end than privacy.
     static let largeFiles = FeatureTheme(
-        primary: Color(red: 1.00, green: 0.56, blue: 0.30),
-        secondary: Color(red: 0.88, green: 0.24, blue: 0.56)
+        primary: Color(red: 1.00, green: 0.57, blue: 0.23),
+        secondary: Color(red: 1.00, green: 0.50, blue: 0.87)
     )
 
     static let maintenance = FeatureTheme(
