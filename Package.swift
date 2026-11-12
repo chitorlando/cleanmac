@@ -54,6 +54,11 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "PrivacyFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "LoginItemsFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
@@ -104,6 +109,10 @@ let package = Package(
         .testTarget(
             name: "DiskMapFeatureTests",
             dependencies: ["DiskMapFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "PrivacyFeatureTests",
+            dependencies: ["PrivacyFeature", "CleanMacCore"]
         ),
         .testTarget(
             name: "LoginItemsFeatureTests",
