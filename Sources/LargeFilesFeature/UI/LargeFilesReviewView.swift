@@ -2,13 +2,22 @@ import CleanMacUI
 import SwiftUI
 
 /// Filters on the left and the list of files on the right, where the user picks what to remove.
+///
+/// When the scan was limited to a folder, a pill below the totals names it. It has a line of
+/// its own because the row of the totals has no room left in the smallest window.
 struct LargeFilesReviewView: View {
     @ObservedObject var viewModel: LargeFilesViewModel
     let theme: FeatureTheme
 
     var body: some View {
         VStack(spacing: 20) {
-            LargeFilesReviewHeader(foundSize: viewModel.foundSize, foundCount: viewModel.foundCount, theme: theme)
+            VStack(alignment: .leading, spacing: 8) {
+                LargeFilesReviewHeader(foundSize: viewModel.foundSize, foundCount: viewModel.foundCount, theme: theme)
+                if let folder = viewModel.scope.folder {
+                    ScanScopePill(folder: folder, theme: theme) { viewModel.scanHome() }
+                        .equatable()
+                }
+            }
             if viewModel.wasStoppedEarly {
                 WarningNotice(Text(
                     "The scan was stopped, so these results are incomplete.",
