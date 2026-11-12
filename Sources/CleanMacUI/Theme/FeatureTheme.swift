@@ -51,10 +51,11 @@ public extension FeatureTheme {
         secondary: Color(red: 0.42, green: 0.80, blue: 0.30)
     )
 
-    /// Coral to crimson, a hue no other feature uses.
+    /// Coral to a pinker red, a hue no other feature uses: redder than the orange of large
+    /// files and the rose of privacy. Red only reaches 8:1 against dark labels this light.
     static let loginItems = FeatureTheme(
-        primary: Color(red: 1.00, green: 0.45, blue: 0.42),
-        secondary: Color(red: 0.88, green: 0.18, blue: 0.27)
+        primary: Color(red: 1.00, green: 0.55, blue: 0.51),
+        secondary: Color(red: 1.00, green: 0.54, blue: 0.62)
     )
 
     /// Aqua to cerulean, a hue no other feature uses: bluer than the junk's mint and teal,
