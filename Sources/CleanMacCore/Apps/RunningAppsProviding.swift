@@ -1,6 +1,6 @@
 import Foundation
 
-/// Knows which apps are open and can ask them to quit before they are uninstalled.
+/// Knows which apps are open and can ask them to quit, such as before removing their files.
 @MainActor
 public protocol RunningAppsProviding {
     /// Every running app, with the standardized URL of its bundle.

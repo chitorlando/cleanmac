@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Tells which listed apps are open, from the running apps the system reports.

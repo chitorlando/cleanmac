@@ -64,6 +64,13 @@ public extension FeatureTheme {
         secondary: Color(red: 0.18, green: 0.74, blue: 0.95)
     )
 
+    /// Blush to rose, a hue no other feature uses: lighter and pinker than the lavender
+    /// and magenta of the duplicates. Dark button labels keep at least 8.5:1 across it.
+    static let privacy = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.72, blue: 0.85),
+        secondary: Color(red: 0.98, green: 0.55, blue: 0.76)
+    )
+
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
         secondary: Color(white: 0.38)

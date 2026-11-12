@@ -54,6 +54,11 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "PrivacyFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "LoginItemsFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
@@ -68,7 +73,7 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "MonitorFeature"
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
@@ -104,6 +109,10 @@ let package = Package(
         .testTarget(
             name: "DiskMapFeatureTests",
             dependencies: ["DiskMapFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "PrivacyFeatureTests",
+            dependencies: ["PrivacyFeature", "CleanMacCore"]
         ),
         .testTarget(
             name: "LoginItemsFeatureTests",
