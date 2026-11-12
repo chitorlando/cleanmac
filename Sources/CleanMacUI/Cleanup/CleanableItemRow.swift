@@ -1,14 +1,14 @@
-import AppKit
 import CleanMacCore
 import SwiftUI
 
-/// A single file or folder that can be selected for removal.
+/// A single file or folder that can be selected for removal, with the common item context menu.
 public struct CleanableItemRow: View {
     private let item: CleanableItem
     private let isSelected: Bool
     private let isToggleEnabled: Bool
     private let tint: Color
     private let onToggle: () -> Void
+    @Environment(\.fileActions) private var files
 
     /// - Parameter isToggleEnabled: `false` keeps the item visible but prevents changing its selection.
     public init(
@@ -58,6 +58,13 @@ public struct CleanableItemRow: View {
             .accessibilityLabel(revealLabel)
         }
         .padding(.leading, 4)
+        .contextMenu {
+            ItemContextMenu(url: item.url, actions: menuActions, onToggle: onToggle)
+        }
+    }
+
+    private var menuActions: [ItemMenuAction] {
+        ItemMenuActions.standard(for: item.url, selection: ItemMenuSelection(isSelected: isSelected, canChange: isToggleEnabled))
     }
 
     private var revealLabel: Text {
@@ -69,6 +76,6 @@ public struct CleanableItemRow: View {
     }
 
     private func revealInFinder() {
-        NSWorkspace.shared.activateFileViewerSelecting([item.url])
+        files.showInFinder(item.url)
     }
 }
