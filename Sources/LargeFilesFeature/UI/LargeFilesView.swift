@@ -27,8 +27,11 @@ struct LargeFilesView: View {
             LargeFilesNoneFoundView(
                 wasStoppedEarly: viewModel.wasStoppedEarly,
                 minimumSize: viewModel.minimumSize,
-                theme: theme
-            ) { viewModel.startScan() }
+                scopeFolder: viewModel.scope.folder,
+                theme: theme,
+                onScanAgain: { viewModel.startScan() },
+                onScanHome: { viewModel.scanHome() }
+            )
         case .review:
             LargeFilesReviewView(viewModel: viewModel, theme: theme)
         case .removing:

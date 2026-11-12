@@ -18,6 +18,10 @@ struct DuplicatesViewModelTests {
     private let photoClone = Fixtures.file("/Users/test/Desktop/photo.heic", created: Fixtures.date(2), storage: .clone(stream: 1, count: 2))
     private let photoCopy = Fixtures.file("/Users/test/Downloads/photo.heic", created: Fixtures.date(3))
 
+    // Folders of the stub scanner's home folder that another feature can ask for.
+    private let downloads = URL(filePath: "/Users/test/Downloads")
+    private let pictures = URL(filePath: "/Users/test/Pictures")
+
     private var reports: DuplicateGroup { Fixtures.group(report, reportDownload, reportDesktop) }
     private var photos: DuplicateGroup { Fixtures.group(photo, photoClone, photoCopy) }
 
@@ -476,5 +480,319 @@ struct DuplicatesViewModelTests {
 
         #expect(viewModel.phase == .review)
         #expect(viewModel.groups == [photos, reports])
+    }
+
+    // MARK: Scanning one folder
+
+    /// A view model and its scanner, which tells what it was asked to scan and finds the
+    /// photos and the reports whatever the scope.
+    private func makeScopedViewModel(
+        finishes: Bool = true,
+        refusing refusedFolders: Set<URL> = [],
+        remover: any ItemRemoving = RecordingRemover()
+    ) -> (DuplicatesViewModel, StubDuplicateScanner) {
+        let scanner = StubDuplicateScanner(
+            events: [.found(photos), .found(reports)],
+            finishes: finishes,
+            refusedFolders: refusedFolders
+        )
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: remover))
+        return (viewModel, scanner)
+    }
+
+    /// A view model on the report of a removal that followed a scan of the home folder.
+    private func finishedViewModel() async -> (DuplicatesViewModel, StubDuplicateScanner) {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.startScan().value
+        viewModel.selectDuplicates()
+        await viewModel.remove()?.value
+        return (viewModel, scanner)
+    }
+
+    @Test func scansTheWholeHomeFolderUnlessAskedForAFolder() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        #expect(viewModel.scope == .home)
+
+        await viewModel.startScan().value
+
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.home])
+    }
+
+    @Test func aFolderIsScannedAtOnceFromTheIntro() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+
+        let scan = viewModel.scanFolder(at: downloads)
+
+        #expect(viewModel.phase == .scanning)
+        #expect(viewModel.scope == .folder(downloads))
+        await scan?.value
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.groups == [photos, reports])
+        #expect(scanner.scannedScopes == [.folder(downloads)])
+    }
+
+    @Test func aFolderReplacesTheScanInProgress() async {
+        let (viewModel, scanner) = makeScopedViewModel(finishes: false)
+        let homeScan = viewModel.startScan()
+        while viewModel.groups.count < 2 {
+            await Task.yield()
+        }
+
+        let folderScan = viewModel.scanFolder(at: downloads)
+
+        #expect(viewModel.phase == .scanning)
+        #expect(viewModel.scope == .folder(downloads))
+        #expect(viewModel.groups.isEmpty)
+        await homeScan.value
+        while viewModel.groups.count < 2 {
+            await Task.yield()
+        }
+        #expect(viewModel.phase == .scanning)
+        #expect(scanner.scannedScopes == [.home, .folder(downloads)])
+        viewModel.stopScan()
+        await folderScan?.value
+    }
+
+    @Test func aFolderReplacesTheResultsOnScreen() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.startScan().value
+        viewModel.selectDuplicates()
+        viewModel.query.searchText = "photo"
+
+        await viewModel.scanFolder(at: downloads)?.value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.scope == .folder(downloads))
+        #expect(scanner.scannedScopes == [.home, .folder(downloads)])
+        #expect(!viewModel.hasSelection)
+        #expect(viewModel.query.searchText.isEmpty)
+        #expect(viewModel.visibleGroups == [reports, photos])
+    }
+
+    @Test func anotherFolderReplacesTheFolderOnScreen() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.scanFolder(at: downloads)?.value
+        viewModel.query.searchText = "photo"
+
+        await viewModel.scanFolder(at: pictures)?.value
+
+        #expect(viewModel.scope == .folder(pictures))
+        #expect(scanner.scannedScopes == [.folder(downloads), .folder(pictures)])
+        #expect(viewModel.query.searchText.isEmpty)
+    }
+
+    @Test func scanningAgainStaysInTheFolderAndKeepsTheSearch() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.scanFolder(at: downloads)?.value
+        viewModel.query.searchText = "photo"
+
+        await viewModel.startScan().value
+
+        #expect(viewModel.scope == .folder(downloads))
+        #expect(scanner.scannedScopes == [.folder(downloads), .folder(downloads)])
+        #expect(viewModel.query.searchText == "photo")
+        #expect(viewModel.visibleGroups == [photos])
+    }
+
+    @Test func askingForTheFolderOnScreenScansItAgainAndKeepsTheSearch() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.scanFolder(at: downloads)?.value
+        viewModel.selectDuplicates()
+        viewModel.query.searchText = "photo"
+
+        await viewModel.scanFolder(at: downloads)?.value
+
+        #expect(scanner.scannedScopes == [.folder(downloads), .folder(downloads)])
+        #expect(!viewModel.hasSelection)
+        #expect(viewModel.query.searchText == "photo")
+    }
+
+    @Test func scanningTheHomeFolderLeavesTheFolder() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.scanFolder(at: downloads)?.value
+        viewModel.query.searchText = "photo"
+
+        await viewModel.scanHome().value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.folder(downloads), .home])
+        #expect(viewModel.query.searchText.isEmpty)
+    }
+
+    @Test func stoppingAFolderScanStaysInTheFolder() async {
+        let (viewModel, _) = makeScopedViewModel(finishes: false)
+        let scan = viewModel.scanFolder(at: downloads)
+        while viewModel.groups.isEmpty {
+            await Task.yield()
+        }
+
+        viewModel.stopScan()
+        await scan?.value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.wasStoppedEarly)
+        #expect(viewModel.scope == .folder(downloads))
+    }
+
+    @Test func theHomeFolderAskedForAsAFolderIsScannedWhole() async {
+        let (viewModel, scanner) = makeScopedViewModel()
+        await viewModel.scanFolder(at: downloads)?.value
+
+        await viewModel.scanFolder(at: StubDuplicateScanner.home)?.value
+
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.folder(downloads), .home])
+    }
+
+    @Test func aFolderAskedForDuringARemovalWaitsForItsReport() async {
+        let gated = GatedRemover()
+        let (viewModel, scanner) = makeScopedViewModel(remover: gated)
+        await viewModel.startScan().value
+        viewModel.selectDuplicates()
+        let removal = viewModel.remove()
+        await gated.waitUntilRemoving()
+
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+
+        #expect(viewModel.phase == .removing)
+        #expect(viewModel.scope == .home)
+        await gated.open()
+        await removal?.value
+        #expect(report(of: viewModel)?.removedCount == 3)
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.home])
+
+        await viewModel.done()?.value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.scope == .folder(downloads))
+        #expect(scanner.scannedScopes == [.home, .folder(downloads)])
+        #expect(viewModel.groups == [photos, reports])
+    }
+
+    @Test func aFolderAskedForOnTheReportIsScannedWhenLeavingIt() async {
+        let (viewModel, scanner) = await finishedViewModel()
+
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+        #expect(report(of: viewModel)?.removedCount == 3)
+        #expect(scanner.scannedScopes == [.home])
+
+        let scan = viewModel.done()
+
+        #expect(viewModel.phase == .scanning)
+        #expect(viewModel.scope == .folder(downloads))
+        await scan?.value
+        #expect(scanner.scannedScopes == [.home, .folder(downloads)])
+    }
+
+    @Test func theLastFolderAskedForDuringARemovalWins() async {
+        let (viewModel, scanner) = await finishedViewModel()
+        viewModel.scanFolder(at: downloads)
+        viewModel.scanFolder(at: pictures)
+
+        await viewModel.done()?.value
+
+        #expect(viewModel.scope == .folder(pictures))
+        #expect(scanner.scannedScopes == [.home, .folder(pictures)])
+    }
+
+    @Test func aFolderLeftForLaterIsOnlyScannedOnce() async {
+        let (viewModel, scanner) = await finishedViewModel()
+        viewModel.scanFolder(at: downloads)
+        await viewModel.done()?.value
+        viewModel.selectDuplicates()
+        await viewModel.remove()?.value
+
+        #expect(viewModel.done() == nil)
+
+        #expect(viewModel.phase == .review)
+        #expect(scanner.scannedScopes == [.home, .folder(downloads)])
+    }
+
+    @Test func aFolderThatCanNoLongerBeScannedIsDroppedWhenLeavingTheReport() async {
+        let (viewModel, scanner) = await finishedViewModel()
+        viewModel.scanFolder(at: downloads)
+        scanner.refuse(downloads)
+
+        #expect(viewModel.done() == nil)
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.home])
+    }
+
+    @Test func aNewScanForgetsTheFolderLeftForLater() async {
+        let gated = GatedRemover()
+        let (viewModel, scanner) = makeScopedViewModel(remover: gated)
+        await viewModel.startScan().value
+        viewModel.selectDuplicates()
+        let removal = viewModel.remove()
+        await gated.waitUntilRemoving()
+        viewModel.scanFolder(at: downloads)
+
+        await viewModel.startScan().value
+        await gated.open()
+        await removal?.value
+        viewModel.selectDuplicates()
+        await viewModel.remove()?.value
+
+        #expect(viewModel.done() == nil)
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes == [.home, .home])
+    }
+
+    @Test func ignoresAFolderThatCannotBeScannedOnItsOwn() async {
+        let (viewModel, scanner) = makeScopedViewModel(refusing: [downloads])
+
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+
+        #expect(viewModel.phase == .intro)
+        #expect(viewModel.scope == .home)
+        #expect(scanner.scannedScopes.isEmpty)
+    }
+
+    @Test func aFolderThatCannotBeScannedLeavesTheScanInProgressAlone() async {
+        let (viewModel, scanner) = makeScopedViewModel(finishes: false, refusing: [downloads])
+        let scan = viewModel.scanFolder(at: pictures)
+        while viewModel.groups.count < 2 {
+            await Task.yield()
+        }
+
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+
+        #expect(viewModel.phase == .scanning)
+        #expect(viewModel.scope == .folder(pictures))
+        #expect(viewModel.groups == [photos, reports])
+        #expect(scanner.scannedScopes == [.folder(pictures)])
+        viewModel.stopScan()
+        await scan?.value
+    }
+
+    @Test func aFolderThatCannotBeScannedLeavesTheResultsAlone() async {
+        let (viewModel, scanner) = makeScopedViewModel(refusing: [downloads])
+        await viewModel.scanFolder(at: pictures)?.value
+        viewModel.selectDuplicates()
+        viewModel.query.searchText = "photo"
+
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.scope == .folder(pictures))
+        #expect(viewModel.selectedCount == 3)
+        #expect(viewModel.query.searchText == "photo")
+        #expect(scanner.scannedScopes == [.folder(pictures)])
+    }
+
+    @Test func aFolderThatCannotBeScannedIsNotLeftForLater() async {
+        let (viewModel, scanner) = await finishedViewModel()
+        scanner.refuse(downloads)
+        viewModel.scanFolder(at: downloads)
+
+        #expect(viewModel.done() == nil)
+
+        #expect(viewModel.phase == .review)
+        #expect(scanner.scannedScopes == [.home])
     }
 }

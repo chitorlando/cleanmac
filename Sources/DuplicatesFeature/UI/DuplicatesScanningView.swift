@@ -1,7 +1,7 @@
 import CleanMacUI
 import SwiftUI
 
-/// Progress while the home folder is walked and the candidates are compared.
+/// Progress while the home folder, or the folder chosen, is walked and the candidates are compared.
 struct DuplicatesScanningView: View {
     @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
