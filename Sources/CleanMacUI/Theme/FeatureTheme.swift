@@ -44,9 +44,10 @@ public extension FeatureTheme {
         secondary: Color(red: 1.00, green: 0.57, blue: 0.16)
     )
 
+    /// Lavender to orchid.
     static let duplicates = FeatureTheme(
-        primary: Color(red: 0.80, green: 0.48, blue: 1.00),
-        secondary: Color(red: 0.84, green: 0.24, blue: 0.72)
+        primary: Color(red: 0.80, green: 0.59, blue: 1.00),
+        secondary: Color(red: 0.96, green: 0.50, blue: 1.00)
     )
 
     /// Chartreuse to leaf green, a hue no other feature uses.
