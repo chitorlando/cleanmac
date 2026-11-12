@@ -1,4 +1,3 @@
-import AppKit
 import CleanMacUI
 import SwiftUI
 
@@ -6,12 +5,13 @@ import SwiftUI
 ///
 /// The name gets most of the row and wraps to a second line before it's cut. Instead of a
 /// separate button, the folder line shows the file in Finder, which keeps it reachable with
-/// the keyboard and VoiceOver, and the row's context menu does the same.
+/// the keyboard and VoiceOver. The row's context menu has the common item actions.
 struct LargeFileRow: View {
     let file: LargeFile
     let isSelected: Bool
     let theme: FeatureTheme
     let onToggle: () -> Void
+    @Environment(\.fileActions) private var files
 
     var body: some View {
         HStack(spacing: 8) {
@@ -48,7 +48,11 @@ struct LargeFileRow: View {
         .padding(.horizontal, 4)
         .padding(.vertical, 2)
         .contextMenu {
-            Button(action: reveal) { revealLabel }
+            ItemContextMenu(
+                url: file.item.url,
+                actions: ItemMenuActions.standard(for: file.item.url, selection: isSelected ? .selected : .deselected),
+                onToggle: onToggle
+            )
         }
     }
 
@@ -71,7 +75,7 @@ struct LargeFileRow: View {
     }
 
     private func reveal() {
-        NSWorkspace.shared.activateFileViewerSelecting([file.item.url])
+        files.showInFinder(file.item.url)
     }
 
     private var revealLabel: Text {
