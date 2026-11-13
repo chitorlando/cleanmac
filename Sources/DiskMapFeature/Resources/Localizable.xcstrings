@@ -135,6 +135,28 @@
         }
       }
     },
+    "Copy Path" : {
+      "comment" : "Entry of the context menu of a disk map item that copies its path to the clipboard.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar ruta"
+          }
+        }
+      }
+    },
+    "Deselect" : {
+      "comment" : "Entry of the context menu of a disk map item that takes back its mark to be moved to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anular selección"
+          }
+        }
+      }
+    },
     "Disk Map" : {
       "comment" : "Feature name in the sidebar.",
       "localizations" : {
@@ -262,7 +284,7 @@
       }
     },
     "Open" : {
-      "comment" : "Tooltip of the button that opens a folder in the disk map.",
+      "comment" : "Opens a folder in the disk map. Tooltip of a button and entry of the context menu of an item.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -349,8 +371,19 @@
         }
       }
     },
+    "Select" : {
+      "comment" : "Entry of the context menu of a disk map item that marks it to be moved to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleccionar"
+          }
+        }
+      }
+    },
     "Show in Finder" : {
-      "comment" : "Tooltip of the button that reveals an item in Finder.",
+      "comment" : "Reveals an item of the disk map in Finder. Tooltip of a button and entry of the context menu of an item.",
       "localizations" : {
         "es" : {
           "stringUnit" : {

@@ -26,6 +26,29 @@ final class TemporaryFolder {
     }
 
     @discardableResult
+    func makeFolder(_ path: String) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Makes a symbolic link at `path` that points to `destination`.
+    @discardableResult
+    func makeSymbolicLink(_ path: String, to destination: URL) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createSymbolicLink(at: url, withDestinationURL: destination)
+        return url
+    }
+
+    /// Hides the item at `path` the way Finder does, without a dot in its name.
+    func hide(_ path: String) throws {
+        var url = root.appending(path: path)
+        var values = URLResourceValues()
+        values.isHidden = true
+        try url.setResourceValues(values)
+    }
+
+    @discardableResult
     func makeHardLink(_ path: String, to existing: URL) throws -> URL {
         let url = root.appending(path: path)
         try FileManager.default.linkItem(at: existing, to: url)
