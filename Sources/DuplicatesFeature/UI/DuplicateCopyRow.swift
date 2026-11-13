@@ -1,8 +1,8 @@
-import AppKit
 import CleanMacUI
 import SwiftUI
 
-/// One copy of the focused group: checkbox, name and badges, folder and creation date, and a button to show it in Finder.
+/// One copy of the focused group: checkbox, name and badges, folder and creation date, a button to show
+/// it in Finder and the common item context menu.
 ///
 /// It takes plain values instead of the view model, and two rows are equal when they show
 /// the same, so wrapped in `.equatable()` a row is only evaluated again when it changes,
@@ -16,6 +16,7 @@ struct DuplicateCopyRow: View, Equatable {
     let isClone: Bool
     let theme: FeatureTheme
     let onToggle: () -> Void
+    @Environment(\.fileActions) private var files
 
     var body: some View {
         HStack(spacing: 12) {
@@ -63,6 +64,13 @@ struct DuplicateCopyRow: View, Equatable {
             revealButton
         }
         .padding(.leading, 4)
+        .contextMenu {
+            ItemContextMenu(
+                url: file.item.url,
+                selection: ItemMenuSelection(isSelected: isSelected, canChange: canSelect),
+                onToggle: onToggle
+            )
+        }
     }
 
     /// Compares what the row shows. The action is left out: it acts on the same copy.
@@ -83,7 +91,7 @@ struct DuplicateCopyRow: View, Equatable {
 
     private var revealButton: some View {
         Button {
-            NSWorkspace.shared.activateFileViewerSelecting([file.item.url])
+            files.showInFinder(file.item.url)
         } label: {
             Image(systemName: "magnifyingglass")
         }

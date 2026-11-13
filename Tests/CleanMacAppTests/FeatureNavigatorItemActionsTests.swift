@@ -16,6 +16,19 @@ struct FeatureNavigatorItemActionsTests {
         #expect(navigator.itemActions.map(\.itemKind) == [.folder, .app])
     }
 
+    @Test func leavesOutTheActionsOfTheSelectedFeature() {
+        let modules: [any FeatureModule] = [
+            FakeFeature("duplicates", in: .files, offering: [.folder]),
+            FakeFeature("uninstaller", in: .applications, offering: [.app])
+        ]
+        let navigator = FeatureNavigator(modules: modules, selectedID: "uninstaller")
+
+        #expect(navigator.itemActions.map(\.featureID) == ["duplicates"])
+
+        navigator.open("duplicates")
+        #expect(navigator.itemActions.map(\.featureID) == ["uninstaller"])
+    }
+
     @Test func offersNothingWhenNoFeatureTakesItems() {
         let navigator = FeatureNavigator(modules: [FakeFeature("disk-map", in: .files)], selectedID: nil)
 

@@ -2,6 +2,7 @@ import CleanMacUI
 import SwiftUI
 
 /// One installed app in the list. Clicking it shows its details; the checkbox selects it.
+/// Its context menu has the common item actions and, while the app is open, Quit App.
 struct AppListRow: View {
     let app: InstalledApp
     @ObservedObject var viewModel: UninstallerViewModel
@@ -52,5 +53,25 @@ struct AppListRow: View {
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(isFocused ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { viewModel.focusedAppID = app.id }
+        .contextMenu { contextMenu }
+    }
+
+    /// A running app can't be selected, so the menu offers to quit it instead.
+    private var contextMenu: some View {
+        ItemContextMenu(
+            url: app.info.url,
+            selection: ItemMenuSelection(isSelected: viewModel.selectionState(of: app) == .all, canChange: !isRunning),
+            onToggle: { viewModel.toggle(app) }
+        ) {
+            if isRunning {
+                Divider()
+                Button {
+                    Task { await viewModel.quit(app) }
+                } label: {
+                    Text("Quit App", bundle: .module, comment: "Button that asks a running app to quit.")
+                }
+                .disabled(viewModel.isQuitting(app))
+            }
+        }
     }
 }

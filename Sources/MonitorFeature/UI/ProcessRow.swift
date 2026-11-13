@@ -2,9 +2,13 @@ import CleanMacUI
 import SwiftUI
 
 /// A process with its app's icon and name, and what it uses in the chosen order.
+///
+/// The context menu of an app's process only shows the app in Finder: the monitor never
+/// quits or stops processes.
 struct ProcessRow: View {
     let process: ProcessUsage
     let ranking: ProcessRanking
+    @Environment(\.fileActions) private var files
 
     var body: some View {
         HStack(spacing: 8) {
@@ -18,6 +22,19 @@ struct ProcessRow: View {
                 .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .combine)
+        .contextMenu {
+            if let appURL = process.appURL {
+                Button {
+                    files.showInFinder(appURL)
+                } label: {
+                    Label {
+                        Text("Show in Finder", bundle: .module, comment: "Context menu item that reveals the app of a process in Finder.")
+                    } icon: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+            }
+        }
     }
 
     @ViewBuilder

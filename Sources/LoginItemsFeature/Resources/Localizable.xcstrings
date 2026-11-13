@@ -341,6 +341,17 @@
         }
       }
     },
+    "Show Program in Finder" : {
+      "comment" : "Context menu item that reveals the program a login item starts.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar programa en Finder"
+          }
+        }
+      }
+    },
     "Show in Finder" : {
       "comment" : "Tooltip of the button that reveals a login item’s property list in Finder.",
       "localizations" : {

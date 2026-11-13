@@ -219,6 +219,17 @@
         }
       }
     },
+    "Show in Finder" : {
+      "comment" : "Context menu item that reveals the app of a process in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
     "System" : {
       "comment" : "Processor time spent by the system.",
       "localizations" : {
