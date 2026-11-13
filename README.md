@@ -66,10 +66,11 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 2. Abre el DMG y arrastra **CleanMac** al acceso a **Aplicaciones** que aparece dentro.
 3. Expulsa el DMG y abre **CleanMac desde Aplicaciones**. Después puedes borrar el DMG.
 
-La distribución es gratuita y no usa una cuenta de pago de Apple: la app tiene una
-firma local ad hoc, sin certificado Developer ID ni notarización. Si macOS bloquea
-la primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
-y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper.
+La distribución es gratuita y no usa una cuenta de pago de Apple: la app está firmada
+con un certificado propio, sin Developer ID ni notarización. Si macOS bloquea la
+primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
+y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper. Como todas las
+versiones usan el mismo certificado, los permisos que concedas se conservan al actualizar.
 
 **[Guía de instalación y actualizaciones](docs/INSTALLING.md)**: instrucciones paso a
 paso, permisos opcionales y qué hacer si macOS bloquea la apertura o no aparece una actualización.
@@ -101,7 +102,9 @@ make app      # genera build/CleanMac.app
 make install  # la copia a /Applications
 ```
 
-La app usa la misma firma ad hoc que la distribución pública.
+Las compilaciones locales usan firma ad hoc, así que macOS puede pedir otra vez los
+permisos a cada una. Las versiones publicadas se firman con el certificado del proyecto
+(ver [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## Permisos de macOS
 

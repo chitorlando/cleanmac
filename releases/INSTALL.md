@@ -8,6 +8,9 @@ y confirma la apertura. No necesitas desactivar Gatekeeper.
 
 Las siguientes versiones se pueden instalar desde **CleanMac → Buscar
 actualizaciones…**. Las descargas se verifican con la firma Ed25519 de Sparkle.
+Todas las versiones usan el mismo certificado de firma, así que los permisos que
+concedas, como Acceso total al disco, se conservan al actualizar. Desde la 0.1.0,
+macOS los pedirá una última vez.
 
 Requiere macOS 13 o posterior. Compatible con Apple silicon e Intel.
 
@@ -23,5 +26,8 @@ You do not need to disable Gatekeeper.
 
 Future releases can be installed using **CleanMac → Check for Updates…**.
 Downloads are verified with Sparkle's Ed25519 signature.
+Every release is signed with the same certificate, so the permissions you grant,
+such as Full Disk Access, persist across updates. Coming from 0.1.0, macOS asks
+for them one last time.
 
 Requires macOS 13 or later. Supports Apple silicon and Intel.
