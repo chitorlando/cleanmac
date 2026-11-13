@@ -22,9 +22,26 @@ public struct ItemMenu: Equatable, Sendable {
         selection: ItemMenuSelection,
         featureActions: [FeatureItemAction]
     ) {
-        let target = FeatureItemTarget(itemAt: url, isFolder: isFolder)
+        self.init(
+            url: url,
+            canOpen: canOpen,
+            selection: selection,
+            featureTarget: FeatureItemTarget(itemAt: url, isFolder: isFolder),
+            featureActions: featureActions
+        )
+    }
+
+    /// - Parameter featureTarget: What other features get instead of the item, such as the app
+    ///   a login item belongs to, or `nil` to offer no action of theirs.
+    public init(
+        url: URL,
+        canOpen: Bool = true,
+        selection: ItemMenuSelection,
+        featureTarget: FeatureItemTarget?,
+        featureActions: [FeatureItemAction]
+    ) {
         var own: [ItemMenuAction] = []
-        if canOpen, target.kind != .app {
+        if canOpen, url.pathExtension.lowercased() != "app" {
             own.append(.open)
         }
         switch selection {
@@ -32,9 +49,11 @@ public struct ItemMenu: Equatable, Sendable {
         case .selected: own.append(.deselect)
         case .deselected: own.append(.select)
         }
-        let offered = featureActions
-            .filter { $0.itemKind == target.kind }
-            .map { ItemMenuAction.feature($0, target: target.url) }
+        let offered = featureTarget.map { target in
+            featureActions
+                .filter { $0.itemKind == target.kind }
+                .map { ItemMenuAction.feature($0, target: target.url) }
+        } ?? []
         sections = [own, offered, [.showInFinder, .copyPath]].filter { !$0.isEmpty }
     }
 }

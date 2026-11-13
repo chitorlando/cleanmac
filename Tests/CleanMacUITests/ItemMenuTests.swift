@@ -48,6 +48,17 @@ struct ItemMenuTests {
         #expect(menu.sections == [[.open, .select], [.showInFinder, .copyPath]])
     }
 
+    @Test func otherFeaturesCanGetSomethingElseThanTheItem() {
+        let plist = URL(filePath: "/Users/test/Library/LaunchAgents/us.zoom.updater.plist")
+        let owner = FeatureItemTarget(itemAt: app, isFolder: false)
+
+        let menu = ItemMenu(url: plist, selection: .unavailable, featureTarget: owner, featureActions: [findDuplicates, uninstall])
+        let none = ItemMenu(url: plist, selection: .unavailable, featureTarget: nil, featureActions: [findDuplicates, uninstall])
+
+        #expect(menu.sections == [[.open], [.feature(uninstall, target: app)], [.showInFinder, .copyPath]])
+        #expect(none.sections == [[.open], [.showInFinder, .copyPath]])
+    }
+
     @Test func neverOffersToRemoveAnything() {
         let all = [ItemMenuSelection.unavailable, .selected, .deselected]
             .flatMap { menu(file, selection: $0).sections.joined() }

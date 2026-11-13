@@ -6,7 +6,7 @@ import SwiftUI
 /// The actions other features offer come from the `featureItemActions` environment value.
 public struct ItemContextMenu<Extra: View>: View {
     private let url: URL
-    private let isFolder: Bool
+    private let featureTarget: FeatureItemTarget?
     private let canOpen: Bool
     private let selection: ItemMenuSelection
     private let onToggle: () -> Void
@@ -28,8 +28,27 @@ public struct ItemContextMenu<Extra: View>: View {
         onToggle: @escaping () -> Void = {},
         @ViewBuilder extra: () -> Extra
     ) {
+        self.init(
+            url: url,
+            featureTarget: FeatureItemTarget(itemAt: url, isFolder: isFolder),
+            canOpen: canOpen,
+            selection: selection,
+            onToggle: onToggle,
+            extra: extra
+        )
+    }
+
+    /// - Parameter featureTarget: What other features get instead of the item. See `ItemMenu`.
+    public init(
+        url: URL,
+        featureTarget: FeatureItemTarget?,
+        canOpen: Bool = true,
+        selection: ItemMenuSelection,
+        onToggle: @escaping () -> Void = {},
+        @ViewBuilder extra: () -> Extra
+    ) {
         self.url = url
-        self.isFolder = isFolder
+        self.featureTarget = featureTarget
         self.canOpen = canOpen
         self.selection = selection
         self.onToggle = onToggle
@@ -37,7 +56,13 @@ public struct ItemContextMenu<Extra: View>: View {
     }
 
     public var body: some View {
-        let menu = ItemMenu(url: url, isFolder: isFolder, canOpen: canOpen, selection: selection, featureActions: featureActions)
+        let menu = ItemMenu(
+            url: url,
+            canOpen: canOpen,
+            selection: selection,
+            featureTarget: featureTarget,
+            featureActions: featureActions
+        )
         ForEach(Array(menu.sections.enumerated()), id: \.offset) { index, actions in
             if index > 0 {
                 Divider()
