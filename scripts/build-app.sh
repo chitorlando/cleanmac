@@ -14,6 +14,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=lib/sparkle.sh
+source "$ROOT/scripts/lib/sparkle.sh"
 CONFIGURATION="${1:-release}"
 APP_NAME="CleanMac"
 APP_DIR="$ROOT/build/$APP_NAME.app"
@@ -44,12 +46,10 @@ find "$BIN_DIR" -maxdepth 1 -name "${APP_NAME}_*.bundle" -exec cp -R {} "$RESOUR
 
 # SwiftPM links binary dependencies but does not embed them in our hand-built
 # app. ditto preserves Sparkle's versioned symlinks, helpers and vendor signatures.
-# SwiftPM names the artifacts folder after the checkout's folder, "cleanmac" for
-# a plain clone, so look for Sparkle in whichever it is.
-SPARKLE_DIR="$(find "$ROOT/.build/artifacts" -mindepth 2 -maxdepth 2 -type d -name Sparkle 2>/dev/null | head -n 1)"
+SPARKLE_DIR="$(sparkle_artifacts_dir "$ROOT")"
 SPARKLE_FRAMEWORK="$SPARKLE_DIR/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
-if [ -z "$SPARKLE_DIR" ] || [ ! -d "$SPARKLE_FRAMEWORK" ]; then
-    echo "Sparkle.framework was not found in $ROOT/.build/artifacts" >&2
+if [ ! -d "$SPARKLE_FRAMEWORK" ]; then
+    echo "Sparkle.framework was not found at $SPARKLE_FRAMEWORK" >&2
     exit 1
 fi
 mkdir -p "$APP_DIR/Contents/Frameworks"
