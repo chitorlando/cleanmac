@@ -1,8 +1,10 @@
 # Publicar CleanMac sin cuenta de pago de Apple
 
-La app se distribuye con firma ad hoc gratuita, sin Developer ID ni notarización.
-El DMG contiene `CleanMac.app` y un enlace a `/Applications`. macOS puede bloquear
-la primera apertura: las instrucciones están en `releases/INSTALL.md`.
+La app se distribuye firmada con un certificado autofirmado gratuito, sin cuenta
+de pago de Apple, Developer ID ni notarización. El DMG contiene `CleanMac.app` y un
+enlace a `/Applications`. Como no está notarizada, macOS sigue bloqueando la primera
+apertura hasta que se pulsa «Abrir igualmente»: las instrucciones están en
+`releases/INSTALL.md`.
 
 Sparkle es la única dependencia externa. La firma Ed25519 de las actualizaciones
 es gratuita e independiente de Apple. No se debe quitar: permite que una app
@@ -41,6 +43,85 @@ repositorio usando `generate_keys --account io.github.cleanmac -x /ruta/segura`.
 No guardes esa exportación en Git, en artefactos de CI ni en una Release.
 Sin certificado Developer ID, perder esta clave puede obligar a los usuarios a
 instalar manualmente una nueva versión para restablecer las actualizaciones.
+
+## Certificado de firma (una sola vez)
+
+macOS recuerda los permisos de una app, como Acceso total al disco o el control
+de Finder, por su *requisito designado*. Con firma ad hoc ese requisito es el hash
+del propio ejecutable (`cdhash H"…"`), distinto en cada compilación, así que cada
+actualización de Sparkle es una app nueva para macOS y los permisos se pierden.
+Firmada con un certificado, el requisito pasa a ser el identificador de la app y el
+hash del certificado:
+
+```text
+identifier "io.github.cleanmac" and certificate leaf = H"…"
+```
+
+Ese requisito es el mismo en todas las versiones firmadas con el mismo certificado,
+así que los permisos se conservan al actualizar. No hace falta Developer ID: un
+certificado autofirmado basta, aunque no evita el paso de «Abrir igualmente».
+
+Para crearlo, ejecuta una sola vez y guarda los archivos fuera del repositorio:
+
+```bash
+./scripts/create-signing-certificate.sh ~/Desktop/CleanMac-signing.p12
+base64 -i ~/Desktop/CleanMac-signing.p12 | gh secret set CODESIGN_P12_BASE64 --repo chitorlando/cleanmac
+gh secret set CODESIGN_P12_PASSWORD --repo chitorlando/cleanmac < ~/Desktop/CleanMac-signing.p12.password
+```
+
+El script usa OpenSSL, no modifica el Llavero y nunca imprime la clave ni la
+contraseña. Crea «CleanMac Self-Signed», válido 20 años, como `.p12` protegido por
+una contraseña aleatoria que guarda junto a él (`.p12.password`, permisos 600).
+
+Guarda **los dos archivos** en una copia de seguridad sin conexión, por ejemplo en
+un disco cifrado, y bórralos después del Escritorio. No vuelvas a ejecutar el script
+para «renovar» el certificado: uno nuevo cambia la identidad de la app y los usuarios
+tendrían que conceder los permisos otra vez. Si se pierde, la siguiente versión se
+firma con uno nuevo y ocurre lo mismo, una sola vez.
+
+El workflow importa el certificado en un llavero temporal, firma la app con él,
+muestra el requisito designado en el registro, comprueba que es el estable y borra
+el llavero. Si falta `CODESIGN_P12_BASE64`, publica con firma ad hoc y deja un
+aviso en la ejecución: esa versión vuelve a pedir los permisos.
+
+Para ensayar la firma sin secretos:
+
+```bash
+make signing-dry-run
+```
+
+Crea un certificado desechable en un llavero temporal, compila `build/CleanMac.app`
+firmada con él, la comprueba y borra el certificado y el llavero.
+
+### Compatibilidad con Sparkle
+
+Sparkle 2.10.1 acepta el cambio de firma, según su código fuente
+(`SUUpdateValidator.m` y `SUCodeSigningVerifier.m`):
+
+- CleanMac tiene `SUVerifyUpdateBeforeExtraction`, así que Sparkle valida primero
+  la firma EdDSA del DMG con la clave pública de la app instalada. Después de
+  extraerlo solo exige que la app nueva tenga una firma de código válida. No compara
+  su identidad con la anterior, de modo que pasar de la 0.1.0, ad hoc, a una versión
+  autofirmada funciona mientras la clave EdDSA no cambie.
+- Sin esa opción, Sparkle acepta la actualización si es válida la firma EdDSA **o**
+  la firma de código coincide con el requisito designado de la app instalada. Entre
+  versiones autofirmadas se cumplen las dos.
+- Sparkle restringe la conexión con sus servicios XPC al Team ID de la app, y un
+  certificado autofirmado no tiene Team ID, así que no se aplica ninguna restricción.
+- La firma de Sparkle.framework y sus servicios se conserva tal como viene en el
+  paquete de Swift Package Manager: ad hoc. La app no activa el *hardened runtime*,
+  así que no hay validación de bibliotecas que exija la misma identidad.
+
+Por eso **no se pueden cambiar a la vez la clave EdDSA y el certificado**: una de
+las dos firmas debe seguir siendo la de la versión instalada.
+
+### Con un Developer ID
+
+Si algún día hay cuenta de Apple Developer, la firma con Developer ID y la
+notarización eliminarán el paso de «Abrir igualmente». Pasar del certificado
+autofirmado al Developer ID funciona igual que el paso desde ad hoc: Sparkle lo
+acepta por la firma EdDSA, pero el requisito designado cambia y los usuarios
+concederán los permisos una última vez.
 
 ## Publicar una versión
 
@@ -105,8 +186,9 @@ publica nada automáticamente al ejecutar estos scripts locales.
 
 Comprueba la instalación desde el DMG en otro Mac, la apertura inicial, el menú
 «Buscar actualizaciones…» y, entre dos versiones, la sustitución y el reinicio.
-Prueba los permisos de Finder y Acceso total al disco después de actualizar:
-sin una identidad Developer ID estable, macOS puede solicitar autorización otra vez.
+Prueba los permisos de Finder y Acceso total al disco después de actualizar entre
+dos versiones firmadas con el certificado: deben conservarse. En el registro de la
+publicación, «Designated requirement» debe mostrar el mismo hash en todas.
 
 Sparkle pregunta al usuario si desea buscar versiones automáticamente y no activa
 la instalación automática por defecto. No envía perfiles del sistema. Usa

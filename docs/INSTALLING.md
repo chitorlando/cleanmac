@@ -21,8 +21,10 @@ volumen es de solo lectura y Sparkle no puede reemplazar esa copia para actualiz
 ## 2. Autorizar la primera apertura
 
 CleanMac se distribuye sin certificado Developer ID ni notarización de Apple.
-Usa una firma local gratuita, por lo que macOS puede bloquear la primera apertura
-con un aviso de que no puede verificar al desarrollador o comprobar la app.
+Está firmada con un certificado propio gratuito, que Apple no emite, por lo que
+macOS puede bloquear la primera apertura con un aviso de que no puede verificar
+al desarrollador o comprobar la app. Solo tendrás que autorizarla esta vez:
+las actualizaciones no repiten este paso.
 
 Si has descargado el archivo del repositorio oficial enlazado arriba:
 
@@ -41,6 +43,11 @@ sin ese permiso, se omiten. macOS también puede pedir acceso a carpetas o
 autorización para que Finder mueva una app a la Papelera cuando uses esas funciones.
 
 La lista y finalidad de cada permiso están en [Permisos de macOS](../README.md#permisos-de-macos).
+
+Los permisos que concedas **se conservan al actualizar**: todas las versiones están
+firmadas con el mismo certificado, y macOS reconoce así que sigue siendo la misma app.
+Hay una excepción: si tenías la versión 0.1.0, que no usaba ese certificado, macOS
+te pedirá los permisos **una última vez** después de actualizar desde ella.
 
 ## 4. Esperar avisos de actualizaciones
 
@@ -84,7 +91,7 @@ Apple y no convierte la app en una aplicación notarizada.
 | Hay un error de conexión | Comprueba internet y vuelve a intentarlo más tarde. Las funciones locales de CleanMac siguen disponibles. |
 | La app está abierta desde el DMG | Ciérrala, cópiala a Aplicaciones, expulsa el DMG y abre la copia instalada. |
 | No existe el menú de actualizaciones | Puede ser una copia anterior a Sparkle. Instala manualmente el DMG actual una vez. |
-| macOS vuelve a pedir permisos después de actualizar | Revisa los permisos de CleanMac en Privacidad y seguridad; al usar firma ad hoc, puede ser necesario concederlos otra vez. |
+| macOS vuelve a pedir permisos después de actualizar | Es normal una sola vez al actualizar desde la 0.1.0. Concédelos de nuevo en Privacidad y seguridad; las siguientes actualizaciones los conservan. |
 
 Si usabas una versión anterior a Sparkle, cierra CleanMac y arrastra la nueva copia
 del DMG a Aplicaciones, aceptando reemplazar la anterior cuando Finder lo pregunte.

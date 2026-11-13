@@ -1,0 +1,204 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Allow" : {
+      "comment" : "Button that shows the system's question about controlling Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Button that leaves the permissions screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        }
+      }
+    },
+    "Finder Automation" : {
+      "comment" : "Name of the permission to control Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatización de Finder"
+          }
+        }
+      }
+    },
+    "Full Disk Access" : {
+      "comment" : "Name of the macOS permission.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso total al disco"
+          }
+        }
+      }
+    },
+    "Full Disk Access is off" : {
+      "comment" : "Reminder in the sidebar that opens the permissions screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso total al disco desactivado"
+          }
+        }
+      }
+    },
+    "In the list, turn on CleanMac. If it isn’t there, add it with the + button." : {
+      "comment" : "Hint on how to grant Full Disk Access in System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la lista, activa CleanMac. Si no aparece, añádela con el botón +."
+          }
+        }
+      }
+    },
+    "Lets CleanMac analyze and clean protected folders, such as other apps’ containers, Mail, Safari and Group Containers. Without it, those folders are skipped." : {
+      "comment" : "Why CleanMac asks for Full Disk Access.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite a CleanMac analizar y limpiar carpetas protegidas, como los contenedores de otras apps, Mail, Safari y los contenedores de grupo. Sin él, esas carpetas se omiten."
+          }
+        }
+      }
+    },
+    "Lets CleanMac ask Finder to move protected apps to the Trash, so you can still put them back." : {
+      "comment" : "Why CleanMac asks to control Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite a CleanMac pedir a Finder que mueva las apps protegidas a la Papelera, para que puedas devolverlas."
+          }
+        }
+      }
+    },
+    "Not set up yet" : {
+      "comment" : "Status of a permission the user hasn't been asked about.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin configurar"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "comment" : "Status of a permission that is not granted.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        }
+      }
+    },
+    "On" : {
+      "comment" : "Status of a permission that is granted.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Button that opens the Privacy & Security settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        }
+      }
+    },
+    "Permissions" : {
+      "comment" : "Title of the permissions screen when opened again.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permisos"
+          }
+        }
+      }
+    },
+    "Recommended" : {
+      "comment" : "Badge on the permission CleanMac recommends.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomendado"
+          }
+        }
+      }
+    },
+    "Skip for now" : {
+      "comment" : "Button that leaves the permissions screen without granting them.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir por ahora"
+          }
+        }
+      }
+    },
+    "Some folders can’t be analyzed. Click to set it up." : {
+      "comment" : "Tooltip of the Full Disk Access reminder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas carpetas no se pueden analizar. Haz clic para configurarlo."
+          }
+        }
+      }
+    },
+    "Two permissions let CleanMac analyze and clean without interruptions. Both are optional, and you can come back here from the CleanMac menu." : {
+      "comment" : "Introduction of the permissions screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dos permisos permiten a CleanMac analizar y limpiar sin interrupciones. Los dos son opcionales y puedes volver aquí desde el menú CleanMac."
+          }
+        }
+      }
+    },
+    "Welcome to CleanMac" : {
+      "comment" : "Title of the permissions screen on the first launch.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te damos la bienvenida a CleanMac"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

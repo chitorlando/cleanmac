@@ -12,6 +12,17 @@
         }
       }
     },
+    "Permissions…" : {
+      "comment" : "Application menu command that opens the permissions screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permisos…"
+          }
+        }
+      }
+    },
     "Soon" : {
       "comment" : "Badge on sidebar features that are not available yet.",
       "localizations" : {

@@ -66,10 +66,11 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 2. Abre el DMG y arrastra **CleanMac** al acceso a **Aplicaciones** que aparece dentro.
 3. Expulsa el DMG y abre **CleanMac desde Aplicaciones**. Después puedes borrar el DMG.
 
-La distribución es gratuita y no usa una cuenta de pago de Apple: la app tiene una
-firma local ad hoc, sin certificado Developer ID ni notarización. Si macOS bloquea
-la primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
-y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper.
+La distribución es gratuita y no usa una cuenta de pago de Apple: la app está firmada
+con un certificado propio, sin Developer ID ni notarización. Si macOS bloquea la
+primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
+y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper. Como todas las
+versiones usan el mismo certificado, los permisos que concedas se conservan al actualizar.
 
 **[Guía de instalación y actualizaciones](docs/INSTALLING.md)**: instrucciones paso a
 paso, permisos opcionales y qué hacer si macOS bloquea la apertura o no aparece una actualización.
@@ -101,11 +102,26 @@ make app      # genera build/CleanMac.app
 make install  # la copia a /Applications
 ```
 
-La app usa la misma firma ad hoc que la distribución pública.
+Las compilaciones locales usan firma ad hoc, así que macOS puede pedir otra vez los
+permisos a cada una. Las versiones publicadas se firman con el certificado del proyecto
+(ver [docs/RELEASING.md](docs/RELEASING.md)).
 
 ## Permisos de macOS
 
 macOS puede pedirte estos permisos. Todos se gestionan en Ajustes del Sistema > Privacidad y seguridad.
+
+La primera vez que abres CleanMac, una pantalla de bienvenida te explica los dos más importantes,
+el Acceso total al disco y la Automatización de Finder, y te lleva a concederlos. Los dos son opcionales:
+puedes continuar u omitirlos, y volver a esa pantalla cuando quieras desde el menú CleanMac > Permisos….
+
+- macOS no deja que una app se conceda a sí misma el Acceso total al disco. El botón «Abrir Ajustes»
+  abre la lista correcta, donde solo tienes que activar CleanMac, y la pantalla se pone en verde
+  en cuanto lo haces. Para comprobarlo, CleanMac intenta abrir, sin leerlo, un archivo que solo
+  ese permiso deja abrir; macOS nunca muestra un aviso por ello.
+- La Automatización de Finder solo se pide al pulsar «Permitir», con el aviso de macOS.
+- Mientras el Acceso total al disco está desactivado, un aviso discreto bajo la barra lateral lleva
+  a la pantalla de permisos. Si lo tenías activado y se pierde, por ejemplo tras una actualización,
+  la pantalla vuelve a aparecer al abrir la app.
 
 - **Acceso total al disco.** Opcional y recomendado: permite analizar carpetas protegidas.
   Sin él, la app simplemente las omite.
@@ -171,6 +187,7 @@ Sources/
 ├── MaintenanceFeature/   Mantenimiento
 ├── LoginItemsFeature/    Ítems de inicio
 ├── MonitorFeature/       Monitor
+├── OnboardingFeature/    Bienvenida y permisos de la primera vez
 └── CleanMacApp/          Punto de entrada, barra lateral y composición de dependencias
 ```
 
