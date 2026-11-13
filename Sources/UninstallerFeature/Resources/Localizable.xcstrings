@@ -155,6 +155,17 @@
         }
       }
     },
+    "Protected by macOS" : {
+      "comment" : "Badge on an app's container, which macOS protects.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protegido por macOS"
+          }
+        }
+      }
+    },
     "Quit App" : {
       "comment" : "Button that asks a running app to quit.",
       "localizations" : {
@@ -382,6 +393,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "apps analizadas"
+          }
+        }
+      }
+    },
+    "macOS protects app containers. If CleanMac can’t move this item to the Trash, give it Full Disk Access or move the item yourself in Finder." : {
+      "comment" : "Explains the badge on an app's container that macOS protects.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS protege los contenedores de las apps. Si CleanMac no puede mover este elemento a la Papelera, dale acceso total al disco o muévelo tú desde Finder."
           }
         }
       }
