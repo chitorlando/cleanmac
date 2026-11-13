@@ -9,18 +9,22 @@ import SwiftUI
 /// their items in `featureItemActions`.
 struct RootView: View {
     let sections: SidebarSections
+    /// Shown under the sidebar's list, such as a reminder about a missing permission.
+    let sidebarNotice: AnyView?
 
     @StateObject private var navigator: FeatureNavigator
 
-    init(modules: [any FeatureModule], upcoming: [UpcomingFeature]) {
+    init(modules: [any FeatureModule], upcoming: [UpcomingFeature], sidebarNotice: AnyView? = nil) {
         let sections = SidebarSections(modules: modules, upcoming: upcoming)
         self.sections = sections
+        self.sidebarNotice = sidebarNotice
         _navigator = StateObject(wrappedValue: FeatureNavigator(modules: modules, selectedID: sections.firstModule?.id))
     }
 
     var body: some View {
         NavigationSplitView {
             SidebarView(sections: sections, selection: $navigator.selectedID)
+                .safeAreaInset(edge: .bottom, spacing: 0) { sidebarNotice }
                 .navigationSplitViewColumnWidth(min: 210, ideal: 230, max: 280)
         } detail: {
             detail
