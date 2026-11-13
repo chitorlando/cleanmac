@@ -36,6 +36,35 @@ jobs:
           test -s "releases/$GITHUB_REF_NAME.en.html"
           test -s "releases/$GITHUB_REF_NAME.es.html"
 
+      # Signing every release with the same certificate keeps the app's
+      # designated requirement, so macOS keeps Full Disk Access and Automation
+      # grants across updates. See docs/RELEASING.md.
+      - name: Import signing certificate
+        env:
+          CODESIGN_P12_BASE64: ${{ secrets.CODESIGN_P12_BASE64 }}
+          CODESIGN_P12_PASSWORD: ${{ secrets.CODESIGN_P12_PASSWORD }}
+        run: |
+          if [ -z "$CODESIGN_P12_BASE64" ]; then
+            echo "::warning title=Signed ad hoc::CODESIGN_P12_BASE64 is missing, so this release is signed ad hoc." \
+              "Its identity changes with every build, and macOS will ask users for its permissions again after the update." \
+              "Create the certificate with scripts/create-signing-certificate.sh and add both secrets."
+            exit 0
+          fi
+          if [ -z "$CODESIGN_P12_PASSWORD" ]; then
+            echo "::error::CODESIGN_P12_BASE64 is set but CODESIGN_P12_PASSWORD is missing."
+            exit 1
+          fi
+          certificate="$RUNNER_TEMP/signing.p12"
+          keychain="$RUNNER_TEMP/signing.keychain-db"
+          base64 --decode > "$certificate" <<<"$CODESIGN_P12_BASE64"
+          identity="$(./scripts/import-signing-certificate.sh "$certificate" "$keychain")"
+          rm -f "$certificate"
+          echo "Signing with the certificate whose SHA-1 is $identity."
+          {
+            echo "SIGN_IDENTITY=$identity"
+            echo "SIGN_KEYCHAIN=$keychain"
+          } >> "$GITHUB_ENV"
+
       - name: Test
         run: swift test
 
@@ -52,7 +81,18 @@ jobs:
               grep -qw "$architecture" <<<"$architectures"
             done
           done
-          codesign --verify --deep --strict build/CleanMac.app
+          # Prints the designated requirement. With the certificate it must be
+          # the bundle identifier plus the certificate's hash, the same for
+          # every release.
+          ./scripts/verify-app-signature.sh build/CleanMac.app "${SIGN_IDENTITY:-}"
+
+      - name: Remove signing keychain
+        if: always()
+        run: |
+          if [ -n "${SIGN_KEYCHAIN:-}" ]; then
+            security delete-keychain "$SIGN_KEYCHAIN" || true
+          fi
+          rm -f "$RUNNER_TEMP/signing.p12"
 
       - name: Create DMG
         run: ./scripts/build-dmg.sh
