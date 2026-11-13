@@ -28,9 +28,11 @@ final class FeatureNavigator: ObservableObject {
         }
     }
 
-    /// What every feature offers to do with items shown by the others, in the order of the features.
+    /// What the other features offer to do with the items the selected feature shows, in the
+    /// order of the features. A feature's own actions are left out: the uninstaller's list
+    /// shouldn't offer to open its apps in the uninstaller.
     var itemActions: [FeatureItemAction] {
-        modules.flatMap { $0.itemActions }
+        modules.filter { $0.id != selectedID }.flatMap { $0.itemActions }
     }
 
     /// The action features use to open each other.
