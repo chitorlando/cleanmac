@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Context menu of an item row: the common actions, then the feature's own after a divider.
+/// Context menu of an item row: the common actions, then the feature's own.
 ///
 /// Use it inside `.contextMenu { }` so every row offers the same actions with the same words.
 public struct ItemContextMenu<Extra: View>: View {
@@ -13,7 +13,8 @@ public struct ItemContextMenu<Extra: View>: View {
     /// - Parameters:
     ///   - actions: Usually `ItemMenuActions.standard(for:canOpen:selection:)`.
     ///   - onToggle: Called for Select and Deselect.
-    ///   - extra: The feature's own actions, such as “Open in Uninstaller”.
+    ///   - extra: The feature's own actions, such as “Open in Uninstaller”, after a `Divider()`
+    ///     that the feature adds only when it shows any of them.
     public init(
         url: URL,
         actions: [ItemMenuAction],
@@ -34,10 +35,7 @@ public struct ItemContextMenu<Extra: View>: View {
                 action.title
             }
         }
-        if Extra.self != EmptyView.self {
-            Divider()
-            extra
-        }
+        extra
     }
 }
 
