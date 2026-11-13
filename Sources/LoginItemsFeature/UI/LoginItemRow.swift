@@ -1,14 +1,17 @@
-import AppKit
 import CleanMacUI
 import SwiftUI
 
 /// One login item: a checkbox for the user's agents or a lock for shared items, with
 /// its app, when it runs and a button that reveals its property list in Finder.
+///
+/// Its context menu acts on the property list, offers what other features do with the app it
+/// belongs to, such as showing it in the Uninstaller, and shows its program in Finder.
 struct LoginItemRow: View {
     let item: LoginItem
     let isSelected: Bool
     let theme: FeatureTheme
     let onToggle: () -> Void
+    @Environment(\.fileActions) private var files
 
     var body: some View {
         HStack(spacing: 12) {
@@ -35,6 +38,31 @@ struct LoginItemRow: View {
             .accessibilityLabel(revealLabel)
         }
         .padding(.leading, 4)
+        .contextMenu { contextMenu }
+    }
+
+    /// Shared items need an administrator, so they're never offered Select.
+    private var contextMenu: some View {
+        ItemContextMenu(
+            url: item.plistURL,
+            featureTarget: item.owner.map { FeatureItemTarget(itemAt: $0.appURL, isFolder: false) },
+            selection: ItemMenuSelection(isSelected: isSelected, canChange: item.isRemovable),
+            onToggle: onToggle
+        ) {
+            if let programURL {
+                Divider()
+                Button {
+                    files.showInFinder(programURL)
+                } label: {
+                    Text("Show Program in Finder", bundle: .module, comment: "Context menu item that reveals the program a login item starts.")
+                }
+            }
+        }
+    }
+
+    /// The program the item starts, when it's still on disk.
+    private var programURL: URL? {
+        item.isOrphaned ? nil : item.job.programURL
     }
 
     @ViewBuilder
@@ -63,6 +91,6 @@ struct LoginItemRow: View {
     }
 
     private func revealInFinder() {
-        NSWorkspace.shared.activateFileViewerSelecting([item.plistURL])
+        files.showInFinder(item.plistURL)
     }
 }
