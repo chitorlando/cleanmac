@@ -19,38 +19,39 @@ struct PermissionsViewModelTests {
         )
     }
 
-    @Test func opensOnTheFirstLaunch() async {
+    @Test func opensOnTheFirstLaunch() {
         let viewModel = makeViewModel()
 
-        await viewModel.prepareForLaunch()
+        viewModel.prepareForLaunch()
 
         #expect(viewModel.isPresented)
+        #expect(viewModel.isFirstRun)
         #expect(!viewModel.hasFullDiskAccess)
         #expect(viewModel.finderAutomation == .notDetermined)
     }
 
-    @Test func staysClosedOnceFinished() async {
+    @Test func staysClosedOnceFinished() {
         let viewModel = makeViewModel()
-        await viewModel.prepareForLaunch()
+        viewModel.prepareForLaunch()
 
         viewModel.finish()
         let next = makeViewModel()
-        await next.prepareForLaunch()
+        next.prepareForLaunch()
 
         #expect(!viewModel.isPresented)
         #expect(!next.isPresented)
         #expect(store.isCompleted)
     }
 
-    @Test func comesBackWhenFullDiskAccessIsLost() async {
+    @Test func comesBackWhenFullDiskAccessIsLost() {
         fullDiskAccess.grant()
         let first = makeViewModel()
-        await first.prepareForLaunch()
+        first.prepareForLaunch()
         first.finish()
 
         fullDiskAccess.revoke()
         let next = makeViewModel()
-        await next.prepareForLaunch()
+        next.prepareForLaunch()
 
         #expect(store.hadFullDiskAccess)
         #expect(next.isPresented)

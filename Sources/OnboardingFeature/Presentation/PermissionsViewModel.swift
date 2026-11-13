@@ -40,14 +40,22 @@ public final class PermissionsViewModel: ObservableObject {
     // MARK: Presenting
 
     /// Reads the permissions and opens the onboarding if it's due. See `OnboardingPolicy`.
-    public func prepareForLaunch() async {
-        await refresh()
+    ///
+    /// Called once before the window shows, so it never flashes the main screen first.
+    /// Both reads are quick and never ask the user.
+    public func prepareForLaunch() {
+        let granted = fullDiskAccess.hasFullDiskAccess()
         isPresented = OnboardingPolicy.showsAtLaunch(
             isCompleted: store.isCompleted,
             hadFullDiskAccess: store.hadFullDiskAccess,
-            hasFullDiskAccess: hasFullDiskAccess
+            hasFullDiskAccess: granted
         )
+        record(fullDiskAccess: granted)
+        finderAutomation = finder.status()
     }
+
+    /// Whether the user hasn't gone through the onboarding yet, to welcome them.
+    public var isFirstRun: Bool { !store.isCompleted }
 
     /// Opens the onboarding again, from the menu or the reminder.
     public func present() {
@@ -97,6 +105,10 @@ public final class PermissionsViewModel: ObservableObject {
     private func refreshFullDiskAccess() async {
         let checker = fullDiskAccess
         let granted = await Task.detached(priority: .utility) { checker.hasFullDiskAccess() }.value
+        record(fullDiskAccess: granted)
+    }
+
+    private func record(fullDiskAccess granted: Bool) {
         hasFullDiskAccess = granted
         if granted {
             store.hadFullDiskAccess = true
