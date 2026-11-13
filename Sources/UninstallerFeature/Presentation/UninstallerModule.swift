@@ -26,6 +26,22 @@ public final class UninstallerModule: FeatureModule {
     public func show(itemAt url: URL) {
         viewModel.focusApp(at: url)
     }
+
+    /// Offers to show here an app that another feature lists, such as one of the disk map.
+    public var itemActions: [FeatureItemAction] {
+        [
+            FeatureItemAction(
+                featureID: id,
+                itemKind: .app,
+                title: String(
+                    localized: "Show in Uninstaller",
+                    bundle: .module,
+                    comment: "Entry of the context menu of an app listed by another feature, such as the disk map. It shows the app in the Uninstaller."
+                ),
+                symbolName: symbolName
+            )
+        ]
+    }
 }
 
 public extension UninstallerModule {

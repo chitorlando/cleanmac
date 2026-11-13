@@ -10,6 +10,8 @@ import Foundation
 @MainActor
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
+    /// What the scan on screen covers: the whole home folder, or a folder another feature sent.
+    @Published public private(set) var scope = DuplicateScanScope.home
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of groups slow down as it went. Every change goes through
     /// `updateGroups(_:)`, which announces it and then edits the array in place.
@@ -37,6 +39,8 @@ public final class DuplicatesViewModel: ObservableObject {
     private let scanner: any DuplicateScanning
     private let cleanupService: CleanupService
     private var activeTask: Task<Void, Never>?
+    /// Folder asked for while a removal or its report was on screen, to scan once they are left.
+    private var pendingFolder: URL?
 
     // Derived state, computed once per change of what it depends on (see `Memoized`).
     private var visibleGroupsMemo = Memoized<[DuplicateGroup]>()
@@ -84,18 +88,40 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Actions
 
+    /// Scans the current scope from scratch: the whole home folder, or the folder the screen
+    /// is limited to. Only `scanHome()` leaves that folder.
     @discardableResult
     public func startScan() -> Task<Void, Never> {
-        activeTask?.cancel()
-        updateGroups { $0 = [] }
-        selection = ItemSelection()
-        progress = DuplicateScanProgress()
-        wasStoppedEarly = false
-        focusedGroupID = nil
-        phase = .scanning
-        let task = Task { await scan() }
-        activeTask = task
-        return task
+        startScan(scope)
+    }
+
+    /// Leaves the folder the screen is limited to and scans the whole home folder.
+    @discardableResult
+    public func scanHome() -> Task<Void, Never> {
+        startScan(.home)
+    }
+
+    /// Looks for duplicates only in the folder at `url`, for a feature that shows folders.
+    ///
+    /// The scan starts at once, also in place of a scan in progress or of the results on
+    /// screen. A removal is never disturbed: asked for during one or on its report, the folder
+    /// is scanned when the user leaves the report, and the last folder asked for wins.
+    ///
+    /// The request is ignored, and nothing changes, when the scanner can't scan the folder on
+    /// its own: there is no folder at `url`, or the scan of the home folder leaves it out.
+    /// The home folder itself gets a scan of the whole home folder.
+    ///
+    /// - Returns: The scan, or `nil` when the request was ignored or waits for the report.
+    @discardableResult
+    public func scanFolder(at url: URL) -> Task<Void, Never>? {
+        guard let folderScope = scanner.scope(limitedTo: url) else { return nil }
+        switch phase {
+        case .intro, .scanning, .review:
+            return startScan(folderScope)
+        case .removing, .finished:
+            pendingFolder = url
+            return nil
+        }
     }
 
     /// Stops the scan and reviews the groups confirmed so far, which are complete and safe to use.
@@ -124,10 +150,19 @@ public final class DuplicatesViewModel: ObservableObject {
 
     /// Leaves the finished screen and goes back to the list, without the copies already removed.
     ///
-    /// Scanning again would take minutes and find the same groups.
-    public func done() {
-        guard case .finished = phase else { return }
+    /// Scanning again would take minutes and find the same groups. Only a folder asked for
+    /// since the removal started is scanned instead, if it still can be (see `scanFolder(at:)`).
+    ///
+    /// - Returns: The scan of that folder, or `nil` when the list is shown.
+    @discardableResult
+    public func done() -> Task<Void, Never>? {
+        guard case .finished = phase else { return nil }
+        if let folder = pendingFolder, let folderScope = scanner.scope(limitedTo: folder) {
+            return startScan(folderScope)
+        }
+        pendingFolder = nil
         phase = .review
+        return nil
     }
 
     // MARK: Selection
@@ -192,6 +227,25 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Private
 
+    private func startScan(_ newScope: DuplicateScanScope) -> Task<Void, Never> {
+        activeTask?.cancel()
+        pendingFolder = nil
+        if newScope != scope {
+            // A search left from another place would hide what is found in this one.
+            query.searchText = ""
+            scope = newScope
+        }
+        updateGroups { $0 = [] }
+        selection = ItemSelection()
+        progress = DuplicateScanProgress()
+        wasStoppedEarly = false
+        focusedGroupID = nil
+        phase = .scanning
+        let task = Task { await scan(newScope) }
+        activeTask = task
+        return task
+    }
+
     /// The only way `groups` changes: tells the views, as `@Published` would, then edits in place.
     private func updateGroups(_ change: (inout [DuplicateGroup]) -> Void) {
         objectWillChange.send()
@@ -217,8 +271,8 @@ public final class DuplicatesViewModel: ObservableObject {
         canToggleDuplicatesMemo.invalidate()
     }
 
-    private func scan() async {
-        for await event in scanner.scan() {
+    private func scan(_ scope: DuplicateScanScope) async {
+        for await event in scanner.scan(scope) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let newProgress):

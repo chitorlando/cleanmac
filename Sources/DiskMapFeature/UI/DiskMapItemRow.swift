@@ -1,4 +1,3 @@
-import AppKit
 import CleanMacUI
 import SwiftUI
 
@@ -107,16 +106,16 @@ struct DiskMapItemRow: View {
     private var actions: some View {
         HStack(spacing: 4) {
             Button {
-                NSWorkspace.shared.activateFileViewerSelecting([node.url])
+                node.showInFinder()
             } label: {
-                Image(systemName: "magnifyingglass")
+                Image(systemName: DiskMapItemCommand.showInFinder.symbolName)
             }
             .buttonStyle(.borderless)
             .help(revealTitle)
             .accessibilityLabel(revealTitle)
 
             Button(action: onOpen) {
-                Image(systemName: "chevron.right")
+                Image(systemName: DiskMapItemCommand.open.symbolName)
             }
             .buttonStyle(.borderless)
             .opacity(canOpen ? 1 : 0)
@@ -126,11 +125,7 @@ struct DiskMapItemRow: View {
         }
     }
 
-    private var revealTitle: Text {
-        Text("Show in Finder", bundle: .module, comment: "Tooltip of the button that reveals an item in Finder.")
-    }
+    private var revealTitle: Text { DiskMapItemCommand.showInFinder.title }
 
-    private var openTitle: Text {
-        Text("Open", bundle: .module, comment: "Tooltip of the button that opens a folder in the disk map.")
-    }
+    private var openTitle: Text { DiskMapItemCommand.open.title }
 }
