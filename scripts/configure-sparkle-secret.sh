@@ -4,7 +4,9 @@ set -euo pipefail
 umask 077
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-TOOLS="${SPARKLE_TOOLS_DIR:-$ROOT/.build/artifacts/cleanmac/Sparkle/bin}"
+# shellcheck source=lib/sparkle.sh
+source "$ROOT/scripts/lib/sparkle.sh"
+TOOLS="${SPARKLE_TOOLS_DIR:-$(sparkle_artifacts_dir "$ROOT")/bin}"
 PUBLIC_KEY="$("$TOOLS/generate_keys" --account io.github.cleanmac -p)"
 EXPECTED_KEY="$(plutil -extract SUPublicEDKey raw -o - "$ROOT/Support/Info.plist")"
 if [ "$PUBLIC_KEY" != "$EXPECTED_KEY" ]; then
