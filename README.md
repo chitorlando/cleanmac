@@ -62,19 +62,35 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 
 ## Descargar e instalar
 
-Descarga [CleanMac.dmg](https://github.com/chitorlando/cleanmac/releases/latest/download/CleanMac.dmg),
-ábrelo y arrastra CleanMac a **Aplicaciones**. Expulsa el DMG y abre la copia instalada.
+1. Descarga [CleanMac.dmg](https://github.com/chitorlando/cleanmac/releases/latest/download/CleanMac.dmg).
+2. Abre el DMG y arrastra **CleanMac** al acceso a **Aplicaciones** que aparece dentro.
+3. Expulsa el DMG y abre **CleanMac desde Aplicaciones**. Después puedes borrar el DMG.
 
 La distribución es gratuita y no usa una cuenta de pago de Apple: la app tiene una
 firma local ad hoc, sin certificado Developer ID ni notarización. Si macOS bloquea
 la primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
 y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper.
 
-En el menú **CleanMac → Buscar actualizaciones…** puedes comprobar si hay una versión
-nueva. Sparkle pregunta si quieres buscar automáticamente; la instalación automática
-está desactivada por defecto. Las descargas se verifican con una clave Ed25519 gratuita,
-independiente de los certificados de Apple. Las copias anteriores a la integración de
-Sparkle necesitan una última instalación manual.
+**[Guía de instalación y actualizaciones](docs/INSTALLING.md)**: instrucciones paso a
+paso, permisos opcionales y qué hacer si macOS bloquea la apertura o no aparece una actualización.
+
+## Recibir actualizaciones
+
+- A partir de los primeros inicios, Sparkle te preguntará si quieres **buscar
+  actualizaciones automáticamente**. Acepta para recibir avisos de nuevas versiones.
+- Con esa opción habilitada, CleanMac busca aproximadamente **una vez al día mientras
+  está abierta** y tienes conexión a internet. El aviso no tiene por qué aparecer en
+  cuanto se publica una versión ni cada vez que abres la app.
+- Para comprobarlo en cualquier momento, usa **CleanMac → Buscar actualizaciones…**
+  en la barra de menús de macOS; en inglés, **Check for Updates…**.
+- Cuando haya una versión nueva, revisa sus novedades y acepta la instalación.
+  Sparkle descarga, verifica y reemplaza la app, y la reinicia. **No hace falta volver
+  a descargar el DMG ni borrar la versión anterior.**
+
+La instalación automática está desactivada por defecto. Las descargas se verifican
+con una clave Ed25519 gratuita, independiente de los certificados de Apple.
+Las copias anteriores a la integración de Sparkle necesitan una última instalación
+manual; después podrán actualizarse desde la app.
 
 ## Instalación desde el código
 
