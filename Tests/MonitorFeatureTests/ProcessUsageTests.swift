@@ -65,3 +65,19 @@ struct ProcessUsageTests {
         #expect(processes.contains { $0.pid == ProcessInfo.processInfo.processIdentifier })
     }
 }
+
+struct ProcessUsageAppTests {
+    private func process(icon: String?) -> ProcessUsage {
+        ProcessUsage(pid: 42, name: "Safari", iconURL: icon.map { URL(filePath: $0) }, cpu: 0, memoryBytes: 0)
+    }
+
+    @Test func aProcessOfAnAppBelongsToItsBundle() {
+        #expect(process(icon: "/Applications/Safari.app").appURL == URL(filePath: "/Applications/Safari.app"))
+        #expect(process(icon: "/Applications/Old.APP").appURL != nil)
+    }
+
+    @Test func aBareExecutableOrUnknownIconIsNoApp() {
+        #expect(process(icon: "/usr/libexec/trustd").appURL == nil)
+        #expect(process(icon: nil).appURL == nil)
+    }
+}
