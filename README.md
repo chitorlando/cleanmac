@@ -5,7 +5,7 @@
 **Mantenimiento y limpieza para macOS. Libre, nativo y de código abierto.**
 
 CleanMac es una alternativa gratuita a las suites comerciales de limpieza para Mac.
-Está escrita en Swift y SwiftUI, sin dependencias externas, y su código es pequeño,
+Está escrita en Swift y SwiftUI, con Sparkle para las actualizaciones, y su código es pequeño,
 modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 
 > Proyecto personal sin ánimo de lucro. No está afiliado a MacPaw ni a CleanMyMac.
@@ -50,13 +50,31 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
   cuando eliges y ejecutas sus tareas, y pide la contraseña de administrador una sola vez.
 - **Ítems de inicio sin sorpresas.** CleanMac no habla con launchd: solo lee sus listas de propiedades.
   Un agente que mueves a la Papelera deja de ejecutarse en tu próximo inicio de sesión.
-- **Sin red.** La app no se conecta a internet.
+- **Red solo para actualizar.** Sparkle consulta GitHub para buscar versiones y descargar
+  actualizaciones y sus notas. La limpieza y los análisis se realizan en tu Mac; no hay
+  telemetría ni envío de los archivos analizados.
 
 ## Requisitos
 
 - macOS 13 Ventura o posterior
 - Xcode 26 o posterior (Swift 6.2) para compilar
 - Xcode 27 o posterior (Swift 6.4) para `make strings`, igual que la CI
+
+## Descargar e instalar
+
+Descarga [CleanMac.dmg](https://github.com/chitorlando/cleanmac/releases/latest/download/CleanMac.dmg),
+ábrelo y arrastra CleanMac a **Aplicaciones**. Expulsa el DMG y abre la copia instalada.
+
+La distribución es gratuita y no usa una cuenta de pago de Apple: la app tiene una
+firma local ad hoc, sin certificado Developer ID ni notarización. Si macOS bloquea
+la primera apertura, intenta abrirla y luego ve a **Ajustes del Sistema → Privacidad
+y seguridad → Abrir igualmente**. No necesitas desactivar Gatekeeper.
+
+En el menú **CleanMac → Buscar actualizaciones…** puedes comprobar si hay una versión
+nueva. Sparkle pregunta si quieres buscar automáticamente; la instalación automática
+está desactivada por defecto. Las descargas se verifican con una clave Ed25519 gratuita,
+independiente de los certificados de Apple. Las copias anteriores a la integración de
+Sparkle necesitan una última instalación manual.
 
 ## Instalación desde el código
 
@@ -67,8 +85,7 @@ make app      # genera build/CleanMac.app
 make install  # la copia a /Applications
 ```
 
-La app se firma solo para uso local, así que la primera vez macOS puede avisar de que no está verificada.
-Ábrela con clic derecho y «Abrir», o desde Ajustes del Sistema > Privacidad y seguridad.
+La app usa la misma firma ad hoc que la distribución pública.
 
 ## Permisos de macOS
 
@@ -91,6 +108,7 @@ macOS puede pedirte estos permisos. Todos se gestionan en Ajustes del Sistema > 
 open Package.swift   # abre el proyecto en Xcode
 make run             # compila y lanza la app
 make test            # ejecuta los tests
+make dmg             # compila la app universal y genera build/CleanMac.dmg
 make strings         # sincroniza los String Catalogs con el código
 make clean           # borra los productos de compilación
 ./scripts/make-app-icon.sh  # regenera el icono de la app
@@ -110,6 +128,15 @@ gh run download <ID> -n CleanMac-universal -D build  # descarga build/CleanMac.a
 ditto -x -k build/CleanMac.app.zip build             # conserva los permisos y la firma
 open build/CleanMac.app
 ```
+
+### Publicaciones
+
+Los tags estables `vMAJOR.MINOR.PATCH` activan el workflow `release.yml`: pruebas,
+compilación universal, DMG, firma Ed25519 y GitHub Release con `appcast.xml`.
+No usa certificados ni servicios de notarización de Apple.
+
+Consulta [la guía de publicación](docs/RELEASING.md) para configurar la clave de
+Sparkle, preparar las notas en ambos idiomas y publicar una versión.
 
 ### Arquitectura
 
@@ -148,7 +175,8 @@ quítala de `UpcomingFeature.roadmap`. Las demás funciones no cambian.
 - **SOLID.** Las dependencias se inyectan mediante protocolos pequeños, lo que permite probarlas con dobles.
 - **Componentes pequeños.** Una vista o un tipo por archivo, con una sola responsabilidad.
 - **Concurrencia segura.** Swift 6 en modo estricto. El trabajo pesado nunca bloquea la interfaz.
-- **Sin dependencias externas.** Solo frameworks de Apple.
+- **Dependencias acotadas.** Frameworks de Apple y Sparkle para las actualizaciones;
+  su distribución binaria oficial está fijada por versión y checksum en `Package.swift`.
 
 ## Idiomas
 

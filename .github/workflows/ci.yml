@@ -64,13 +64,11 @@ jobs:
           # each slice decide whether the app starts on an older Mac.
           vtool -show-build "$executable"
           otool -arch all -L "$executable"
-          # The bundle embeds no libraries, so one that does not ship with
-          # macOS would only be found on a Mac with the toolchain that built
-          # the app.
-          if otool -arch all -L "$executable" | grep -q '@rpath/'; then
-            echo "::warning::CleanMac links a library that its bundle does not embed" \
-              "(the @rpath lines above), so it may not start on other Macs."
-          fi
+          # Sparkle is a dynamic framework and must travel inside the app.
+          framework=build/CleanMac.app/Contents/Frameworks/Sparkle.framework
+          test -x "$framework/Sparkle"
+          lipo -archs "$framework/Sparkle"
+          codesign --verify --deep --strict build/CleanMac.app
 
       # Artifacts keep neither the executable bit nor symlinks, and a ditto
       # archive does, so the app is uploaded inside one. --sequesterRsrc puts
@@ -84,7 +82,7 @@ jobs:
           unpacked="$(mktemp -d)"
           ditto -x -k build/CleanMac.app.zip "$unpacked"
           test -x "$unpacked/CleanMac.app/Contents/MacOS/CleanMac"
-          codesign --verify --strict --verbose=2 "$unpacked/CleanMac.app"
+          codesign --verify --deep --strict --verbose=2 "$unpacked/CleanMac.app"
 
       - name: Upload app
         uses: actions/upload-artifact@v7

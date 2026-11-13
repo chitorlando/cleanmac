@@ -17,6 +17,13 @@ let package = Package(
         .executable(name: "CleanMac", targets: ["CleanMacApp"])
     ],
     targets: [
+        // Same binary target and checksum as Sparkle's official 2.10.1 manifest.
+        // Fetch the release directly instead of cloning its entire Git history.
+        .binaryTarget(
+            name: "Sparkle",
+            url: "https://github.com/sparkle-project/Sparkle/releases/download/2.10.1/Sparkle-for-Swift-Package-Manager.zip",
+            checksum: "4c2e48a3e50ebcc2c88a58a4c7264a1a99c3c31857ce754357afb9cdb323022a"
+        ),
         .target(name: "CleanMacCore"),
         .target(
             name: "CleanMacUI",
@@ -73,11 +80,14 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature"
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature",
+                "Sparkle"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
                 .unsafeFlags([
+                    "-Xlinker", "-rpath",
+                    "-Xlinker", "@executable_path/../Frameworks",
                     "-Xlinker", "-sectcreate",
                     "-Xlinker", "__TEXT",
                     "-Xlinker", "__info_plist",
