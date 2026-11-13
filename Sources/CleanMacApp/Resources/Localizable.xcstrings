@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Check for Updates…" : {
+      "comment" : "Application menu command to check for a new version.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones…"
+          }
+        }
+      }
+    },
     "Soon" : {
       "comment" : "Badge on sidebar features that are not available yet.",
       "localizations" : {

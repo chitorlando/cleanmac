@@ -37,5 +37,15 @@
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>Free software under the MIT License.</string>
+    <key>SUFeedURL</key>
+    <string>https://github.com/chitorlando/cleanmac/releases/latest/download/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>msWwZdmavnIw7cFzS+kPOl64Yaly6JwD0UtdeluG8S4=</string>
+    <key>SUAutomaticallyUpdate</key>
+    <false/>
+    <key>SUEnableSystemProfiling</key>
+    <false/>
+    <key>SUVerifyUpdateBeforeExtraction</key>
+    <true/>
 </dict>
 </plist>

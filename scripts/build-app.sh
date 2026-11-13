@@ -37,9 +37,21 @@ cp -R "$ROOT"/Support/*.lproj "$RESOURCES_DIR/"
 # so they are the same whatever the architectures.
 find "$BIN_DIR" -maxdepth 1 -name "${APP_NAME}_*.bundle" -exec cp -R {} "$RESOURCES_DIR/" \;
 
+# SwiftPM links binary dependencies but does not embed them in our hand-built
+# app. ditto preserves Sparkle's versioned symlinks, helpers and vendor signatures.
+SPARKLE_FRAMEWORK="$ROOT/.build/artifacts/cleanmac/Sparkle/Sparkle.xcframework/macos-arm64_x86_64/Sparkle.framework"
+if [ ! -d "$SPARKLE_FRAMEWORK" ]; then
+    echo "Sparkle.framework was not found at $SPARKLE_FRAMEWORK" >&2
+    exit 1
+fi
+mkdir -p "$APP_DIR/Contents/Frameworks"
+ditto "$SPARKLE_FRAMEWORK" "$APP_DIR/Contents/Frameworks/Sparkle.framework"
+cp "$ROOT/.build/artifacts/cleanmac/Sparkle/LICENSE" "$RESOURCES_DIR/Sparkle-LICENSE.txt"
+
 # Ad-hoc signature: enough to run locally and to grant Full Disk Access.
-# It covers every architecture of the executable.
+# Free; no Apple account, Developer ID or notarization. Do not enable hardened
+# runtime library validation: the embedded framework keeps Sparkle's signature.
 codesign --force --sign - "$APP_DIR" >/dev/null
-codesign --verify --strict "$APP_DIR"
+codesign --verify --deep --strict "$APP_DIR"
 
 echo "$APP_DIR"
