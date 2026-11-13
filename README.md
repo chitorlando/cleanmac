@@ -110,6 +110,19 @@ permisos a cada una. Las versiones publicadas se firman con el certificado del p
 
 macOS puede pedirte estos permisos. Todos se gestionan en Ajustes del Sistema > Privacidad y seguridad.
 
+La primera vez que abres CleanMac, una pantalla de bienvenida te explica los dos más importantes,
+el Acceso total al disco y la Automatización de Finder, y te lleva a concederlos. Los dos son opcionales:
+puedes continuar u omitirlos, y volver a esa pantalla cuando quieras desde el menú CleanMac > Permisos….
+
+- macOS no deja que una app se conceda a sí misma el Acceso total al disco. El botón «Abrir Ajustes»
+  abre la lista correcta, donde solo tienes que activar CleanMac, y la pantalla se pone en verde
+  en cuanto lo haces. Para comprobarlo, CleanMac intenta abrir, sin leerlo, un archivo que solo
+  ese permiso deja abrir; macOS nunca muestra un aviso por ello.
+- La Automatización de Finder solo se pide al pulsar «Permitir», con el aviso de macOS.
+- Mientras el Acceso total al disco está desactivado, un aviso discreto bajo la barra lateral lleva
+  a la pantalla de permisos. Si lo tenías activado y se pierde, por ejemplo tras una actualización,
+  la pantalla vuelve a aparecer al abrir la app.
+
 - **Acceso total al disco.** Opcional y recomendado: permite analizar carpetas protegidas.
   Sin él, la app simplemente las omite.
 - **Automatización de Finder.** Al desinstalar una app protegida, CleanMac pide a Finder que la mueva
@@ -174,6 +187,7 @@ Sources/
 ├── MaintenanceFeature/   Mantenimiento
 ├── LoginItemsFeature/    Ítems de inicio
 ├── MonitorFeature/       Monitor
+├── OnboardingFeature/    Bienvenida y permisos de la primera vez
 └── CleanMacApp/          Punto de entrada, barra lateral y composición de dependencias
 ```
 
