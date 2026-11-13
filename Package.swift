@@ -85,7 +85,7 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature",
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "OnboardingFeature",
                 "Sparkle"
             ],
             resources: [.process("Resources")],
