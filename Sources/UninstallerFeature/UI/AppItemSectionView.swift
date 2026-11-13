@@ -18,7 +18,7 @@ struct AppItemSectionView: View {
                     .foregroundStyle(.secondary)
             }
             ForEach(section.items) { item in
-                AppItemRow(item: item, viewModel: viewModel, theme: theme)
+                AppItemRow(item: item, isProtected: section.category.isProtectedByMacOS, viewModel: viewModel, theme: theme)
             }
         }
     }

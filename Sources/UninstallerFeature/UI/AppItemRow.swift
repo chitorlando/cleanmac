@@ -2,9 +2,12 @@ import CleanMacCore
 import CleanMacUI
 import SwiftUI
 
-/// One file of the focused app, flagged when another copy of the app shares it.
+/// One file of the focused app, flagged when another copy of the app shares it, or when
+/// macOS protects it. Protected items stay selectable: Full Disk Access lets CleanMac move them.
 struct AppItemRow: View {
     let item: CleanableItem
+    /// macOS protects the item, as it does apps' containers.
+    var isProtected = false
     @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
 
@@ -17,9 +20,16 @@ struct AppItemRow: View {
                 tint: theme.primary
             ) { viewModel.toggle(item) }
 
-            if viewModel.isShared(item) {
-                SharedLeftoverBadge()
-                    .padding(.leading, 40)
+            if viewModel.isShared(item) || isProtected {
+                HStack(spacing: 6) {
+                    if viewModel.isShared(item) {
+                        SharedLeftoverBadge()
+                    }
+                    if isProtected {
+                        ProtectedLeftoverBadge()
+                    }
+                }
+                .padding(.leading, 40)
             }
         }
     }
