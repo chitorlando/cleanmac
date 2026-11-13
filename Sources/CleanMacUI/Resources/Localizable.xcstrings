@@ -94,6 +94,17 @@
         }
       }
     },
+    "Another app is using it. Quit that app and try again." : {
+      "comment" : "Why an item couldn't be moved to the Trash: it's open in another app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra app lo está usando. Ciérrala y vuelve a intentarlo."
+          }
+        }
+      }
+    },
     "Applications" : {
       "comment" : "Sidebar section with features that manage apps.",
       "localizations" : {
@@ -171,6 +182,28 @@
         }
       }
     },
+    "It couldn’t be moved to the Trash." : {
+      "comment" : "Why an item couldn't be moved to the Trash, when the reason isn't known.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo mover a la Papelera."
+          }
+        }
+      }
+    },
+    "It was no longer there." : {
+      "comment" : "Why an item couldn't be moved to the Trash: it had already been removed.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no estaba ahí."
+          }
+        }
+      }
+    },
     "Moving to the Trash…" : {
       "comment" : "Status shown while items are moved to the Trash.",
       "localizations" : {
@@ -200,6 +233,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir"
+          }
+        }
+      }
+    },
+    "Open Full Disk Access Settings" : {
+      "comment" : "Button that opens the Full Disk Access pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de acceso total al disco"
           }
         }
       }
@@ -277,6 +321,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detener"
+          }
+        }
+      }
+    },
+    "macOS protects this item. Move it to the Trash yourself in Finder, or give CleanMac Full Disk Access and try again." : {
+      "comment" : "Why an item couldn't be moved to the Trash: macOS protects it, such as another app's container.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS protege este elemento. Muévelo tú a la Papelera desde Finder, o da a CleanMac acceso total al disco y vuelve a intentarlo."
           }
         }
       }
