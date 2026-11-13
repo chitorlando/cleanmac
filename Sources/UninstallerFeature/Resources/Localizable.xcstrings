@@ -254,6 +254,17 @@
         }
       }
     },
+    "Show in Uninstaller" : {
+      "comment" : "Entry of the context menu of an app listed by another feature, such as the disk map. It shows the app in the Uninstaller.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en el Desinstalador"
+          }
+        }
+      }
+    },
     "Size" : {
       "comment" : "Sort option that orders apps by size, largest first.",
       "localizations" : {

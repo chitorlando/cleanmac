@@ -4,11 +4,17 @@ import SwiftUI
 /// Items of the focused folder, largest first, with its small items counted together at the end.
 ///
 /// It holds the same items as the rings, so it's also how VoiceOver reads the map.
+///
+/// Each row has a context menu with what the map does with its item and what the other
+/// features of the app offer for it, which the list reads from the environment. See
+/// `DiskMapItemMenu`. The menu is put around the row and not inside it: a row is compared
+/// before it's drawn again, and what its menu offers isn't part of what a row shows.
 struct DiskMapItemList: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     @Environment(\.openFeature) private var openFeature
+    @Environment(\.featureItemActions) private var featureItemActions
     @Environment(\.uninstallerFeatureID) private var uninstallerFeatureID
 
     var body: some View {
@@ -40,6 +46,12 @@ struct DiskMapItemList: View {
             let isSelected = viewModel.isSelected(node)
             let canOpen = viewModel.canOpen(node)
             let canShowInUninstaller = advice == .useUninstaller && uninstallerFeatureID != nil
+            let menu = DiskMapItemMenu(
+                advice: advice,
+                canOpen: canOpen,
+                isSelected: isSelected,
+                featureActions: featureItemActions
+            )
             DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
                 DiskMapItemRow(
                     node: node,
@@ -57,6 +69,10 @@ struct DiskMapItemList: View {
                 )
                 .equatable()
             }
+            // Outside the reader, so a move of the highlight doesn't build the menu again.
+            .contextMenu {
+                DiskMapItemMenuItems(menu: menu) { command in perform(command, on: node) }
+            }
             .id(node.id)
             .onHover { inside in
                 if inside { viewModel.highlightedID = node.id }
@@ -64,6 +80,22 @@ struct DiskMapItemList: View {
         }
         if let other = folder.otherItems {
             OtherItemsRow(itemCount: other.itemCount, size: other.size, share: share(of: other.size, in: folder))
+        }
+    }
+
+    /// Carries out the entry chosen in the context menu of `node`.
+    private func perform(_ command: DiskMapItemCommand, on node: DiskNode) {
+        switch command {
+        case .open:
+            viewModel.open(node)
+        case .select, .deselect:
+            viewModel.toggle(node)
+        case .feature(let action):
+            openFeature(action.featureID, showing: node.url)
+        case .showInFinder:
+            node.showInFinder()
+        case .copyPath:
+            node.copyPath()
         }
     }
 
