@@ -18,7 +18,8 @@ BUNDLE_ID="$(plutil -extract CFBundleIdentifier raw -o - "$APP/Contents/Info.pli
 
 codesign --verify --deep --strict --verbose=2 "$APP"
 
-REQUIREMENT="$(codesign -d -r - "$APP" 2>&1 | sed -n 's/^designated => //p')"
+# An ad hoc signature has an implicit requirement, printed as a comment ("# designated").
+REQUIREMENT="$(codesign -d -r - "$APP" 2>&1 | sed -n -E 's/^(# )?designated => //p')"
 echo "Designated requirement: $REQUIREMENT"
 codesign -d --verbose=2 "$APP" 2>&1 | grep -E '^(Identifier|Authority|TeamIdentifier|Signature)=' || true
 echo "Sparkle.framework:"
