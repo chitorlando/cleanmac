@@ -59,12 +59,14 @@ public struct CleanableItemRow: View {
         }
         .padding(.leading, 4)
         .contextMenu {
-            ItemContextMenu(url: item.url, actions: menuActions, onToggle: onToggle)
+            // Folders found by a scan usually end in a slash; others count as files.
+            ItemContextMenu(
+                url: item.url,
+                isFolder: item.url.hasDirectoryPath,
+                selection: ItemMenuSelection(isSelected: isSelected, canChange: isToggleEnabled),
+                onToggle: onToggle
+            )
         }
-    }
-
-    private var menuActions: [ItemMenuAction] {
-        ItemMenuActions.standard(for: item.url, selection: ItemMenuSelection(isSelected: isSelected, canChange: isToggleEnabled))
     }
 
     private var revealLabel: Text {

@@ -50,7 +50,7 @@ struct LargeFileRow: View {
         .contextMenu {
             ItemContextMenu(
                 url: file.item.url,
-                actions: ItemMenuActions.standard(for: file.item.url, selection: isSelected ? .selected : .deselected),
+                selection: isSelected ? .selected : .deselected,
                 onToggle: onToggle
             )
         }

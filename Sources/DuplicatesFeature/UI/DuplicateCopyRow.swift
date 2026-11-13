@@ -67,10 +67,7 @@ struct DuplicateCopyRow: View, Equatable {
         .contextMenu {
             ItemContextMenu(
                 url: file.item.url,
-                actions: ItemMenuActions.standard(
-                    for: file.item.url,
-                    selection: ItemMenuSelection(isSelected: isSelected, canChange: canSelect)
-                ),
+                selection: ItemMenuSelection(isSelected: isSelected, canChange: canSelect),
                 onToggle: onToggle
             )
         }
