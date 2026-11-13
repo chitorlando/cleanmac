@@ -3,6 +3,11 @@
 #
 # Usage: build-app.sh [configuration] [architecture...]
 #
+# SIGN_IDENTITY picks the signing certificate, by name or SHA-1 hash. Without
+# it the app is signed ad hoc, which is all a local build needs. Releases use
+# CleanMac's self-signed certificate (see create-signing-certificate.sh).
+# SIGN_KEYCHAIN limits the search for that identity to one keychain file.
+#
 # Without architectures the app is built for this Mac only, which is the
 # fastest. Naming them builds one app for all of them: "release arm64 x86_64"
 # gives a universal app that also runs on Intel Macs.
@@ -48,10 +53,22 @@ mkdir -p "$APP_DIR/Contents/Frameworks"
 ditto "$SPARKLE_FRAMEWORK" "$APP_DIR/Contents/Frameworks/Sparkle.framework"
 cp "$ROOT/.build/artifacts/cleanmac/Sparkle/LICENSE" "$RESOURCES_DIR/Sparkle-LICENSE.txt"
 
-# Ad-hoc signature: enough to run locally and to grant Full Disk Access.
-# Free; no Apple account, Developer ID or notarization. Do not enable hardened
-# runtime library validation: the embedded framework keeps Sparkle's signature.
-codesign --force --sign - "$APP_DIR" >/dev/null
+# Ad hoc by default: enough to run locally and to grant Full Disk Access, but
+# each build gets a new identity. A certificate's identity, the bundle
+# identifier plus the certificate's hash, stays the same across builds, so
+# macOS keeps the permissions it granted. Free either way: no Apple account,
+# Developer ID or notarization. Do not enable hardened runtime library
+# validation: the embedded framework keeps Sparkle's own signature.
+SIGN_IDENTITY="${SIGN_IDENTITY:--}"
+SIGN_ARGS=(--force --sign "$SIGN_IDENTITY")
+if [ "$SIGN_IDENTITY" != "-" ]; then
+    # Apple's timestamp service has nothing to add to a self-signed certificate.
+    SIGN_ARGS+=(--timestamp=none)
+fi
+if [ -n "${SIGN_KEYCHAIN:-}" ]; then
+    SIGN_ARGS+=(--keychain "$SIGN_KEYCHAIN")
+fi
+codesign "${SIGN_ARGS[@]}" "$APP_DIR" >/dev/null
 codesign --verify --deep --strict "$APP_DIR"
 
 echo "$APP_DIR"
