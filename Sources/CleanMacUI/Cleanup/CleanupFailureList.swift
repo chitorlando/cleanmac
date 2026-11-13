@@ -12,7 +12,7 @@ public struct CleanupFailureList: View {
 
     private let failures: [CleanupFailure]
     @State private var listHeight: CGFloat = 0
-    @Environment(\.privacySettings) private var privacySettings
+    @Environment(\.permissionSettings) private var permissionSettings
 
     public init(failures: [CleanupFailure]) {
         self.failures = failures
@@ -43,7 +43,7 @@ public struct CleanupFailureList: View {
 
                 if failures.includesProtectedItems {
                     Button {
-                        privacySettings.openFullDiskAccess()
+                        permissionSettings.open(.fullDiskAccess)
                     } label: {
                         Text("Open Full Disk Access Settings", bundle: .module, comment: "Button that opens the Full Disk Access pane of System Settings.")
                     }
