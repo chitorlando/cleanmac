@@ -4,7 +4,9 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TAG="${1:?Usage: build-appcast.sh vMAJOR.MINOR.PATCH}"
-TOOLS="${SPARKLE_TOOLS_DIR:-$ROOT/.build/artifacts/cleanmac/Sparkle/bin}"
+# shellcheck source=lib/sparkle.sh
+source "$ROOT/scripts/lib/sparkle.sh"
+TOOLS="${SPARKLE_TOOLS_DIR:-$(sparkle_artifacts_dir "$ROOT")/bin}"
 OUTPUT="$ROOT/build/release"
 PLIST="$ROOT/build/CleanMac.app/Contents/Info.plist"
 VERSION="$(plutil -extract CFBundleShortVersionString raw -o - "$PLIST")"

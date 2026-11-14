@@ -22,6 +22,11 @@ Después de `swift package resolve`, las herramientas oficiales están en:
 .build/artifacts/cleanmac/Sparkle/bin/
 ```
 
+SwiftPM nombra esa carpeta como la de tu copia del repositorio: `cleanmac` en un
+clon normal, otro nombre en un worktree. Los scripts la encuentran solos con
+`scripts/lib/sparkle.sh`; en los comandos de abajo, cámbiala si tu copia se llama
+de otra forma.
+
 Para consultar la clave pública existente:
 
 ```bash
