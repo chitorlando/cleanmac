@@ -16,7 +16,6 @@ public struct DuplicateScanner: DuplicateScanning {
     public static let defaultMinimumSize: Int64 = 1_000_000
     public static let defaultProgressInterval = 500
 
-    private let home: URL
     private let walker: any FileWalking
     private let scopePolicy: ScanScopePolicy
     private let metadataReader: any FileMetadataReading
@@ -37,7 +36,6 @@ public struct DuplicateScanner: DuplicateScanning {
         minimumSize: Int64 = defaultMinimumSize,
         progressInterval: Int = defaultProgressInterval
     ) {
-        self.home = home
         self.walker = walker
         self.scopePolicy = ScanScopePolicy(home: home, excludedDirectories: excludedDirectories)
         self.metadataReader = metadataReader
@@ -53,28 +51,19 @@ public struct DuplicateScanner: DuplicateScanning {
 
     /// Starts scanning `scope`. Ending the iteration of the stream cancels the scan.
     ///
+    /// The policy checks the scope again here, right before the walk: its folder may have
+    /// changed since the scope was made, and the scope may not come from `scope(limitedTo:)`.
     /// A folder that can't be scanned on its own, or no longer can, reports nothing.
     public func scan(_ scope: ScanScope) -> AsyncStream<DuplicateScanEvent> {
         let scanner = self
         return AsyncStream { continuation in
             let task = Task.detached(priority: .utility) {
-                if let root = scanner.root(of: scope) {
+                if let root = scanner.scopePolicy.folder(of: scope) {
                     scanner.run(in: root, reportingTo: continuation)
                 }
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }
-        }
-    }
-
-    /// The folder to walk for `scope`, or `nil` for a folder the home scan never walks.
-    ///
-    /// The folder is checked again here, right before walking it: it may have changed since
-    /// its scope was made, and the scope may not come from `scope(limitedTo:)`.
-    private func root(of scope: ScanScope) -> URL? {
-        switch scope {
-        case .home: home
-        case .folder(let folder): scopePolicy.allows(folder) ? folder : nil
         }
     }
 

@@ -2,19 +2,30 @@ import Foundation
 import CleanMacCore
 import Testing
 
+/// Each test builds a home folder of its own, whose `Library` is excluded as the app excludes `~/Library`.
 struct ScanScopePolicyTests {
-    /// Policy for a home folder whose `Library` is excluded, as the app excludes `~/Library`.
     private func makePolicy(home: TemporaryFolder) -> ScanScopePolicy {
         ScanScopePolicy(home: home.root, excludedDirectories: [home.root.appending(path: "Library")])
     }
 
+    /// Path of the folder the scan would be limited to when asked for `url`, or `nil` when the policy refuses it.
+    private func scopedPath(of url: URL, in home: TemporaryFolder) -> String? {
+        makePolicy(home: home).scope(limitedTo: url)?.folder?.path
+    }
+
     /// Path of the folder the scan would be limited to when asked for `path`, relative to the home.
     private func scopedPath(_ path: String, in home: TemporaryFolder) -> String? {
-        makePolicy(home: home).scope(limitedTo: home.root.appending(path: path))?.folder?.path
+        scopedPath(of: home.root.appending(path: path), in: home)
     }
 
     private func path(_ path: String, in home: TemporaryFolder) -> String {
         home.root.appending(path: path).path
+    }
+
+    /// The URL of the item at `url` as the disk spells it, without symbolic links.
+    private func realURL(of url: URL) throws -> URL {
+        let path = try #require(try url.resourceValues(forKeys: [.canonicalPathKey]).canonicalPath)
+        return URL(filePath: path)
     }
 
     // MARK: Folders the scan can be limited to
@@ -22,15 +33,32 @@ struct ScanScopePolicyTests {
     @Test func limitsTheScanToAFolderOfTheHome() throws {
         let home = try TemporaryFolder()
         try home.makeFolder("Movies/Trips")
+        let projects = try home.makeFolder("Documents/Work/Projects 2026")
 
         #expect(scopedPath("Movies", in: home) == path("Movies", in: home))
         #expect(scopedPath("Movies/Trips", in: home) == path("Movies/Trips", in: home))
+        #expect(scopedPath(of: projects, in: home) == projects.path)
+        #expect(makePolicy(home: home).allows(projects))
     }
 
     @Test func theHomeFolderIsTheWholeHome() throws {
         let home = try TemporaryFolder()
+        let policy = makePolicy(home: home)
 
-        #expect(makePolicy(home: home).scope(limitedTo: home.root) == .home)
+        #expect(policy.scope(limitedTo: home.root) == .home)
+        #expect(policy.scope(limitedTo: URL(filePath: home.root.path + "/")) == .home)
+        #expect(policy.allows(home.root))
+    }
+
+    @Test func aTrailingSlashGivesTheSameScope() throws {
+        let home = try TemporaryFolder()
+        let downloads = try home.makeFolder("Downloads")
+        let policy = makePolicy(home: home)
+
+        let scope = policy.scope(limitedTo: URL(filePath: downloads.path + "/", directoryHint: .isDirectory))
+
+        #expect(scope != nil)
+        #expect(scope == policy.scope(limitedTo: downloads))
     }
 
     @Test func findsTheRealFolderBehindASymbolicLinkOnTheWay() throws {
@@ -41,27 +69,98 @@ struct ScanScopePolicyTests {
         #expect(scopedPath("Shortcut/Trips", in: home) == path("Movies/Trips", in: home))
     }
 
-    // MARK: What is not a folder
+    @Test func findsTheRealFolderBehindAPathWithDots() throws {
+        let home = try TemporaryFolder()
+        try home.makeFolder("Movies/Trips")
+        try home.makeFolder("Documents")
+
+        #expect(scopedPath("Documents/../Movies/./Trips", in: home) == path("Movies/Trips", in: home))
+    }
+
+    /// A walk reports what it finds with its real path, which is another spelling of the same
+    /// folders when the path of the home folder goes through a symbolic link.
+    @Test func acceptsAFolderSpelledWithTheRealPathOfTheHomeFolder() throws {
+        let volume = try TemporaryFolder()
+        let realHome = try realURL(of: volume.makeFolder("Real/Home"))
+        let realDocuments = try realURL(of: volume.makeFolder("Real/Home/Documents"))
+        let realCaches = try realURL(of: volume.makeFolder("Real/Home/Library/Caches"))
+        let users = try volume.makeLink("Users", to: "Real")
+        let home = users.appending(path: "Home")
+        let policy = ScanScopePolicy(home: home, excludedDirectories: [home.appending(path: "Library")])
+
+        #expect(policy.scope(limitedTo: realDocuments)?.folder?.path == home.path + "/Documents")
+        #expect(policy.scope(limitedTo: home.appending(path: "Documents"))?.folder?.path == home.path + "/Documents")
+        #expect(policy.scope(limitedTo: realHome) == .home)
+        #expect(!policy.allows(realCaches))
+        #expect(!policy.allows(home.appending(path: "Library/Caches")))
+    }
+
+    // MARK: What is not a folder of the home folder
 
     @Test func refusesAFile() throws {
         let home = try TemporaryFolder()
-        try home.makeFile("Movies/trip.mov")
+        let file = try home.makeFile("Movies/trip.mov")
 
         #expect(scopedPath("Movies/trip.mov", in: home) == nil)
+        #expect(!makePolicy(home: home).allows(file))
     }
 
     @Test func refusesAFolderThatIsGone() throws {
         let home = try TemporaryFolder()
+        let old = try home.makeFolder("Documents/Old")
+        try FileManager.default.removeItem(at: old)
 
         #expect(scopedPath("Movies", in: home) == nil)
+        #expect(!makePolicy(home: home).allows(old))
+        #expect(!makePolicy(home: home).allows(old.appending(path: "Inside")))
     }
 
     @Test func refusesASymbolicLinkToAFolder() throws {
         let home = try TemporaryFolder()
         try home.makeFolder("Movies")
-        try home.makeLink("Shortcut", to: "Movies")
+        let link = try home.makeLink("Shortcut", to: "Movies")
 
         #expect(scopedPath("Shortcut", in: home) == nil)
+        #expect(!makePolicy(home: home).allows(URL(filePath: link.path + "/", directoryHint: .isDirectory)))
+    }
+
+    @Test func refusesWhatASymbolicLinkLeadsToOutsideTheHome() throws {
+        let home = try TemporaryFolder()
+        let elsewhere = try TemporaryFolder()
+        try elsewhere.makeFolder("Photos")
+        let link = try home.makeLink("Elsewhere", to: elsewhere.root)
+        let policy = makePolicy(home: home)
+
+        #expect(!policy.allows(link))
+        #expect(!policy.allows(URL(filePath: link.path + "/", directoryHint: .isDirectory)))
+        #expect(!policy.allows(link.appending(path: "Photos")))
+    }
+
+    @Test func refusesFoldersOutsideTheHome() throws {
+        let disk = try TemporaryFolder()
+        let home = try disk.makeFolder("Users/test")
+        let elsewhere = try disk.makeFolder("Applications")
+        let policy = ScanScopePolicy(home: home)
+
+        #expect(policy.scope(limitedTo: elsewhere) == nil)
+        #expect(policy.scope(limitedTo: home.deletingLastPathComponent()) == nil)
+        #expect(!policy.allows(disk.root))
+        #expect(!policy.allows(URL(filePath: "/")))
+    }
+
+    @Test func refusesAFolderWhoseNameOnlyStartsLikeTheHomeFolder() throws {
+        let disk = try TemporaryFolder()
+        let home = try disk.makeFolder("Users/test")
+        let sibling = try disk.makeFolder("Users/test copy")
+
+        #expect(!ScanScopePolicy(home: home).allows(sibling))
+    }
+
+    @Test func refusesWhatIsNotOnDisk() throws {
+        let home = try TemporaryFolder()
+        let page = try #require(URL(string: "https://example.com/Movies"))
+
+        #expect(!makePolicy(home: home).allows(page))
     }
 
     // MARK: Folders the scan of the home folder never enters
@@ -76,11 +175,8 @@ struct ScanScopePolicyTests {
 
     @Test func refusesFoldersHiddenWithTheFinderFlag() throws {
         let home = try TemporaryFolder()
-        var hidden = try home.makeFolder("Private")
         try home.makeFolder("Private/Movies")
-        var values = URLResourceValues()
-        values.isHidden = true
-        try hidden.setResourceValues(values)
+        try home.hide("Private")
 
         #expect(scopedPath("Private", in: home) == nil)
         #expect(scopedPath("Private/Movies", in: home) == nil)
@@ -109,7 +205,19 @@ struct ScanScopePolicyTests {
         let home = try TemporaryFolder()
         try home.makeFolder("Library/Caches")
 
+        #expect(scopedPath("library", in: home) == nil)
+        #expect(scopedPath("LIBRARY/Caches", in: home) == nil)
         #expect(scopedPath("LIBRARY/caches", in: home) == nil)
+    }
+
+    @Test func refusesAnExcludedDirectoryReachedWithDots() throws {
+        let home = try TemporaryFolder()
+        try home.makeFolder("Library/Caches")
+        try home.makeFolder("Documents")
+        let policy = makePolicy(home: home)
+
+        #expect(!policy.allows(URL(filePath: home.root.path + "/Documents/../Library/Caches")))
+        #expect(!policy.allows(URL(filePath: home.root.path + "/./Library/Caches")))
     }
 
     @Test func refusesAnExcludedDirectoryReachedThroughASymbolicLink() throws {
@@ -118,16 +226,6 @@ struct ScanScopePolicyTests {
         try home.makeLink("Shortcut", to: "Library")
 
         #expect(scopedPath("Shortcut/Caches", in: home) == nil)
-    }
-
-    @Test func refusesFoldersOutsideTheHome() throws {
-        let disk = try TemporaryFolder()
-        let home = try disk.makeFolder("Users/test")
-        let elsewhere = try disk.makeFolder("Applications")
-        let policy = ScanScopePolicy(home: home)
-
-        #expect(policy.scope(limitedTo: elsewhere) == nil)
-        #expect(policy.scope(limitedTo: home.deletingLastPathComponent()) == nil)
     }
 
     // MARK: Folder to walk
@@ -145,6 +243,12 @@ struct ScanScopePolicyTests {
         let scope = try #require(policy.scope(limitedTo: movies))
 
         #expect(policy.folder(of: scope)?.path == movies.path)
+    }
+
+    @Test func walksTheHomeFolderWhenItIsTheFolderOfAScope() throws {
+        let home = try TemporaryFolder()
+
+        #expect(makePolicy(home: home).folder(of: .folder(home.root))?.path == home.root.path)
     }
 
     @Test func walksNothingOnceTheFolderOfAScopeIsGone() throws {

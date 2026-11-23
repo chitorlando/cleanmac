@@ -7,11 +7,17 @@ import Foundation
 /// finds below the folder it starts from, never to that folder itself. Started in `~/Library`,
 /// in a hidden folder or inside a package, it would offer files that the scan of the home
 /// folder keeps away from the user. So a folder only becomes a scope when a walk from the home
-/// folder with `FileSystemWalker` reaches it: neither the folder nor any folder on the way to
-/// it is hidden, a package or one of the excluded directories.
+/// folder with `FileSystemWalker` reaches it: it is a real folder, and neither the folder nor
+/// any folder on the way to it is hidden, a package or one of the excluded directories.
 ///
-/// The folder is located by its canonical path, which resolves symbolic links on the way and
-/// names written in another case. `~/library/Caches` is the `~/Library/Caches` it points to.
+/// The folder is located by its canonical path, which is how the disk spells it: without the
+/// symbolic links on the way, without `..` and with every name in the case it has on disk.
+/// So `~/library/Caches` and `~/Documents/../Library/Caches` are the `~/Library/Caches` they
+/// lead to, and can't get past the excluded directories, which are compared by path. The
+/// home folder is located the same way, so its folders are found under either of its paths
+/// when one goes through a symbolic link, as `/var` does.
+///
+/// Nothing is downloaded from the cloud to find out: see `DatalessFilePolicy`.
 public struct ScanScopePolicy: Sendable {
     /// Folder a scan covers unless it's limited to another.
     public let home: URL
@@ -26,11 +32,19 @@ public struct ScanScopePolicy: Sendable {
 
     /// The scope of a scan limited to the folder at `url`. For the home folder it's the whole home.
     ///
+    /// The folder of the scope is spelled from the home folder as given, like the excluded
+    /// directories and what a walk reports, however `url` spells it.
+    ///
     /// - Returns: `nil` when `url` is not a folder, which includes a symbolic link to one and a
     ///   folder that's gone, or when the scan of the home folder would never enter it.
     public func scope(limitedTo url: URL) -> ScanScope? {
         guard let names = folderNames(fromHomeTo: url) else { return nil }
         return names.isEmpty ? .home : .folder(folder(named: names))
+    }
+
+    /// Whether a scan can be limited to the folder at `url`, or cover it as the home folder.
+    public func allows(_ url: URL) -> Bool {
+        scope(limitedTo: url) != nil
     }
 
     /// The folder to walk for `scope`.
