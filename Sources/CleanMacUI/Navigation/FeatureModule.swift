@@ -22,10 +22,15 @@ public protocol FeatureModule: AnyObject {
     /// What the feature offers to do with items shown by other features, each carried out
     /// by `show(itemAt:)`. Features that take no items offer nothing.
     var itemActions: [FeatureItemAction] { get }
+
+    /// What the feature adds to the Settings window. Features with no settings add nothing.
+    var settings: [SettingsItem] { get }
 }
 
 public extension FeatureModule {
     func show(itemAt url: URL) {}
 
     var itemActions: [FeatureItemAction] { [] }
+
+    var settings: [SettingsItem] { [] }
 }

@@ -94,6 +94,17 @@
         }
       }
     },
+    "Analysis" : {
+      "comment" : "Section of the Settings window with settings of the features that analyze files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análisis"
+          }
+        }
+      }
+    },
     "Another app is using it. Quit that app and try again." : {
       "comment" : "Why an item couldn't be moved to the Trash: it's open in another app.",
       "localizations" : {
@@ -182,6 +193,17 @@
         }
       }
     },
+    "General" : {
+      "comment" : "Section of the Settings window with settings of the whole app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        }
+      }
+    },
     "It couldn’t be moved to the Trash." : {
       "comment" : "Why an item couldn't be moved to the Trash, when the reason isn't known.",
       "localizations" : {
@@ -200,6 +222,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ya no estaba ahí."
+          }
+        }
+      }
+    },
+    "Monitor" : {
+      "comment" : "Section of the Settings window with settings of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor"
           }
         }
       }
