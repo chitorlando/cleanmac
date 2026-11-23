@@ -38,3 +38,26 @@ public extension CacheLocation {
         ]
     }
 }
+
+extension CacheLocation {
+    /// Whether an item of the Library, given by its path relative to it, holds, is or is inside
+    /// a folder of this location. Case is ignored, as the file system does unless told otherwise.
+    func overlaps(_ path: String) -> Bool {
+        let path = path.lowercased()
+        switch self {
+        case .cachesFolder(let folder):
+            return Self.overlap("caches/\(folder.lowercased())", path)
+        case .cachesNamed(let bundleID):
+            let components = path.split(separator: "/")
+            guard components.first == "caches" else { return false }
+            return components.count == 1 || String(components[1]).isNamed(afterBundleID: bundleID)
+        case .profileFolders(let userData, _, _):
+            return Self.overlap(userData.lowercased(), path)
+        }
+    }
+
+    /// Whether the paths are the same or one is inside the other.
+    private static func overlap(_ one: String, _ other: String) -> Bool {
+        one == other || one.hasPrefix(other + "/") || other.hasPrefix(one + "/")
+    }
+}
