@@ -16,8 +16,16 @@ public final class MonitorViewModel: ObservableObject {
     @Published public private(set) var cpuHistory = SampleHistory<CPUUsage>(capacity: historyLength)
     @Published public var processRanking = ProcessRanking.cpu
 
+    /// Time between readings. `run()` takes a new one from its next wait on, and the history
+    /// starts over, since it holds readings taken at the same pace.
+    public var interval: Duration {
+        didSet {
+            guard interval != oldValue else { return }
+            cpuHistory = SampleHistory(capacity: Self.historyLength)
+        }
+    }
+
     private let sampler: any SystemSampling
-    private let interval: Duration
     private let isVisible: @MainActor () -> Bool
 
     /// - Parameters:
