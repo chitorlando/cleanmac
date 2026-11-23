@@ -37,4 +37,22 @@ struct OrphanDetectionTests {
 
         #expect(!orphaned)
     }
+
+    /// launchd often starts a script through an interpreter. Once the script is gone there
+    /// is nothing left to run, although the interpreter is still there.
+    @Test func takesAnItemAsOrphanedWhenTheScriptItsInterpreterRunsIsGone() async throws {
+        let script = folder.url("Scripts/backup.sh").path
+
+        let orphaned = try await isOrphaned(["Label": "com.example.backup", "ProgramArguments": ["/bin/bash", script]])
+
+        #expect(orphaned)
+    }
+
+    @Test func keepsAnItemWhoseInterpreterRunsAScriptThatIsThere() async throws {
+        let script = try folder.make("Scripts/backup.sh").path
+
+        let orphaned = try await isOrphaned(["Label": "com.example.backup", "ProgramArguments": ["/bin/bash", script]])
+
+        #expect(!orphaned)
+    }
 }

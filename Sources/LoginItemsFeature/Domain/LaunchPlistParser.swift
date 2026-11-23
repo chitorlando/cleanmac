@@ -12,6 +12,7 @@ public enum LaunchPlistParser {
         return LaunchJobDefinition(
             label: label,
             programPath: programPath(in: plist),
+            arguments: Array(((plist["ProgramArguments"] as? [String]) ?? []).dropFirst()),
             runsAtLoad: plist["RunAtLoad"] as? Bool ?? false,
             keepsAlive: keepsAlive(plist["KeepAlive"]),
             isDisabled: plist["Disabled"] as? Bool ?? false
