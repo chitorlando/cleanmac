@@ -1,3 +1,4 @@
+import CleanMacCore
 import CleanMacUI
 import DiskMapFeature
 import DuplicatesFeature
@@ -12,7 +13,12 @@ import UninstallerFeature
 /// Composition root: the only place that knows every feature and its concrete dependencies.
 @MainActor
 enum AppComposition {
-    static func makeModules() -> [any FeatureModule] {
+    /// What the user chose in the Settings window, kept in the defaults of the app.
+    static func makePreferences() -> Preferences {
+        Preferences(storage: UserDefaultsPreferenceStorage.standard())
+    }
+
+    static func makeModules(preferences: Preferences) -> [any FeatureModule] {
         let uninstaller = UninstallerModule.live()
         let diskMap = DiskMapModule.live(uninstallerFeatureID: uninstaller.id)
         return [
@@ -24,7 +30,7 @@ enum AppComposition {
             DuplicatesModule.live(),
             MaintenanceModule.live(),
             LoginItemsModule.live(),
-            MonitorModule.live(diskMapFeatureID: diskMap.id)
+            MonitorModule.live(preferences: preferences, diskMapFeatureID: diskMap.id)
         ]
     }
 }

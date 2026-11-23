@@ -11,7 +11,7 @@ struct CleanMacApp: App {
         permissions.prepareForLaunch()
         return permissions
     }()
-    private let modules = AppComposition.makeModules()
+    private let modules = AppComposition.makeModules(preferences: AppComposition.makePreferences())
 
     var body: some Scene {
         WindowGroup {

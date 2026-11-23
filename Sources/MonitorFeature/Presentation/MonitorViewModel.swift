@@ -8,7 +8,7 @@ import Foundation
 /// readings are skipped.
 @MainActor
 public final class MonitorViewModel: ObservableObject {
-    public static let defaultInterval: Duration = .seconds(2)
+    public static let defaultInterval: Duration = .seconds(MonitorSettings.refreshInterval.defaultValue)
     /// Two minutes of history at the default interval.
     public static let historyLength = 60
 

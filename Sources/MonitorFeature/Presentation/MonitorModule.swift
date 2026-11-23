@@ -1,5 +1,7 @@
 import AppKit
+import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -13,17 +15,34 @@ public final class MonitorModule: FeatureModule {
     public let section = FeatureSection.performance
 
     private let viewModel: MonitorViewModel
+    private let preferences: Preferences
     private let diskMapFeatureID: String?
+    private var refreshIntervalChanges: AnyCancellable?
 
-    /// - Parameter diskMapFeatureID: Id of the disk map feature, which the disk card opens.
-    ///   Without it, the card has no button.
-    public init(viewModel: MonitorViewModel, diskMapFeatureID: String? = nil) {
+    /// - Parameters:
+    ///   - preferences: Where the user chooses the time between readings, which `viewModel`
+    ///     follows from now on.
+    ///   - diskMapFeatureID: Id of the disk map feature, which the disk card opens.
+    ///     Without it, the card has no button.
+    public init(viewModel: MonitorViewModel, preferences: Preferences, diskMapFeatureID: String? = nil) {
         self.viewModel = viewModel
+        self.preferences = preferences
         self.diskMapFeatureID = diskMapFeatureID
+        viewModel.interval = .seconds(preferences.value(of: MonitorSettings.refreshInterval))
+        refreshIntervalChanges = preferences.changes(of: MonitorSettings.refreshInterval)
+            .sink { [viewModel] seconds in viewModel.interval = .seconds(seconds) }
     }
 
     public func makeView() -> AnyView {
         AnyView(MonitorView(viewModel: viewModel, theme: theme, diskMapFeatureID: diskMapFeatureID))
+    }
+
+    public var settings: [SettingsItem] {
+        [
+            SettingsItem(id: MonitorSettings.refreshInterval.key, section: .monitor) { [preferences] in
+                RefreshIntervalPicker(preferences: preferences)
+            }
+        ]
     }
 
     /// The gauge of the monitor. SF Symbols 5 gave it a new name, and macOS 13 only knows
@@ -40,12 +59,14 @@ public final class MonitorModule: FeatureModule {
 public extension MonitorModule {
     /// Module that reads this Mac, only while some part of the app can be seen.
     ///
-    /// - Parameter diskMapFeatureID: See `init(viewModel:diskMapFeatureID:)`.
-    static func live(diskMapFeatureID: String? = nil) -> MonitorModule {
+    /// - Parameters:
+    ///   - preferences: See `init(viewModel:preferences:diskMapFeatureID:)`.
+    ///   - diskMapFeatureID: See `init(viewModel:preferences:diskMapFeatureID:)`.
+    static func live(preferences: Preferences, diskMapFeatureID: String? = nil) -> MonitorModule {
         let viewModel = MonitorViewModel(
             sampler: SystemSampler.live(),
             isVisible: { NSApplication.shared.occlusionState.contains(.visible) }
         )
-        return MonitorModule(viewModel: viewModel, diskMapFeatureID: diskMapFeatureID)
+        return MonitorModule(viewModel: viewModel, preferences: preferences, diskMapFeatureID: diskMapFeatureID)
     }
 }
