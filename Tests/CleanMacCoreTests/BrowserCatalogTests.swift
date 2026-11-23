@@ -1,4 +1,4 @@
-import PrivacyFeature
+import CleanMacCore
 import Testing
 
 struct BrowserCatalogTests {
