@@ -155,13 +155,13 @@
         }
       }
     },
-    "Your browsers have no caches to clear." : {
+    "We didn’t find any browser caches to clear." : {
       "comment" : "Message shown when no browser caches were found.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus navegadores no tienen cachés que borrar."
+            "value" : "No hemos encontrado cachés de navegadores que borrar."
           }
         }
       }

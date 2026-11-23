@@ -46,6 +46,21 @@ struct BrowserCatalogTests {
         #expect(chromium.map(\.name) == ["Google Chrome", "Microsoft Edge", "Brave", "Arc", "Vivaldi", "Opera"])
     }
 
+    /// App containers are never touched, so the caches Safari keeps in its own are left out.
+    @Test func staysOutOfAppContainers() {
+        for browser in BrowserCatalog.browsers {
+            for location in browser.cacheLocations {
+                switch location {
+                case .cachesFolder, .cachesNamed:
+                    continue
+                case .profileFolders(let userData, _, _), .profileSiteData(let userData, _, _):
+                    let isOutside = userData.hasPrefix("Caches/") || userData.hasPrefix("Application Support/")
+                    #expect(isOutside, "\(browser.name): \(userData)")
+                }
+            }
+        }
+    }
+
     /// Whole folders are only ever taken from `~/Library/Caches`.
     @Test func takesWholeFoldersOnlyFromTheCaches() {
         for browser in BrowserCatalog.browsers {

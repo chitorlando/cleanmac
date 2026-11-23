@@ -17,7 +17,7 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | Estado | Función | Qué hace |
 | :----: | ------- | -------- |
 | ✅ | **Basura del sistema** | Encuentra cachés y registros de tu usuario y restos de Xcode (Derived Data, Device Support y cachés de los simuladores). Deja fuera las cachés de iCloud y de las cuentas, cuyo borrado podría forzar una resincronización o cerrar tu sesión. |
-| ✅ | **Privacidad** | Borra las cachés de Safari, Chrome, Edge, Brave, Arc, Vivaldi, Opera y Firefox, agrupadas por navegador con su icono. Solo toca carpetas de caché conocidas: el historial, las cookies, las contraseñas, las sesiones y los marcadores nunca se listan. Las cachés de un navegador abierto quedan bloqueadas hasta que sales de él. |
+| ✅ | **Privacidad** | Borra las cachés de Chrome, Edge, Brave, Arc, Vivaldi, Opera y Firefox, agrupadas por navegador con su icono. De Safari solo borra las pocas que guarda en `~/Library/Caches`: casi todas están en su contenedor, que CleanMac nunca toca. Solo toca carpetas de caché conocidas: el historial, las cookies, las contraseñas, las sesiones y los marcadores nunca se listan. Las cachés de un navegador abierto quedan bloqueadas hasta que sales de él. |
 | ✅ | **Desinstalador** | Lista las apps de `/Applications` y `~/Applications` con lo que ocupan y encuentra sus residuos en la Library de tu usuario: datos de soporte, cachés, preferencias, contenedores, estado guardado, registros, datos web, agentes de inicio y scripts. Permite buscar y ordenar por nombre o tamaño. También recibe las apps que el Mapa del disco encuentra en otras carpetas, como Descargas. |
 | ✅ | **Archivos grandes y antiguos** | Recorre tu carpeta de inicio en busca de archivos de 50 MB o más y los filtra por tipo, tamaño, último uso y nombre. Puedes detener el análisis y revisar lo encontrado hasta entonces. También busca solo en una carpeta que elijas en el Mapa del disco, con las mismas exclusiones que el análisis completo. |
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. También puede buscar solo en una carpeta que elijas en el Mapa del disco, con las mismas exclusiones que en toda la carpeta de inicio. |
@@ -42,7 +42,8 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
   las fototecas y las carpetas estándar como Documentos no se borran enteras, y las apps se eliminan
   con el Desinstalador.
 - **Privacidad solo con cachés.** Cada navegador tiene una lista de carpetas de caché permitidas: todo lo que
-  no está en ella, como el historial, las cookies o las contraseñas, nunca aparece. Si el navegador está abierto,
+  no está en ella, como el historial, las cookies o las contraseñas, nunca aparece. Las cachés que Safari guarda
+  en su contenedor quedan fuera, como todos los contenedores de apps. Si el navegador está abierto,
   CleanMac te pide que salgas de él y nunca lo cierra a la fuerza.
 - **Duplicados sin riesgo.** Siempre queda al menos una copia de cada grupo, y los clones de APFS,
   que comparten sus datos en el disco, cuentan como una sola copia física.
