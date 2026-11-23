@@ -19,7 +19,7 @@ struct MemoryCard: View {
         } content: {
             if let usage {
                 Text(
-                    "\(bytes(usage.used)) of \(bytes(usage.physical)) used",
+                    "\(usage.used.formattedMemorySize) of \(usage.physical.formattedMemorySize) used",
                     bundle: .module,
                     comment: "Memory in use out of the installed memory. The arguments are sizes, such as “9 GB” and “16 GB”."
                 )
@@ -41,12 +41,12 @@ struct MemoryCard: View {
     private func legend(_ usage: MemoryUsage) -> some View {
         Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 2) {
             GridRow {
-                BytesLegendRow(color: theme.primary, title: Text("App Memory", bundle: .module, comment: "Memory that apps allocated."), bytes: usage.app)
-                BytesLegendRow(color: theme.secondary, title: Text("Wired", bundle: .module, comment: "Memory the system keeps locked."), bytes: usage.wired)
+                MemoryLegendRow(color: theme.primary, title: Text("App Memory", bundle: .module, comment: "Memory that apps allocated."), bytes: usage.app)
+                MemoryLegendRow(color: theme.secondary, title: Text("Wired", bundle: .module, comment: "Memory the system keeps locked."), bytes: usage.wired)
             }
             GridRow {
-                BytesLegendRow(color: .purple, title: Text("Compressed", bundle: .module, comment: "Memory held compressed."), bytes: usage.compressed)
-                BytesLegendRow(color: .white.opacity(0.25), title: Text("Available", bundle: .module, comment: "Memory apps can still get."), bytes: usage.available)
+                MemoryLegendRow(color: .purple, title: Text("Compressed", bundle: .module, comment: "Memory held compressed."), bytes: usage.compressed)
+                MemoryLegendRow(color: .white.opacity(0.25), title: Text("Available", bundle: .module, comment: "Memory apps can still get."), bytes: usage.available)
             }
         }
         .font(.caption)
@@ -54,9 +54,5 @@ struct MemoryCard: View {
 
     private func share(_ part: UInt64, of usage: MemoryUsage) -> Double {
         usage.physical > 0 ? Double(part) / Double(usage.physical) : 0
-    }
-
-    private func bytes(_ value: UInt64) -> String {
-        Int64(clamping: value).formattedByteCount
     }
 }
