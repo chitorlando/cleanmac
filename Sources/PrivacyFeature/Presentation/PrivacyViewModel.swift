@@ -6,12 +6,14 @@ import Foundation
 ///
 /// Caches are safe to clear, so every item is selected after a scan, except those of a
 /// browser that is open: they're locked until the user quits it, which never force-quits.
+/// A browser also counts as open while another edition of it is, since they share folders.
 @MainActor
 public final class PrivacyViewModel: ObservableObject {
     @Published public private(set) var phase: PrivacyPhase = .intro
     @Published public private(set) var results: [BrowserCaches] = []
     @Published public private(set) var selection = ItemSelection()
-    @Published public private(set) var runningBrowserIDs: Set<BrowserCaches.ID> = []
+    /// The open apps that lock each browser's caches: the browser and its other editions.
+    @Published public private(set) var openAppsByBrowser: [BrowserCaches.ID: [RunningApp]] = [:]
     @Published public private(set) var quittingBrowserIDs: Set<BrowserCaches.ID> = []
 
     private let scanner: any BrowserCacheScanning
@@ -44,7 +46,7 @@ public final class PrivacyViewModel: ObservableObject {
         activeTask?.cancel()
         results = []
         selection = ItemSelection()
-        runningBrowserIDs = []
+        openAppsByBrowser = [:]
         phase = .scanning
         let task = Task {
             let found = await scanner.scan()
@@ -84,28 +86,34 @@ public final class PrivacyViewModel: ObservableObject {
     public func done() {
         results = []
         selection = ItemSelection()
-        runningBrowserIDs = []
+        openAppsByBrowser = [:]
         phase = .intro
     }
 
     // MARK: Running browsers
 
+    /// Whether the browser or another edition of it is open.
     public func isRunning(_ browser: BrowserCaches) -> Bool {
-        runningBrowserIDs.contains(browser.id)
+        !openApps(of: browser).isEmpty
+    }
+
+    /// The apps that keep the browser's caches locked, as of the last check.
+    public func openApps(of browser: BrowserCaches) -> [RunningApp] {
+        openAppsByBrowser[browser.id] ?? []
     }
 
     public func isQuitting(_ browser: BrowserCaches) -> Bool {
         quittingBrowserIDs.contains(browser.id)
     }
 
-    /// Asks every open instance of the browser to quit, as quitting it from its menu would,
-    /// and selects its caches once it's closed.
+    /// Asks the browser and every open edition of it to quit, as quitting them from their
+    /// menu would, and selects its caches once they're closed.
     @discardableResult
     public func quit(_ browser: BrowserCaches) async -> Bool {
         quittingBrowserIDs.insert(browser.id)
         defer { quittingBrowserIDs.remove(browser.id) }
         var didQuit = true
-        for url in Set(instances(of: browser).map(\.url)) {
+        for url in Set(openEditions(of: browser).map(\.url)) {
             didQuit = await runningApps.quit(appAt: url) && didQuit
         }
         refreshRunningBrowsers()
@@ -117,7 +125,10 @@ public final class PrivacyViewModel: ObservableObject {
 
     /// Checks which browsers are open and unselects their caches.
     public func refreshRunningBrowsers() {
-        runningBrowserIDs = Set(results.filter { !instances(of: $0).isEmpty }.map(\.id))
+        openAppsByBrowser = results.reduce(into: [:]) { openApps, browser in
+            let editions = openEditions(of: browser)
+            if !editions.isEmpty { openApps[browser.id] = editions }
+        }
         selection.deselect(results.filter(isRunning).flatMap(\.items))
     }
 
@@ -147,8 +158,8 @@ public final class PrivacyViewModel: ObservableObject {
 
     // MARK: Private
 
-    private func instances(of browser: BrowserCaches) -> [RunningApp] {
-        let bundleID = browser.browser.bundleID.lowercased()
-        return runningApps.runningApps().filter { $0.bundleID?.lowercased() == bundleID }
+    /// The open apps that may be using the browser's caches, by name.
+    private func openEditions(of browser: BrowserCaches) -> [RunningApp] {
+        runningApps.openApps().filter(browser.browser.isEdition).sorted { $0.name < $1.name }
     }
 }

@@ -79,7 +79,7 @@
       }
     },
     "Quit %@" : {
-      "comment" : "Button that asks an open browser to quit. The argument is its name.",
+      "comment" : "Button that asks the open apps that lock a browser's caches to quit.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -89,13 +89,13 @@
         }
       }
     },
-    "Quit %@ to clear its caches." : {
-      "comment" : "Notice shown on an open browser, whose caches can't be cleared. The argument is its name.",
+    "Quit %@ to clear these caches." : {
+      "comment" : "Notice on a browser whose caches are locked while it or another edition of it is open. The argument is the open apps.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sal de %@ para borrar sus cachés."
+            "value" : "Sal de %@ para borrar estas cachés."
           }
         }
       }

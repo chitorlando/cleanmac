@@ -14,7 +14,10 @@ struct BrowserCacheCard: View {
             VStack(spacing: 0) {
                 header
                 if viewModel.isRunning(browser) {
-                    OpenBrowserNotice(browserName: browser.name, isQuitting: viewModel.isQuitting(browser)) {
+                    OpenBrowserNotice(
+                        appNames: viewModel.openApps(of: browser).map(\.name),
+                        isQuitting: viewModel.isQuitting(browser)
+                    ) {
                         Task { await viewModel.quit(browser) }
                     }
                     .padding(.top, 12)
