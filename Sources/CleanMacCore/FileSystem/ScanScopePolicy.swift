@@ -1,4 +1,3 @@
-import CleanMacCore
 import Foundation
 
 /// Decides where a scan may look: in the home folder, or in a single folder that the scan of

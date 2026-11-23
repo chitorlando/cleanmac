@@ -4,7 +4,8 @@ import Foundation
 public enum ScanScope: Hashable, Sendable {
     /// The whole home folder.
     case home
-    /// Only this folder of the home folder, with everything inside it.
+    /// Only this folder, with everything inside it: one that the scan of the home folder
+    /// enters. See `ScanScopePolicy`.
     case folder(URL)
 
     /// The folder the scan is limited to, or `nil` when it covers the whole home folder.
