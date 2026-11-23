@@ -11,20 +11,31 @@ public enum CacheLocation: Hashable, Sendable {
     /// Named cache folders inside each profile of a user data folder, such as
     /// "Application Support/Google/Chrome" with "Default/Cache" and "Profile 1/Cache".
     case profileFolders(userData: String, layout: ProfileLayout, cacheFolders: [String])
+    /// Named folders inside each profile that hold what websites stored there, not copies the
+    /// browser can download again, such as "Service Worker/CacheStorage". They're listed but
+    /// never selected unless the user asks.
+    case profileSiteData(userData: String, layout: ProfileLayout, folders: [String])
+}
+
+public extension CacheLocation {
+    /// Whether what is found here is selected after a scan. Site data never is.
+    var isSelectedByDefault: Bool {
+        if case .profileSiteData = self { return false }
+        return true
+    }
 }
 
 public extension CacheLocation {
     /// Cache folders every Chromium profile has. Anything else in a profile is user data.
-    static let chromiumCacheFolders = [
-        "Cache",
-        "Code Cache",
-        "GPUCache",
-        "Service Worker/CacheStorage",
-        "Service Worker/ScriptCache"
-    ]
+    static let chromiumCacheFolders = ["Cache", "Code Cache", "GPUCache"]
 
-    /// The caches of a Chromium browser: its `~/Library/Caches` folders and the cache folders
-    /// of each profile in `~/Library/Application Support`.
+    /// What the service workers of websites and web apps keep in a Chromium profile: the files
+    /// they stored to work offline and their own scripts. Chromium counts them as site data,
+    /// not as cache, and clearing them can make web apps start over.
+    static let chromiumServiceWorkerFolders = ["Service Worker/CacheStorage", "Service Worker/ScriptCache"]
+
+    /// The caches of a Chromium browser: its `~/Library/Caches` folders, the cache folders of
+    /// each profile in `~/Library/Application Support` and what its service workers stored.
     static func chromium(
         bundleID: String,
         caches: String,
@@ -34,7 +45,8 @@ public extension CacheLocation {
         [
             .cachesFolder(caches),
             .cachesNamed(bundleID: bundleID),
-            .profileFolders(userData: "Application Support/\(userData)", layout: layout, cacheFolders: chromiumCacheFolders)
+            .profileFolders(userData: "Application Support/\(userData)", layout: layout, cacheFolders: chromiumCacheFolders),
+            .profileSiteData(userData: "Application Support/\(userData)", layout: layout, folders: chromiumServiceWorkerFolders)
         ]
     }
 }
@@ -51,7 +63,7 @@ extension CacheLocation {
             let components = path.split(separator: "/")
             guard components.first == "caches" else { return false }
             return components.count == 1 || String(components[1]).isNamed(afterBundleID: bundleID)
-        case .profileFolders(let userData, _, _):
+        case .profileFolders(let userData, _, _), .profileSiteData(let userData, _, _):
             return Self.overlap(userData.lowercased(), path)
         }
     }

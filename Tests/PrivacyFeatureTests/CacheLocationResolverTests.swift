@@ -33,16 +33,21 @@ struct CacheLocationResolverTests {
         }
 
         let found = resolver.folders(for: [
-            .profileFolders(userData: "Application Support/Google/Chrome", layout: .chromium, cacheFolders: CacheLocation.chromiumCacheFolders)
+            .profileFolders(userData: "Application Support/Google/Chrome", layout: .chromium, cacheFolders: CacheLocation.chromiumCacheFolders),
+            .profileSiteData(
+                userData: "Application Support/Google/Chrome",
+                layout: .chromium,
+                folders: CacheLocation.chromiumServiceWorkerFolders
+            )
         ])
 
         #expect(names(found) == [
             "Application Support/Google/Chrome/Default/Cache",
             "Application Support/Google/Chrome/Default/Code Cache",
             "Application Support/Google/Chrome/Default/GPUCache",
+            "Application Support/Google/Chrome/Profile 2/Cache",
             "Application Support/Google/Chrome/Default/Service Worker/CacheStorage",
-            "Application Support/Google/Chrome/Default/Service Worker/ScriptCache",
-            "Application Support/Google/Chrome/Profile 2/Cache"
+            "Application Support/Google/Chrome/Default/Service Worker/ScriptCache"
         ])
     }
 

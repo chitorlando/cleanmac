@@ -44,6 +44,11 @@ public enum BrowserCatalog {
                     userData: "Application Support/com.operasoftware.Opera",
                     layout: .rootIsProfile,
                     cacheFolders: CacheLocation.chromiumCacheFolders
+                ),
+                .profileSiteData(
+                    userData: "Application Support/com.operasoftware.Opera",
+                    layout: .rootIsProfile,
+                    folders: CacheLocation.chromiumServiceWorkerFolders
                 )
             ]
         ),

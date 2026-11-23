@@ -26,9 +26,9 @@ public struct CacheLocationResolver: Sendable {
             return [caches.appending(path: path)]
         case .cachesNamed(let bundleID):
             return children(of: caches).filter { $0.lastPathComponent.isNamed(afterBundleID: bundleID) }
-        case let .profileFolders(userData, layout, cacheFolders):
+        case let .profileFolders(userData, layout, folders), let .profileSiteData(userData, layout, folders):
             return profiles(in: library.appending(path: userData), layout: layout)
-                .flatMap { profile in cacheFolders.map { profile.appending(path: $0) } }
+                .flatMap { profile in folders.map { profile.appending(path: $0) } }
         }
     }
 

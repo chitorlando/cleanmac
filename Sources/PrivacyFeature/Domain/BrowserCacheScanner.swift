@@ -30,11 +30,18 @@ public struct BrowserCacheScanner: BrowserCacheScanning {
     public func scan() async -> [BrowserCaches] {
         browsers.compactMap { browser in
             guard !Task.isCancelled, let appURL = installedApp(of: browser) else { return nil }
-            let items = resolver.folders(for: browser.cacheLocations)
-                .map { CleanableItem(url: $0, size: sizer.size(of: $0)) }
-                .filter { $0.size > 0 }
-            return items.isEmpty ? nil : BrowserCaches(browser: browser, appURL: appURL, items: items)
+            let caches = items(in: browser.cacheLocations.filter(\.isSelectedByDefault))
+            let siteData = items(in: browser.cacheLocations.filter { !$0.isSelectedByDefault })
+            guard !caches.isEmpty || !siteData.isEmpty else { return nil }
+            return BrowserCaches(browser: browser, appURL: appURL, items: caches, siteData: siteData)
         }
+    }
+
+    /// The folders of the locations that exist and hold something, with their size.
+    private func items(in locations: [CacheLocation]) -> [CleanableItem] {
+        resolver.folders(for: locations)
+            .map { CleanableItem(url: $0, size: sizer.size(of: $0)) }
+            .filter { $0.size > 0 }
     }
 
     private func installedApp(of browser: BrowserDefinition) -> URL? {

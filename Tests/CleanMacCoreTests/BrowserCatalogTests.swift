@@ -8,10 +8,9 @@ struct BrowserCatalogTests {
         "Sessions", "Bookmarks", "Preferences", "places.sqlite", "cookies.sqlite", "logins.json"
     ]
 
-    private static let cacheFolderNames: Set<String> = [
-        "Cache", "Code Cache", "GPUCache", "Service Worker/CacheStorage", "Service Worker/ScriptCache",
-        "cache2", "startupCache"
-    ]
+    private static let cacheFolderNames: Set<String> = ["Cache", "Code Cache", "GPUCache", "cache2", "startupCache"]
+
+    private static let serviceWorkerFolderNames: Set<String> = ["Service Worker/CacheStorage", "Service Worker/ScriptCache"]
 
     @Test func knowsTheSupportedBrowsers() {
         #expect(BrowserCatalog.browsers.map(\.name) == [
@@ -32,6 +31,19 @@ struct BrowserCatalogTests {
                 #expect(cacheFolders.allSatisfy { folder in !Self.userData.contains { folder.contains($0) } })
             }
         }
+    }
+
+    /// What service workers stored is site data: it's listed apart, so it's never selected by default.
+    @Test func keepsServiceWorkerFoldersApartFromTheCaches() {
+        for browser in BrowserCatalog.browsers {
+            for case let .profileSiteData(_, _, folders) in browser.cacheLocations {
+                #expect(Set(folders) == Self.serviceWorkerFolderNames, "\(browser.name)")
+            }
+        }
+        let chromium = BrowserCatalog.browsers.filter { browser in
+            browser.cacheLocations.contains { !$0.isSelectedByDefault }
+        }
+        #expect(chromium.map(\.name) == ["Google Chrome", "Microsoft Edge", "Brave", "Arc", "Vivaldi", "Opera"])
     }
 
     /// Whole folders are only ever taken from `~/Library/Caches`.

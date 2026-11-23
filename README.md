@@ -32,7 +32,8 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
   Las apps protegidas, como las de la App Store, se mueven a través de Finder con tu contraseña
   de administrador y conservan la opción «Devolver».
 - **Siempre revisas antes de limpiar.** Ves cada elemento y puedes desmarcar lo que quieras.
-  En Basura del sistema y Privacidad todo sale marcado, salvo las cachés de un navegador abierto; en el Desinstalador,
+  En Basura del sistema y Privacidad todo sale marcado, salvo las cachés de un navegador abierto y, en Privacidad,
+  los datos que los sitios guardan con sus service workers, que solo se marcan a mano; en el Desinstalador,
   Archivos grandes, Duplicados e Ítems de inicio no se marca nada hasta que lo eliges tú.
 - **Apps abiertas y residuos compartidos.** No se puede desinstalar una app abierta: hay que cerrarla antes.
   Los residuos que comparten varias copias de una misma app nunca se marcan solos.

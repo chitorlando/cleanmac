@@ -34,6 +34,32 @@ struct PrivacyViewModelTests {
         #expect(viewModel.foundSize == 600)
     }
 
+    /// What service workers stored is listed, but only the user selects it, item by item.
+    @Test func leavesSiteDataUnselectedUntilTheUserSelectsIt() async throws {
+        let edge = browserCaches("Microsoft Edge", bundleID: "com.microsoft.edgemac", items: ["Cache": 50], siteData: ["ScriptCache": 900])
+        let viewModel = PrivacyViewModel(
+            scanner: StubBrowserCacheScanner(results: [edge]),
+            runningApps: runningApps,
+            cleanupService: CleanupService(remover: remover)
+        )
+        await viewModel.startScan().value
+        let siteData = try #require(edge.items.first(where: { edge.holdsSiteData($0) }))
+
+        #expect(viewModel.foundSize == 950)
+        #expect(viewModel.selectedItems == edge.cacheItems)
+        #expect(viewModel.selectionState(of: edge) == .some)
+
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems.isEmpty)
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems == edge.cacheItems)
+
+        viewModel.toggle(siteData, of: edge)
+        #expect(viewModel.selectedSize == 950)
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems.isEmpty)
+    }
+
     @Test func locksTheCachesOfAnOpenBrowser() async throws {
         runningApps.running = [openChrome]
         let viewModel = await scannedViewModel()

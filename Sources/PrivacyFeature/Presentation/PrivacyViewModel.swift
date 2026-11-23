@@ -6,6 +6,7 @@ import Foundation
 ///
 /// Caches are safe to clear, so every item is selected after a scan, except those of a
 /// browser that is open: they're locked until the user quits it, which never force-quits.
+/// What websites stored through their service workers is listed but only selected by hand.
 /// A browser also counts as open while another edition of it is, since they share folders.
 @MainActor
 public final class PrivacyViewModel: ObservableObject {
@@ -52,7 +53,7 @@ public final class PrivacyViewModel: ObservableObject {
             let found = await scanner.scan()
             guard !Task.isCancelled else { return }
             results = found.sorted { $0.totalSize > $1.totalSize }
-            selection.select(found.flatMap(\.items))
+            selection.select(found.flatMap(\.cacheItems))
             refreshRunningBrowsers()
             phase = .review
         }
@@ -118,7 +119,7 @@ public final class PrivacyViewModel: ObservableObject {
         }
         refreshRunningBrowsers()
         if !isRunning(browser) {
-            selection.select(browser.items)
+            selection.select(browser.cacheItems)
         }
         return didQuit && !isRunning(browser)
     }
@@ -151,9 +152,15 @@ public final class PrivacyViewModel: ObservableObject {
         selection.toggle(item)
     }
 
+    /// Selects the browser's caches unless all of them are selected, in which case it clears
+    /// everything. Site data is never selected from here, only item by item.
     public func toggle(_ browser: BrowserCaches) {
         guard canSelect(browser) else { return }
-        selection.toggleAll(browser.items)
+        if selection.state(of: browser.cacheItems) == .all {
+            selection.deselect(browser.items)
+        } else {
+            selection.select(browser.cacheItems)
+        }
     }
 
     // MARK: Private
