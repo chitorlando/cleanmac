@@ -215,7 +215,8 @@ quítala de `UpcomingFeature.roadmap`. Las demás funciones no cambian.
 
 CleanMac está disponible en **inglés** y **español**. La app sigue el idioma de macOS
 y, si prefieres usarla en un idioma distinto al del sistema, puedes elegirlo solo para ella en
-Ajustes del Sistema > General > Idioma y región > Aplicaciones.
+CleanMac > Ajustes… o en Ajustes del Sistema > General > Idioma y región > Aplicaciones.
+Los dos cambian la misma preferencia, que se aplica la próxima vez que abres CleanMac.
 
 ### Añadir y traducir textos
 

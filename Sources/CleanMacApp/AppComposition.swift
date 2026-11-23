@@ -34,8 +34,12 @@ enum AppComposition {
         ]
     }
 
-    /// Everything in the Settings window: what each feature adds, in the order of the features.
-    static func makeSettings(modules: [any FeatureModule]) -> SettingsSections {
-        SettingsSections(items: modules.flatMap { $0.settings })
+    /// Everything in the Settings window: the settings of the app itself, then what each
+    /// feature adds, in the order of the features.
+    static func makeSettings(modules: [any FeatureModule], preferences: Preferences) -> SettingsSections {
+        let language = SettingsItem(id: AppSettings.language.key, section: .general) {
+            LanguagePicker(preferences: preferences)
+        }
+        return SettingsSections(items: [language] + modules.flatMap { $0.settings })
     }
 }

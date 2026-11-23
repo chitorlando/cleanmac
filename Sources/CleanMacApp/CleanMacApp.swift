@@ -15,9 +15,10 @@ struct CleanMacApp: App {
     private let settings: SettingsSections
 
     init() {
-        let modules = AppComposition.makeModules(preferences: AppComposition.makePreferences())
+        let preferences = AppComposition.makePreferences()
+        let modules = AppComposition.makeModules(preferences: preferences)
         self.modules = modules
-        settings = AppComposition.makeSettings(modules: modules)
+        settings = AppComposition.makeSettings(modules: modules, preferences: preferences)
     }
 
     var body: some Scene {
