@@ -33,4 +33,9 @@ enum AppComposition {
             MonitorModule.live(preferences: preferences, diskMapFeatureID: diskMap.id)
         ]
     }
+
+    /// Everything in the Settings window: what each feature adds, in the order of the features.
+    static func makeSettings(modules: [any FeatureModule]) -> SettingsSections {
+        SettingsSections(items: modules.flatMap { $0.settings })
+    }
 }

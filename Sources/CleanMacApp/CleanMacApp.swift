@@ -11,7 +11,14 @@ struct CleanMacApp: App {
         permissions.prepareForLaunch()
         return permissions
     }()
-    private let modules = AppComposition.makeModules(preferences: AppComposition.makePreferences())
+    private let modules: [any FeatureModule]
+    private let settings: SettingsSections
+
+    init() {
+        let modules = AppComposition.makeModules(preferences: AppComposition.makePreferences())
+        self.modules = modules
+        settings = AppComposition.makeSettings(modules: modules)
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -25,6 +32,10 @@ struct CleanMacApp: App {
                 CheckForUpdatesButton(updater: updater)
                 PermissionsMenuButton(permissions: permissions)
             }
+        }
+
+        Settings {
+            SettingsView(sections: settings)
         }
     }
 }
