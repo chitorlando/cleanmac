@@ -12,3 +12,12 @@ public struct RunningApp: Hashable, Sendable {
         self.bundleID = bundleID
     }
 }
+
+public extension RunningApp {
+    /// The name of its bundle without the extension, such as "Google Chrome Canary".
+    var name: String { url.deletingPathExtension().lastPathComponent }
+
+    /// Whether it runs from inside another app's bundle, as the helpers of a browser do.
+    /// A helper opens and closes with the app that holds it, and the user can't quit it.
+    var isHelper: Bool { (url.deletingLastPathComponent().path + "/").contains(".app/") }
+}

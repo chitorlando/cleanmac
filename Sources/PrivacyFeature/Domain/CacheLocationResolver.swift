@@ -25,18 +25,11 @@ public struct CacheLocationResolver: Sendable {
         case .cachesFolder(let path):
             return [caches.appending(path: path)]
         case .cachesNamed(let bundleID):
-            return children(of: caches).filter { isNamed($0, after: bundleID) }
+            return children(of: caches).filter { $0.lastPathComponent.isNamed(afterBundleID: bundleID) }
         case let .profileFolders(userData, layout, cacheFolders):
             return profiles(in: library.appending(path: userData), layout: layout)
                 .flatMap { profile in cacheFolders.map { profile.appending(path: $0) } }
         }
-    }
-
-    /// The bundle identifier itself, or the identifier followed by a dot and more, ignoring case.
-    private func isNamed(_ url: URL, after bundleID: String) -> Bool {
-        let name = url.lastPathComponent.lowercased()
-        let id = bundleID.lowercased()
-        return name == id || name.hasPrefix(id + ".")
     }
 
     private func profiles(in userData: URL, layout: ProfileLayout) -> [URL] {

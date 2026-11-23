@@ -10,3 +10,10 @@ public protocol RunningAppsProviding {
     /// Returns `true` when none is left running, including when it was not running at all.
     func quit(appAt url: URL) async -> Bool
 }
+
+public extension RunningAppsProviding {
+    /// The running apps the user opened and can quit, without the helpers inside their bundles.
+    func openApps() -> [RunningApp] {
+        runningApps().filter { !$0.isHelper }
+    }
+}
