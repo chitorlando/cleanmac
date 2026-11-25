@@ -1,30 +1,43 @@
 import Foundation
 import MonitorFeature
 
-/// Gives fixed snapshots, one per reading, and counts the readings.
+/// Gives fixed snapshots, one per reading, and notes every call in order.
 final class FakeSampler: SystemSampling, @unchecked Sendable {
+    enum Call: Equatable {
+        case sample, forgetPreviousReading
+    }
+
     private let snapshots: ReadingQueue<SystemSnapshot>
     private let lock = NSLock()
-    private var count = 0
+    private var log: [Call] = []
 
     init(_ snapshots: [SystemSnapshot]) {
         self.snapshots = ReadingQueue(snapshots)
     }
 
-    var readings: Int {
+    /// Every call so far, oldest first.
+    var calls: [Call] {
         lock.lock()
         defer { lock.unlock() }
-        return count
+        return log
+    }
+
+    var readings: Int {
+        calls.filter { $0 == .sample }.count
     }
 
     func sample() async -> SystemSnapshot {
-        countReading()
+        note(.sample)
         return snapshots.next() ?? SystemSnapshot()
     }
 
-    private func countReading() {
+    func forgetPreviousReading() async {
+        note(.forgetPreviousReading)
+    }
+
+    private func note(_ call: Call) {
         lock.lock()
         defer { lock.unlock() }
-        count += 1
+        log.append(call)
     }
 }

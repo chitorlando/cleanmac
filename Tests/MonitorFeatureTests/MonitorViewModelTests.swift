@@ -11,6 +11,19 @@ struct MonitorViewModelTests {
         SystemSnapshot(cpu: CPUUsage(user: 0.3, system: 0.1), topByCPU: [safari, xcode], topByMemory: [xcode, safari])
     }
 
+    private var calm: SystemSnapshot {
+        SystemSnapshot(cpu: CPUUsage(user: 0.1, system: 0.05))
+    }
+
+    /// Checks `condition` a little at a time until it holds. The tests' time limits end a wait
+    /// that never does.
+    private func waitUntil(_ condition: () -> Bool) async {
+        while !condition() {
+            await Task.yield()
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+    }
+
     @Test func showsEachReading() async {
         let viewModel = MonitorViewModel(sampler: FakeSampler([busy]))
 
@@ -67,6 +80,45 @@ struct MonitorViewModelTests {
         await task.value
 
         #expect(sampler.readings == 0)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func startsOverWhenItsScreenComesBack() async {
+        let sampler = FakeSampler([busy, calm])
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .seconds(3_600))
+
+        let visit = Task { await viewModel.run() }
+        await waitUntil { viewModel.snapshot == busy }
+        visit.cancel()
+        await visit.value
+        let comeback = Task { await viewModel.run() }
+        await waitUntil { viewModel.snapshot == calm }
+
+        #expect(sampler.calls == [.forgetPreviousReading, .sample, .forgetPreviousReading, .sample])
+        #expect(viewModel.cpuHistory.values == [CPUUsage(user: 0.1, system: 0.05)])
+        comeback.cancel()
+        await comeback.value
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func startsOverOnceTheAppCanBeSeenAgain() async {
+        let sampler = FakeSampler([busy])
+        let app = FakeAppVisibility()
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .milliseconds(5), isVisible: { app.isVisible() })
+
+        let task = Task { await viewModel.run() }
+        await waitUntil { sampler.readings >= 2 }
+        app.isHidden = true
+        await waitUntil { app.checksWhileHidden > 0 }
+        let readingsBeforeComingBack = sampler.readings
+        app.isHidden = false
+        await waitUntil { sampler.readings > readingsBeforeComingBack }
+        task.cancel()
+        await task.value
+
+        // One fresh start when it begins, and another right before the first reading back.
+        #expect(sampler.calls.filter { $0 == .forgetPreviousReading }.count == 2)
+        #expect(sampler.calls.dropFirst(readingsBeforeComingBack + 1).first == .forgetPreviousReading)
     }
 
     @Test func startsTheHistoryOverWhenTheIntervalChanges() async {
