@@ -19,7 +19,8 @@ struct OrphanDetectionTests {
             folders: LaunchFolder.standard(home: folder.url("home"), library: folder.url("Library")),
             reader: reader,
             sizer: AllocatedSizeCalculator(),
-            attributor: LoginItemAttributor(appLocator: FakeAppLocator(), reader: reader)
+            attributor: LoginItemAttributor(appLocator: FakeAppLocator(), reader: reader),
+            overrides: FakeLaunchOverrides()
         )
         let items = await scanner.scan()
         return try #require(items.first).isOrphaned

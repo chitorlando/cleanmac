@@ -58,7 +58,8 @@ public extension LoginItemsModule {
             folders: LaunchFolder.standard(home: FileManager.default.homeDirectoryForCurrentUser),
             reader: reader,
             sizer: AllocatedSizeCalculator(),
-            attributor: LoginItemAttributor(appLocator: LaunchServicesAppLocator(), reader: reader)
+            attributor: LoginItemAttributor(appLocator: LaunchServicesAppLocator(), reader: reader),
+            overrides: LaunchdOverrideFiles()
         )
         let viewModel = LoginItemsViewModel(
             scanner: scanner,

@@ -12,12 +12,18 @@ public struct LoginItem: Identifiable, Hashable, Sendable {
     public let owner: LoginItemOwner?
     /// Its program no longer exists, usually because the app that installed it was deleted.
     public let isOrphaned: Bool
+    /// launchd's override of the job's `Disabled` key, as `launchctl enable` and `disable` set
+    /// it: `true` when disabled, `false` when enabled, `nil` when there is none.
+    public let disabledOverride: Bool?
 
     public var id: URL { item.url }
     public var plistURL: URL { item.url }
 
     /// The owner's name or, without one, the job's label.
     public var displayName: String { owner?.name ?? job.label }
+
+    /// launchd ignores it: as its override says or, without one, as its property list says.
+    public var isDisabled: Bool { disabledOverride ?? job.isDisabled }
 
     /// Only the user's own agents can be removed without an administrator.
     public var isRemovable: Bool { scope == .currentUser }
@@ -33,7 +39,8 @@ public struct LoginItem: Identifiable, Hashable, Sendable {
         scope: LaunchScope,
         kind: LaunchItemKind,
         owner: LoginItemOwner?,
-        isOrphaned: Bool
+        isOrphaned: Bool,
+        disabledOverride: Bool? = nil
     ) {
         self.item = item
         self.job = job
@@ -41,5 +48,6 @@ public struct LoginItem: Identifiable, Hashable, Sendable {
         self.kind = kind
         self.owner = owner
         self.isOrphaned = isOrphaned
+        self.disabledOverride = disabledOverride
     }
 }
