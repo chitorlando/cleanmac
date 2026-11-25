@@ -25,7 +25,7 @@ public struct LargeFileScanner: LargeFileScanning {
         self.progressInterval = max(1, progressInterval)
     }
 
-    public func scope(limitedTo url: URL) -> LargeFileScanScope? {
+    public func scope(limitedTo url: URL) -> ScanScope? {
         scopePolicy.scope(limitedTo: url)
     }
 
@@ -33,7 +33,7 @@ public struct LargeFileScanner: LargeFileScanning {
     ///
     /// The policy checks the scope again here, when the walk begins: a folder that can no
     /// longer be scanned, because it's gone or is now a link to somewhere else, reports no files.
-    public func scan(_ scope: LargeFileScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> {
+    public func scan(_ scope: ScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> {
         let scopePolicy = scopePolicy
         let walker = walker
         let interval = progressInterval

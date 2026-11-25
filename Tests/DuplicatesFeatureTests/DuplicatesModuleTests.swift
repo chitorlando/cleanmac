@@ -112,4 +112,26 @@ struct DuplicatesModuleTests {
         #expect(module.settings.map(\.id) == ["duplicates.minimumSize"])
         #expect(module.settings.map(\.section) == [.analysis])
     }
+
+    /// Other features offer its action only for the folders it would scan.
+    @Test func takesOnlyTheFoldersTheScanOfTheHomeEnters() throws {
+        let home = try TemporaryFolder()
+        let documents = try home.makeFolder("Documents")
+        let caches = try home.makeFolder("Library/Caches")
+        let excludedDirectories = [home.root.appending(path: "Library")]
+        let scanner = DuplicateScanner(
+            home: home.root,
+            walker: FileSystemWalker(excludedDirectories: excludedDirectories),
+            excludedDirectories: excludedDirectories
+        )
+        let module = DuplicatesModule(
+            viewModel: DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover())),
+            preferences: Preferences(storage: InMemoryPreferenceStorage())
+        )
+
+        #expect(module.canShow(itemAt: documents))
+        #expect(module.canShow(itemAt: home.root))
+        #expect(!module.canShow(itemAt: caches))
+        #expect(!module.canShow(itemAt: home.root.appending(path: "Library")))
+    }
 }

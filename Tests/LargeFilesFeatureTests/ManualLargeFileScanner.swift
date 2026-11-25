@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 import LargeFilesFeature
 
@@ -13,9 +14,9 @@ final class ManualLargeFileScanner: LargeFileScanning {
         self.continuation = continuation
     }
 
-    func scope(limitedTo url: URL) -> LargeFileScanScope? { .folder(url) }
+    func scope(limitedTo url: URL) -> ScanScope? { .folder(url) }
 
-    func scan(_ scope: LargeFileScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> { stream }
+    func scan(_ scope: ScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> { stream }
 
     func send(_ event: LargeFileScanEvent) {
         continuation.yield(event)

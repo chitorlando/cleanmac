@@ -15,6 +15,37 @@ final class TemporaryFolder {
         try? FileManager.default.removeItem(at: root)
     }
 
+    /// Creates a folder at `path`, relative to the root, along with the folders that lead to it.
+    @discardableResult
+    func makeFolder(_ path: String) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    /// Creates a symbolic link at `path` that points to `destination`, both relative to the root.
+    @discardableResult
+    func makeLink(_ path: String, to destination: String) throws -> URL {
+        try makeLink(path, to: root.appending(path: destination))
+    }
+
+    /// Creates a symbolic link at `path`, relative to the root, that points to `destination`,
+    /// which can be outside the folder.
+    @discardableResult
+    func makeLink(_ path: String, to destination: URL) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createSymbolicLink(at: url, withDestinationURL: destination)
+        return url
+    }
+
+    /// Hides the item at `path`, relative to the root, the way Finder does: without a dot in its name.
+    func hide(_ path: String) throws {
+        var url = root.appending(path: path)
+        var values = URLResourceValues()
+        values.isHidden = true
+        try url.setResourceValues(values)
+    }
+
     /// Creates a file of `size` bytes at `path`, relative to the root, along with its folders.
     @discardableResult
     func makeFile(_ path: String, size: Int = 1_000, accessDate: Date? = nil) throws -> URL {

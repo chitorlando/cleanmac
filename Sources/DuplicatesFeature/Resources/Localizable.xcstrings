@@ -333,17 +333,6 @@
         }
       }
     },
-    "Only in: %@" : {
-      "comment" : "Label of the pill shown while only one folder is scanned. The argument is the name of the folder.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo en: %@"
-          }
-        }
-      }
-    },
     "Scan" : {
       "comment" : "Button that starts looking for duplicate files.",
       "localizations" : {
@@ -362,17 +351,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volver a escanear"
-          }
-        }
-      }
-    },
-    "Scan the Whole Home Folder" : {
-      "comment" : "Button on the pill of the folder being scanned. It leaves the folder and scans the whole home folder.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analizar toda la carpeta de inicio"
           }
         }
       }

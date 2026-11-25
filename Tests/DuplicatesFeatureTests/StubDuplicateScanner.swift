@@ -1,3 +1,4 @@
+import CleanMacCore
 import DuplicatesFeature
 import Foundation
 import os
@@ -9,7 +10,7 @@ struct StubDuplicateScanner: DuplicateScanning {
     static let home = URL(filePath: "/Users/test")
 
     private struct State: Sendable {
-        var scannedScopes: [DuplicateScanScope] = []
+        var scannedScopes: [ScanScope] = []
         var scannedMinimumSizes: [Int64] = []
         var refusedFolders: Set<URL>
     }
@@ -26,7 +27,7 @@ struct StubDuplicateScanner: DuplicateScanning {
     }
 
     /// The scope of every scan started so far, in order.
-    var scannedScopes: [DuplicateScanScope] { state.withLock { $0.scannedScopes } }
+    var scannedScopes: [ScanScope] { state.withLock { $0.scannedScopes } }
     /// The smallest size of every scan started so far, in order.
     var scannedMinimumSizes: [Int64] { state.withLock { $0.scannedMinimumSizes } }
 
@@ -35,12 +36,12 @@ struct StubDuplicateScanner: DuplicateScanning {
         state.withLock { _ = $0.refusedFolders.insert(url) }
     }
 
-    func scope(limitedTo url: URL) -> DuplicateScanScope? {
+    func scope(limitedTo url: URL) -> ScanScope? {
         guard !state.withLock({ $0.refusedFolders.contains(url) }) else { return nil }
         return url == Self.home ? .home : .folder(url)
     }
 
-    func scan(_ scope: DuplicateScanScope, minimumSize: Int64) -> AsyncStream<DuplicateScanEvent> {
+    func scan(_ scope: ScanScope, minimumSize: Int64) -> AsyncStream<DuplicateScanEvent> {
         state.withLock { state in
             state.scannedScopes.append(scope)
             state.scannedMinimumSizes.append(minimumSize)

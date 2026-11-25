@@ -35,6 +35,19 @@ final class FeatureNavigator: ObservableObject {
         modules.filter { $0.id != selectedID }.flatMap { $0.itemActions }
     }
 
+    /// Whether the feature of `action` would carry it out on the item at `url`, as its
+    /// `FeatureModule.canShow(itemAt:)` says. `false` when no feature has the id of the action.
+    func canPerform(_ action: FeatureItemAction, on url: URL) -> Bool {
+        modules.first { $0.id == action.featureID }?.canShow(itemAt: url) ?? false
+    }
+
+    /// `itemActions`, which offer an item only to the features that take it, for the views.
+    var featureItemActions: FeatureItemActions {
+        FeatureItemActions(itemActions) { [weak self] action, url in
+            self?.canPerform(action, on: url) ?? false
+        }
+    }
+
     /// The action features use to open each other.
     var openFeatureAction: OpenFeatureAction {
         OpenFeatureAction { [weak self] featureID, itemURL in self?.open(featureID, showing: itemURL) }

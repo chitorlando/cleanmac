@@ -10,7 +10,7 @@ struct LargeFileScannerTests {
     ///   write larger ones on disk.
     private func events(
         of scanner: LargeFileScanner,
-        in scope: LargeFileScanScope = .home,
+        in scope: ScanScope = .home,
         criteria: LargeFileCriteria = LargeFileCriteria(minimumSize: 100_000)
     ) async -> [LargeFileScanEvent] {
         var events: [LargeFileScanEvent] = []

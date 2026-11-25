@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 import LargeFilesFeature
 import os
@@ -12,19 +13,19 @@ struct StubLargeFileScanner: LargeFileScanning {
     /// Folders the scan can't be limited to. It can to any other URL.
     var unscannableFolders: Set<URL> = []
 
-    let scopes = OSAllocatedUnfairLock<[LargeFileScanScope]>(initialState: [])
+    let scopes = OSAllocatedUnfairLock<[ScanScope]>(initialState: [])
     let minimumSizes = OSAllocatedUnfairLock<[Int64]>(initialState: [])
 
     /// Scopes of the scans started so far, oldest first.
-    var scannedScopes: [LargeFileScanScope] { scopes.withLock { $0 } }
+    var scannedScopes: [ScanScope] { scopes.withLock { $0 } }
     /// Smallest size each scan started so far looked for, oldest first.
     var scannedMinimumSizes: [Int64] { minimumSizes.withLock { $0 } }
 
-    func scope(limitedTo url: URL) -> LargeFileScanScope? {
+    func scope(limitedTo url: URL) -> ScanScope? {
         unscannableFolders.contains(url) ? nil : .folder(url)
     }
 
-    func scan(_ scope: LargeFileScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> {
+    func scan(_ scope: ScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> {
         scopes.withLock { $0.append(scope) }
         minimumSizes.withLock { $0.append(criteria.minimumSize) }
         let isHome = scope == .home
