@@ -34,7 +34,7 @@ public extension SystemJunkModule {
         )
         let viewModel = SystemJunkViewModel(
             scanService: JunkScanService(scanners: scanners),
-            cleanupService: CleanupService(remover: MissingItemTolerantRemover(TrashItemRemover())),
+            cleanupService: CleanupService(remover: TrashItemRemover(), skipsMissingItems: true),
             runningApps: WorkspaceRunningApps(),
             cacheUsage: BrowserCacheUsage(library: home.appending(path: "Library"))
         )
