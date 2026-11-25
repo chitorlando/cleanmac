@@ -385,6 +385,17 @@
         }
       }
     },
+    "Show Login Items" : {
+      "comment" : "Entry of the context menu of an app listed by another feature, such as the uninstaller. It shows only the login items of that app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar ítems de inicio"
+          }
+        }
+      }
+    },
     "Show Program in Finder" : {
       "comment" : "Context menu item that reveals the program a login item starts.",
       "localizations" : {

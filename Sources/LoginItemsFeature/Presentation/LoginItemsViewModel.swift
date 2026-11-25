@@ -12,6 +12,8 @@ import Foundation
 /// Selected items the limit hides stay selected, but only the listed ones are removed.
 @MainActor
 public final class LoginItemsViewModel: ObservableObject {
+    private static let appExtension = "app"
+
     @Published public private(set) var phase: LoginItemsPhase = .intro
     /// The listed items, only those of `appFilter` when there is one.
     @Published public private(set) var sections: [LoginItemSection] = []
@@ -99,7 +101,15 @@ public final class LoginItemsViewModel: ObservableObject {
 
     // MARK: App filter
 
+    /// Whether `showItems(ofAppAt:)` takes the item at `url`: any app bundle, with login items
+    /// or not, since an app without any gets a screen that says so. Only its path is looked
+    /// at, so it can be asked whenever a menu opens, without reading the disk or the items.
+    public func canShowItems(ofAppAt url: URL) -> Bool {
+        url.pathExtension.lowercased() == Self.appExtension
+    }
+
     /// Lists only the items of the app at `url`, such as one another feature sends here.
+    /// Anything that isn't an app bundle is ignored.
     ///
     /// The items are read first when they weren't yet, starting from the introduction. Items
     /// already read, or being read, aren't read again: the limit applies to them. During a
@@ -108,6 +118,7 @@ public final class LoginItemsViewModel: ObservableObject {
     /// - Returns: The listing it starts, if any.
     @discardableResult
     public func showItems(ofAppAt url: URL) -> Task<Void, Never>? {
+        guard canShowItems(ofAppAt: url) else { return nil }
         appFilter = LoginItemOwner(appURL: url.standardizedFileURL)
         updateSections()
         return phase == .intro ? startLoading() : nil

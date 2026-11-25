@@ -54,6 +54,24 @@ struct LoginItemsAppFilterTests {
         #expect(viewModel.appFilter?.name == "Mine")
     }
 
+    @Test func takesOnlyAppBundles() {
+        let viewModel = makeViewModel()
+
+        #expect(viewModel.canShowItems(ofAppAt: mineApp))
+        #expect(viewModel.canShowItems(ofAppAt: URL(filePath: "/Applications/Mine.APP/")))
+        #expect(!viewModel.canShowItems(ofAppAt: URL(filePath: "/Applications")))
+        #expect(!viewModel.canShowItems(ofAppAt: URL(filePath: "/Users/me/notes.txt")))
+    }
+
+    @Test func ignoresWhatIsNotAnApp() {
+        let viewModel = makeViewModel()
+
+        #expect(viewModel.showItems(ofAppAt: URL(filePath: "/Applications")) == nil)
+
+        #expect(viewModel.phase == .intro)
+        #expect(viewModel.appFilter == nil)
+    }
+
     @Test func listsEveryItemAgainWhenTheLimitIsLifted() async {
         let viewModel = await loadedViewModel()
         viewModel.showItems(ofAppAt: mineApp)
