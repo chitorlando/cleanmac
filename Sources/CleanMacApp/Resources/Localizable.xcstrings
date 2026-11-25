@@ -40,7 +40,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archivos grandes y Duplicados nunca buscan en estas carpetas ni en tu carpeta Librería. Se aplica la próxima vez que escanees."
+            "value" : "Archivos grandes y Duplicados nunca buscan en estas carpetas ni en tu carpeta Biblioteca. Se aplica la próxima vez que escanees."
           }
         }
       }
