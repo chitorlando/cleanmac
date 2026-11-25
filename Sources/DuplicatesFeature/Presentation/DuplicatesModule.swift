@@ -16,15 +16,20 @@ public final class DuplicatesModule: FeatureModule {
     private let viewModel: DuplicatesViewModel
     private let preferences: Preferences
     private var minimumSizeChanges: AnyCancellable?
+    private var excludedFolderChanges: AnyCancellable?
 
     /// - Parameter preferences: Where the user chooses the smallest size of the files to
-    ///   compare, which each new scan of `viewModel` compares from now on.
+    ///   compare and the folders to leave out, which each new scan of `viewModel` follows
+    ///   from now on.
     public init(viewModel: DuplicatesViewModel, preferences: Preferences) {
         self.viewModel = viewModel
         self.preferences = preferences
         viewModel.minimumSizeForNextScan = preferences.value(of: DuplicatesSettings.minimumSize)
         minimumSizeChanges = preferences.changes(of: DuplicatesSettings.minimumSize)
             .sink { [viewModel] size in viewModel.minimumSizeForNextScan = size }
+        viewModel.excludedFoldersForNextScan = ScanSettings.folders(at: preferences.value(of: ScanSettings.excludedFolders))
+        excludedFolderChanges = preferences.changes(of: ScanSettings.excludedFolders)
+            .sink { [viewModel] paths in viewModel.excludedFoldersForNextScan = ScanSettings.folders(at: paths) }
     }
 
     public func makeView() -> AnyView {
@@ -70,16 +75,12 @@ public final class DuplicatesModule: FeatureModule {
 public extension DuplicatesModule {
     /// Module that walks the current user's home folder and moves copies to the Trash.
     ///
-    /// `~/Library` is left out, as other features take care of it.
+    /// `~/Library` is always left out, as other features take care of it, and so are the
+    /// folders the user chooses.
     ///
     /// - Parameter preferences: See `init(viewModel:preferences:)`.
     static func live(preferences: Preferences) -> DuplicatesModule {
-        let scanner = DuplicateScanner(
-            scopePolicy: ScanScopePolicy(
-                home: FileManager.default.homeDirectoryForCurrentUser,
-                excludedDirectories: [FileSystemWalker.userLibrary]
-            )
-        )
+        let scanner = DuplicateScanner(scopePolicy: .currentUserHome)
         let viewModel = DuplicatesViewModel(
             scanner: scanner,
             cleanupService: CleanupService(remover: TrashItemRemover())
