@@ -59,7 +59,8 @@ public enum BrowserCatalog {
             cacheLocations: [
                 .cachesNamed(bundleID: "org.mozilla.firefox"),
                 .profileFolders(userData: "Caches/Firefox/Profiles", layout: .anyFolder, cacheFolders: ["cache2", "startupCache"])
-            ]
+            ],
+            sharedFolders: ["Caches/Mozilla"]
         )
     ]
 }

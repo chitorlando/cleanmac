@@ -9,6 +9,7 @@ struct BrowserCacheUsageTests {
     private let vivaldi = RunningApp(url: URL(filePath: "/Applications/Vivaldi.app"), bundleID: "com.vivaldi.Vivaldi")
     private let chrome = RunningApp(url: URL(filePath: "/Applications/Google Chrome.app"), bundleID: "com.google.Chrome")
     private let canary = RunningApp(url: URL(filePath: "/Applications/Google Chrome Canary.app"), bundleID: "com.google.Chrome.canary")
+    private let firefox = RunningApp(url: URL(filePath: "/Applications/Firefox.app"), bundleID: "org.mozilla.firefox")
     private let nightly = RunningApp(url: URL(filePath: "/Applications/Firefox Nightly.app"), bundleID: "org.mozilla.nightly")
     private let mail = RunningApp(url: URL(filePath: "/System/Applications/Mail.app"), bundleID: "com.apple.mail")
 
@@ -38,6 +39,16 @@ struct BrowserCacheUsageTests {
         #expect(apps(using: "Caches/com.google.Chrome.canary", among: [canary]) == ["Google Chrome Canary"])
     }
 
+    /// Firefox keeps the updates it downloads in `~/Library/Caches/Mozilla`.
+    @Test func findsTheOpenBrowserThatUsesASharedFolder() {
+        #expect(apps(using: "Caches/Mozilla", among: [mail, firefox]) == ["Firefox"])
+        #expect(apps(using: "Caches/Mozilla/updates", among: [nightly]) == ["Firefox Nightly"])
+    }
+
+    @Test func findsNothingInASharedFolderWhenTheBrowserIsClosed() {
+        #expect(apps(using: "Caches/Mozilla", among: [chrome, vivaldi, mail]).isEmpty)
+    }
+
     @Test func findsEveryOpenEdition() {
         #expect(apps(using: "Caches/Google", among: [chrome, canary, vivaldi]) == ["Google Chrome", "Google Chrome Canary"])
     }
@@ -47,7 +58,7 @@ struct BrowserCacheUsageTests {
     }
 
     @Test func findsNothingForWhatNoBrowserUses() {
-        let everything = [vivaldi, chrome, canary, nightly, mail]
+        let everything = [vivaldi, chrome, canary, firefox, nightly, mail]
 
         #expect(apps(using: "Caches/com.apple.mail", among: everything).isEmpty)
         #expect(apps(using: "Caches/GoogleUpdater", among: everything).isEmpty)

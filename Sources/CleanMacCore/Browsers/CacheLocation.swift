@@ -69,7 +69,7 @@ extension CacheLocation {
     }
 
     /// Whether the paths are the same or one is inside the other.
-    private static func overlap(_ one: String, _ other: String) -> Bool {
+    static func overlap(_ one: String, _ other: String) -> Bool {
         one == other || one.hasPrefix(other + "/") || other.hasPrefix(one + "/")
     }
 }

@@ -6,14 +6,26 @@ public struct BrowserDefinition: Identifiable, Hashable, Sendable {
     /// as Firefox Nightly, whose profiles are next to those of Firefox.
     public let editionBundleIDs: [String]
     public let cacheLocations: [CacheLocation]
+    /// Folders of the Library, relative to it, that the browser writes to besides its caches
+    /// and that are named after its maker, such as "Caches/Mozilla", where Firefox keeps the
+    /// updates it downloads. Other apps of the maker may use them too, so they're never
+    /// cleaned as the browser's caches, but nothing in them is removed while it's open.
+    public let sharedFolders: [String]
 
     public var id: String { bundleID }
 
-    public init(name: String, bundleID: String, editionBundleIDs: [String] = [], cacheLocations: [CacheLocation]) {
+    public init(
+        name: String,
+        bundleID: String,
+        editionBundleIDs: [String] = [],
+        cacheLocations: [CacheLocation],
+        sharedFolders: [String] = []
+    ) {
         self.name = name
         self.bundleID = bundleID
         self.editionBundleIDs = editionBundleIDs
         self.cacheLocations = cacheLocations
+        self.sharedFolders = sharedFolders
     }
 }
 
@@ -27,5 +39,14 @@ public extension BrowserDefinition {
     func isEdition(_ app: RunningApp) -> Bool {
         guard let appID = app.bundleID else { return false }
         return ([bundleID] + editionBundleIDs).contains { appID.isNamed(afterBundleID: $0) }
+    }
+}
+
+extension BrowserDefinition {
+    /// Whether an item of the Library, given by its path relative to it, holds, is or is inside
+    /// a folder the browser may be using: one of its caches or of its shared folders.
+    func mayUse(_ path: String) -> Bool {
+        cacheLocations.contains { $0.overlaps(path) }
+            || sharedFolders.contains { CacheLocation.overlap($0.lowercased(), path.lowercased()) }
     }
 }
