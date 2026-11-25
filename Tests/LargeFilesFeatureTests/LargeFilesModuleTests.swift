@@ -112,10 +112,8 @@ struct LargeFilesModuleTests {
         let home = try TemporaryFolder()
         try home.makeFile("Movies/trip.mov")
         try home.makeFile("Library/Caches/cache.bin")
-        let excludedDirectories = [home.root.appending(path: "Library")]
         let scanner = LargeFileScanner(
-            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: excludedDirectories),
-            walker: FileSystemWalker(excludedDirectories: excludedDirectories)
+            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: [home.root.appending(path: "Library")])
         )
         let module = LargeFilesModule(viewModel: LargeFilesViewModel(
             scanner: scanner,
