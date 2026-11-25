@@ -52,13 +52,19 @@ public extension CacheLocation {
 }
 
 extension CacheLocation {
+    /// Words that name another edition of a browser after the browser's own folder, as in
+    /// "Microsoft Edge Beta", "Vivaldi Snapshot" or "Brave-Browser-Nightly".
+    private static let editionNames = ["beta", "canary", "dev", "nightly", "snapshot"]
+
     /// Whether an item of the Library, given by its path relative to it, holds, is or is inside
-    /// a folder of this location. Case is ignored, as the file system does unless told otherwise.
+    /// a folder of this location. A folder of `~/Library/Caches` counts with the ones other
+    /// editions of the browser keep next to it, which the catalog doesn't list. Case is ignored,
+    /// as the file system does unless told otherwise.
     func overlaps(_ path: String) -> Bool {
         let path = path.lowercased()
         switch self {
         case .cachesFolder(let folder):
-            return Self.overlap("caches/\(folder.lowercased())", path)
+            return Self.withEditions("caches/\(folder.lowercased())").contains { Self.overlap($0, path) }
         case .cachesNamed(let bundleID):
             let components = path.split(separator: "/")
             guard components.first == "caches" else { return false }
@@ -66,6 +72,13 @@ extension CacheLocation {
         case .profileFolders(let userData, _, _), .profileSiteData(let userData, _, _):
             return Self.overlap(userData.lowercased(), path)
         }
+    }
+
+    /// The folder and the ones other editions of the browser keep next to it: its name, a space
+    /// or a hyphen and an edition, such as "Microsoft Edge Beta" next to "Microsoft Edge".
+    /// Folders that only start with the same word, such as "Microsoft Teams", are not.
+    private static func withEditions(_ folder: String) -> [String] {
+        [folder] + editionNames.flatMap { edition in [" ", "-"].map { folder + $0 + edition } }
     }
 
     /// Whether the paths are the same or one is inside the other.

@@ -11,6 +11,8 @@ struct BrowserCacheUsageTests {
     private let canary = RunningApp(url: URL(filePath: "/Applications/Google Chrome Canary.app"), bundleID: "com.google.Chrome.canary")
     private let firefox = RunningApp(url: URL(filePath: "/Applications/Firefox.app"), bundleID: "org.mozilla.firefox")
     private let nightly = RunningApp(url: URL(filePath: "/Applications/Firefox Nightly.app"), bundleID: "org.mozilla.nightly")
+    private let edge = RunningApp(url: URL(filePath: "/Applications/Microsoft Edge.app"), bundleID: "com.microsoft.edgemac")
+    private let edgeBeta = RunningApp(url: URL(filePath: "/Applications/Microsoft Edge Beta.app"), bundleID: "com.microsoft.edgemac.Beta")
     private let mail = RunningApp(url: URL(filePath: "/System/Applications/Mail.app"), bundleID: "com.apple.mail")
 
     /// The names of the open apps that may be using an item of the Library.
@@ -37,6 +39,22 @@ struct BrowserCacheUsageTests {
     @Test func findsTheBrowserACacheIsNamedAfter() {
         #expect(apps(using: "Caches/com.vivaldi.Vivaldi", among: [vivaldi]) == ["Vivaldi"])
         #expect(apps(using: "Caches/com.google.Chrome.canary", among: [canary]) == ["Google Chrome Canary"])
+    }
+
+    /// Editions the catalog doesn't list keep their caches next to the browser's, after its name.
+    /// Any open edition locks them, as Privacy locks a whole browser.
+    @Test func findsTheOpenBrowserWhoseEditionKeepsCachesNextToItsOwn() {
+        #expect(apps(using: "Caches/Microsoft Edge Beta", among: [mail, edge]) == ["Microsoft Edge"])
+        #expect(apps(using: "Caches/Microsoft Edge Beta", among: [edgeBeta]) == ["Microsoft Edge Beta"])
+        #expect(apps(using: "Caches/Vivaldi Snapshot", among: [vivaldi]) == ["Vivaldi"])
+        #expect(apps(using: "Caches/Microsoft Edge Beta", among: [chrome, mail]).isEmpty)
+    }
+
+    @Test func findsNothingForAFolderThatOnlyStartsLikeABrowsers() {
+        #expect(apps(using: "Caches/Microsoft Teams", among: [edge]).isEmpty)
+        #expect(apps(using: "Caches/Microsoft Edge Updater", among: [edge]).isEmpty)
+        #expect(apps(using: "Caches/Vivaldi Tools", among: [vivaldi]).isEmpty)
+        #expect(apps(using: "Caches/VivaldiBeta", among: [vivaldi]).isEmpty)
     }
 
     /// Firefox keeps the updates it downloads in `~/Library/Caches/Mozilla`.
