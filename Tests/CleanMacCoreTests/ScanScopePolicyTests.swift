@@ -228,6 +228,52 @@ struct ScanScopePolicyTests {
         #expect(scopedPath("Shortcut/Caches", in: home) == nil)
     }
 
+    // MARK: Folders left out of one scan
+
+    @Test func refusesTheFoldersAScanAlsoLeavesOutAndWhatIsInside() throws {
+        let home = try TemporaryFolder()
+        let movies = try home.makeFolder("Movies")
+        let trips = try home.makeFolder("Movies/Trips")
+        let music = try home.makeFolder("Music")
+        try home.makeFolder("Library/Caches")
+        let policy = makePolicy(home: home).excluding([movies])
+
+        #expect(policy.scope(limitedTo: movies) == nil)
+        #expect(policy.scope(limitedTo: trips) == nil)
+        #expect(policy.scope(limitedTo: home.root.appending(path: "Library/Caches")) == nil)
+        #expect(policy.scope(limitedTo: music)?.folder?.path == music.path)
+        #expect(policy.scope(limitedTo: home.root) == .home)
+    }
+
+    @Test func leavingOutMoreFoldersKeepsTheOnesItAlreadyLeftOut() throws {
+        let home = try TemporaryFolder()
+        let movies = home.root.appending(path: "Movies")
+        let policy = makePolicy(home: home)
+
+        let withoutMovies = policy.excluding([movies])
+
+        #expect(withoutMovies.home == home.root)
+        #expect(withoutMovies.excludedDirectories == [home.root.appending(path: "Library"), movies])
+        #expect(policy.excludedDirectories == [home.root.appending(path: "Library")])
+    }
+
+    @Test func refusesAFolderLeftOutOfOneScanWrittenInAnotherCase() throws {
+        let home = try TemporaryFolder()
+        let movies = try home.makeFolder("Movies/Trips").deletingLastPathComponent()
+        let policy = makePolicy(home: home).excluding([movies])
+
+        #expect(!policy.allows(home.root.appending(path: "movies")))
+        #expect(!policy.allows(home.root.appending(path: "MOVIES/Trips")))
+    }
+
+    @Test func walksNothingOnceTheFolderOfAScopeIsLeftOut() throws {
+        let home = try TemporaryFolder()
+        let movies = try home.makeFolder("Movies")
+        let scope = try #require(makePolicy(home: home).scope(limitedTo: movies))
+
+        #expect(makePolicy(home: home).excluding([movies]).folder(of: scope) == nil)
+    }
+
     // MARK: Folder to walk
 
     @Test func walksTheHomeFolderForTheWholeHome() throws {

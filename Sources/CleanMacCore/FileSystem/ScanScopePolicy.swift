@@ -21,13 +21,23 @@ import Foundation
 public struct ScanScopePolicy: Sendable {
     /// Folder a scan covers unless it's limited to another.
     public let home: URL
+    /// Folders the scan skips with everything inside, as they were given.
+    public let excludedDirectories: [URL]
     private let excludedPaths: Set<String>
 
     /// - Parameter excludedDirectories: Folders the scan skips with everything inside. They must
     ///   be the ones given to the walker of the scan.
     public init(home: URL, excludedDirectories: [URL] = []) {
         self.home = home
+        self.excludedDirectories = excludedDirectories
         excludedPaths = Set(excludedDirectories.map(\.standardizedFileURL.path))
+    }
+
+    /// The policy of a scan that also skips `folders`, with everything inside, such as the
+    /// folders the user leaves out of one scan. Its walker must skip all of its
+    /// `excludedDirectories`.
+    public func excluding(_ folders: [URL]) -> ScanScopePolicy {
+        ScanScopePolicy(home: home, excludedDirectories: excludedDirectories + folders)
     }
 
     /// The scope of a scan limited to the folder at `url`. For the home folder it's the whole home.
