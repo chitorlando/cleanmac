@@ -54,6 +54,16 @@ struct PreferencesTests {
         #expect(preferences.value(of: limit) == 1_234)
     }
 
+    @Test func keepsSizesInBytes() {
+        let size = Setting<Int64>(key: "size", defaultValue: 50_000_000, allowedValues: [50_000_000, 5_000_000_000])
+        let storage = InMemoryPreferenceStorage()
+
+        Preferences(storage: storage).set(5_000_000_000, for: size)
+
+        #expect(Preferences(storage: storage).value(of: size) == 5_000_000_000)
+        #expect(storage.value(forKey: "size") as? Int64 == 5_000_000_000)
+    }
+
     @Test func ignoresAValueTheSettingDoesNotTake() {
         let storage = InMemoryPreferenceStorage(["interval": 5])
         let preferences = Preferences(storage: storage)

@@ -59,4 +59,15 @@ struct UserDefaultsPreferenceStorageTests {
         preferences.set(2, for: interval)
         #expect(suite.defaults.object(forKey: "interval") == nil)
     }
+
+    /// The defaults give back a number of their own, which still reads as the size kept.
+    @Test func servesSizesInBytes() throws {
+        let suite = try TemporaryDefaultsSuite()
+        let size = Setting<Int64>(key: "size", defaultValue: 50_000_000, allowedValues: [50_000_000, 5_000_000_000])
+
+        Preferences(storage: suite.storage).set(5_000_000_000, for: size)
+
+        #expect(Preferences(storage: suite.storage).value(of: size) == 5_000_000_000)
+        #expect(suite.defaults.object(forKey: "size") as? Int64 == 5_000_000_000)
+    }
 }
