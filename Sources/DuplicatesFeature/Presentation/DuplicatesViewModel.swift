@@ -124,6 +124,12 @@ public final class DuplicatesViewModel: ObservableObject {
         }
     }
 
+    /// Whether `scanFolder(at:)` would scan the folder at `url`, now or once the report is
+    /// left, rather than ignore it.
+    public func canScanFolder(at url: URL) -> Bool {
+        scanner.scope(limitedTo: url) != nil
+    }
+
     /// Stops the scan and reviews the groups confirmed so far, which are complete and safe to use.
     public func stopScan() {
         guard phase == .scanning else { return }
