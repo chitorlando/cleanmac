@@ -191,6 +191,79 @@ struct DuplicatesViewModelTests {
         await secondScan.value
     }
 
+    // MARK: Smallest size
+
+    @Test func comparesFilesOf1MBUntilToldOtherwise() async {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedMinimumSizes == [1_000_000])
+        #expect(viewModel.minimumSize == 1_000_000)
+    }
+
+    @Test func comparesFilesOfTheSizeChosenForTheNextScan() async {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        viewModel.minimumSizeForNextScan = 10_000_000
+
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedMinimumSizes == [10_000_000])
+        #expect(viewModel.minimumSize == 10_000_000)
+    }
+
+    @Test func aNewSizeWaitsForTheNextScan() async {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        await viewModel.startScan().value
+
+        viewModel.minimumSizeForNextScan = 10_000_000
+
+        #expect(viewModel.minimumSize == 1_000_000)
+        await viewModel.startScan().value
+        #expect(viewModel.minimumSize == 10_000_000)
+        #expect(scanner.scannedMinimumSizes == [1_000_000, 10_000_000])
+    }
+
+    // MARK: Folders left out
+
+    @Test func leavesOutNoMoreFoldersUntilToldOtherwise() async {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedExcludedFolders == [[]])
+    }
+
+    @Test func aNewListOfFoldersLeftOutWaitsForTheNextScan() async {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        let scan = viewModel.startScan()
+
+        viewModel.excludedFoldersForNextScan = [downloads]
+        await scan.value
+
+        #expect(scanner.scannedExcludedFolders == [[]])
+        await viewModel.startScan().value
+        #expect(scanner.scannedExcludedFolders == [[], [downloads]])
+    }
+
+    @Test func refusesAFolderLeftOutOfTheNextScan() {
+        let scanner = StubDuplicateScanner(events: [])
+        let viewModel = DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        #expect(viewModel.canScanFolder(at: downloads))
+
+        viewModel.excludedFoldersForNextScan = [downloads]
+
+        #expect(!viewModel.canScanFolder(at: downloads))
+        #expect(viewModel.scanFolder(at: downloads) == nil)
+        #expect(viewModel.phase == .intro)
+        #expect(scanner.scannedScopes.isEmpty)
+    }
+
     // MARK: Search and order
 
     @Test func listsTheGroupsThatFreeTheMostSpaceFirst() async {

@@ -3,9 +3,10 @@
 ///
 /// A feature lists its actions in `FeatureModule.itemActions`. The app shell hands the actions
 /// of every feature to the views as the `featureItemActions` environment value, and a view
-/// that shows items offers the ones for their kind, for instance in a context menu. Choosing
-/// one opens the feature with the item, `openFeature(action.featureID, showing: itemURL)`,
-/// which reaches `FeatureModule.show(itemAt:)`.
+/// that shows items offers the ones for their kind whose feature takes the item, as
+/// `FeatureModule.canShow(itemAt:)` says, for instance in a context menu. Choosing one opens
+/// the feature with the item, `openFeature(action.featureID, showing: itemURL)`, which
+/// reaches `FeatureModule.show(itemAt:)`.
 ///
 /// A feature offers at most one action for each kind of item.
 public struct FeatureItemAction: Identifiable, Equatable, Sendable {

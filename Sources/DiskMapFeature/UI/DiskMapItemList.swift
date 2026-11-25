@@ -6,15 +6,14 @@ import SwiftUI
 /// It holds the same items as the rings, so it's also how VoiceOver reads the map.
 ///
 /// Each row has a context menu with what the map does with its item and what the other
-/// features of the app offer for it, which the list reads from the environment. See
-/// `DiskMapItemMenu`. The menu is put around the row and not inside it: a row is compared
-/// before it's drawn again, and what its menu offers isn't part of what a row shows.
+/// features of the app offer for it. See `DiskMapItemMenuItems`. The menu is put around the
+/// row and not inside it: a row is compared before it's drawn again, and what its menu offers
+/// isn't part of what a row shows.
 struct DiskMapItemList: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
 
     @Environment(\.openFeature) private var openFeature
-    @Environment(\.featureItemActions) private var featureItemActions
     @Environment(\.uninstallerFeatureID) private var uninstallerFeatureID
 
     var body: some View {
@@ -46,12 +45,6 @@ struct DiskMapItemList: View {
             let isSelected = viewModel.isSelected(node)
             let canOpen = viewModel.canOpen(node)
             let canShowInUninstaller = advice == .useUninstaller && uninstallerFeatureID != nil
-            let menu = DiskMapItemMenu(
-                advice: advice,
-                canOpen: canOpen,
-                isSelected: isSelected,
-                featureActions: featureItemActions
-            )
             DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
                 DiskMapItemRow(
                     node: node,
@@ -71,7 +64,9 @@ struct DiskMapItemList: View {
             }
             // Outside the reader, so a move of the highlight doesn't build the menu again.
             .contextMenu {
-                DiskMapItemMenuItems(menu: menu) { command in perform(command, on: node) }
+                DiskMapItemMenuItems(url: node.url, advice: advice, canOpen: canOpen, isSelected: isSelected) { command in
+                    perform(command, on: node)
+                }
             }
             .id(node.id)
             .onHover { inside in

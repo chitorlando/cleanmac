@@ -6,26 +6,30 @@ import Testing
 struct DuplicateScannerTests {
     private static let fileSize = 200_000
 
-    /// Scanner of `home` whose walker skips the folders at the `excluded` paths, relative to it.
+    /// Scanner of `home` whose scans skip the folders at the `excluded` paths, relative to it.
     private func scanner(
         for home: TemporaryFolder,
         excluding excluded: [String] = [],
-        minimumSize: Int64 = 100_000,
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()
     ) -> DuplicateScanner {
-        let excludedDirectories = excluded.map { home.root.appending(path: $0) }
-        return DuplicateScanner(
-            home: home.root,
-            walker: FileSystemWalker(excludedDirectories: excludedDirectories),
-            excludedDirectories: excludedDirectories,
-            cloneInfoReader: cloneInfoReader,
-            minimumSize: minimumSize
+        DuplicateScanner(
+            scopePolicy: ScanScopePolicy(
+                home: home.root,
+                excludedDirectories: excluded.map { home.root.appending(path: $0) }
+            ),
+            cloneInfoReader: cloneInfoReader
         )
     }
 
-    private func events(of scanner: DuplicateScanner, scanning scope: DuplicateScanScope) async -> [DuplicateScanEvent] {
+    /// - Parameter excludedFolders: Folders left out of this scan only.
+    private func events(
+        of scanner: DuplicateScanner,
+        scanning scope: ScanScope,
+        excluding excludedFolders: [URL] = [],
+        minimumSize: Int64 = 100_000
+    ) async -> [DuplicateScanEvent] {
         var events: [DuplicateScanEvent] = []
-        for await event in scanner.scan(scope) {
+        for await event in scanner.scan(scope, excluding: excludedFolders, minimumSize: minimumSize) {
             events.append(event)
         }
         return events
@@ -33,13 +37,13 @@ struct DuplicateScannerTests {
 
     private func scan(
         _ home: TemporaryFolder,
-        scope: DuplicateScanScope = .home,
+        scope: ScanScope = .home,
         excluding excluded: [String] = [],
         minimumSize: Int64 = 100_000,
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()
     ) async -> [DuplicateScanEvent] {
-        let scanner = scanner(for: home, excluding: excluded, minimumSize: minimumSize, cloneInfoReader: cloneInfoReader)
-        return await events(of: scanner, scanning: scope)
+        let scanner = scanner(for: home, excluding: excluded, cloneInfoReader: cloneInfoReader)
+        return await events(of: scanner, scanning: scope, minimumSize: minimumSize)
     }
 
     /// Paths of the copies in `groups`, relative to `home`, in order.
@@ -102,6 +106,22 @@ struct DuplicateScannerTests {
         try folder.write(content, to: "b.txt")
 
         #expect(groups(await scan(folder, minimumSize: DuplicateScanner.defaultMinimumSize)).isEmpty)
+    }
+
+    @Test func eachScanComparesTheFilesOfTheSmallestSizeItIsGiven() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        try folder.write(content, to: "a.bin")
+        try folder.write(content, to: "b.bin")
+        let scanner = scanner(for: folder)
+
+        // The scan counts the space a file takes on disk, a little more than its bytes, so the
+        // larger size is well above it.
+        let fromTheirSize = await events(of: scanner, scanning: .home, minimumSize: Int64(Self.fileSize))
+        let fromTwiceTheirSize = await events(of: scanner, scanning: .home, minimumSize: 2 * Int64(Self.fileSize))
+
+        #expect(groups(fromTheirSize).count == 1)
+        #expect(groups(fromTwiceTheirSize).isEmpty)
     }
 
     @Test func doesNotReportHardLinksAsCopies() async throws {
@@ -207,13 +227,12 @@ struct DuplicateScannerTests {
     func stopsWalkingWhenTheConsumerStopsListening() async {
         let walker = EndlessWalker()
         let scanner = DuplicateScanner(
-            home: URL(filePath: "/tmp"),
-            walker: walker,
-            excludedDirectories: [],
+            scopePolicy: ScanScopePolicy(home: URL(filePath: "/tmp")),
+            makeWalker: { _ in walker },
             progressInterval: 1
         )
 
-        for await _ in scanner.scan(.home) {
+        for await _ in scanner.scan(.home, excluding: [], minimumSize: DuplicateScanner.defaultMinimumSize) {
             break
         }
 
@@ -303,7 +322,7 @@ struct DuplicateScannerTests {
 
         for folder in unwalked {
             let events = await events(of: scanner, scanning: .folder(folder))
-            #expect(scanner.scope(limitedTo: folder) == nil, "\(folder.path)")
+            #expect(scanner.scope(limitedTo: folder, excluding: []) == nil, "\(folder.path)")
             #expect(events.isEmpty, "\(folder.path)")
         }
         #expect(groups(await events(of: scanner, scanning: .home)).isEmpty)
@@ -314,8 +333,8 @@ struct DuplicateScannerTests {
         let downloads = try home.makeFolder("Downloads")
         let scanner = scanner(for: home, excluding: ["Library"])
 
-        #expect(scanner.scope(limitedTo: downloads)?.folder?.path == downloads.path)
-        #expect(scanner.scope(limitedTo: home.root) == .home)
+        #expect(scanner.scope(limitedTo: downloads, excluding: [])?.folder?.path == downloads.path)
+        #expect(scanner.scope(limitedTo: home.root, excluding: []) == .home)
     }
 
     @Test func theHomeFolderChosenAsAFolderIsScannedWhole() async throws {
@@ -327,5 +346,42 @@ struct DuplicateScannerTests {
         let found = groups(await scan(home, scope: .folder(home.root)))
 
         #expect(copies(in: found, of: home) == ["Documents/report.pdf", "Downloads/report.pdf"])
+    }
+
+    // MARK: Folders left out of one scan
+
+    @Test func skipsTheFoldersAScanLeavesOut() async throws {
+        let home = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        try home.write(content, to: "Documents/report.pdf")
+        try home.write(content, to: "Downloads/report.pdf")
+        try home.write(content, to: "Backups/Old/report.pdf")
+        let scanner = scanner(for: home, excluding: ["Library"])
+        let backups = home.root.appending(path: "Backups")
+
+        let withoutBackups = groups(await events(of: scanner, scanning: .home, excluding: [backups]))
+        let everything = groups(await events(of: scanner, scanning: .home))
+
+        #expect(copies(in: withoutBackups, of: home) == ["Documents/report.pdf", "Downloads/report.pdf"])
+        #expect(copies(in: everything, of: home) == [
+            "Backups/Old/report.pdf",
+            "Documents/report.pdf",
+            "Downloads/report.pdf"
+        ])
+    }
+
+    @Test func cannotScanOnItsOwnAFolderTheScanLeavesOut() async throws {
+        let home = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        try home.write(content, to: "Backups/Old/a.bin")
+        try home.write(content, to: "Backups/Old/b.bin")
+        let backups = home.root.appending(path: "Backups")
+        let old = home.root.appending(path: "Backups/Old")
+        let scanner = scanner(for: home)
+
+        #expect(scanner.scope(limitedTo: backups, excluding: [backups]) == nil)
+        #expect(scanner.scope(limitedTo: old, excluding: [backups]) == nil)
+        #expect(scanner.scope(limitedTo: old, excluding: [])?.folder?.path == old.path)
+        #expect(await events(of: scanner, scanning: .folder(old), excluding: [backups]).isEmpty)
     }
 }

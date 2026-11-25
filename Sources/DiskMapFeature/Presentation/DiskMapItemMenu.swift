@@ -17,8 +17,14 @@ struct DiskMapItemMenu: Equatable, Sendable {
     ///   - advice: What the map lets the user do with the item.
     ///   - canOpen: Whether the item is a folder the map can open.
     ///   - isSelected: Whether the item is marked to be moved to the Trash.
-    ///   - featureActions: What the features of the app offer for items of every kind.
-    init(advice: RemovalAdvice, canOpen: Bool, isSelected: Bool, featureActions: [FeatureItemAction]) {
+    ///   - featureActions: What the features of the app offer for the item, given the kind of
+    ///     item they get it as. It isn't asked for an item the map hands to no feature.
+    init(
+        advice: RemovalAdvice,
+        canOpen: Bool,
+        isSelected: Bool,
+        featureActions: (FeatureItemKind) -> [FeatureItemAction]
+    ) {
         var own: [DiskMapItemCommand] = []
         if canOpen {
             own.append(.open)
@@ -26,11 +32,10 @@ struct DiskMapItemMenu: Equatable, Sendable {
         if advice.allowsMovingToTrash {
             own.append(isSelected ? .deselect : .select)
         }
-        let itemKind = Self.itemKind(advice: advice, canOpen: canOpen)
-        let offered = featureActions
-            .filter { $0.itemKind == itemKind }
-            .map(DiskMapItemCommand.feature)
-        sections = [own, offered, [.showInFinder, .copyPath]].filter { !$0.isEmpty }
+        let offered = Self.itemKind(advice: advice, canOpen: canOpen)
+            .map { featureActions($0) } ?? []
+        sections = [own, offered.map(DiskMapItemCommand.feature), [.showInFinder, .copyPath]]
+            .filter { !$0.isEmpty }
     }
 
     /// The kind of item the other features get, or `nil` for an item the map hands to none.

@@ -25,9 +25,9 @@ enum AppComposition {
             SystemJunkModule.live(),
             PrivacyModule.live(),
             uninstaller,
-            LargeFilesModule.live(),
+            LargeFilesModule.live(preferences: preferences),
             diskMap,
-            DuplicatesModule.live(),
+            DuplicatesModule.live(preferences: preferences),
             MaintenanceModule.live(),
             LoginItemsModule.live(),
             MonitorModule.live(preferences: preferences, diskMapFeatureID: diskMap.id)
@@ -35,11 +35,16 @@ enum AppComposition {
     }
 
     /// Everything in the Settings window: the settings of the app itself, then what each
-    /// feature adds, in the order of the features.
+    /// feature adds, in the order of the features, and last the settings features share,
+    /// shown once.
     static func makeSettings(modules: [any FeatureModule], preferences: Preferences) -> SettingsSections {
         let language = SettingsItem(id: AppSettings.language.key, section: .general) {
             LanguagePicker(preferences: preferences)
         }
-        return SettingsSections(items: [language] + modules.flatMap { $0.settings })
+        // Followed by the large files and the duplicates features, neither of which owns it.
+        let excludedFolders = SettingsItem(id: ScanSettings.excludedFolders.key, section: .analysis) {
+            ExcludedFolderList(preferences: preferences)
+        }
+        return SettingsSections(items: [language] + modules.flatMap { $0.settings } + [excludedFolders])
     }
 }

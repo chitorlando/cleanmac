@@ -29,7 +29,7 @@ struct RootView: View {
         } detail: {
             detail
                 .environment(\.openFeature, navigator.openFeatureAction)
-                .environment(\.featureItemActions, navigator.itemActions)
+                .environment(\.featureItemActions, navigator.featureItemActions)
         }
     }
 

@@ -54,6 +54,43 @@ struct PreferencesTests {
         #expect(preferences.value(of: limit) == 1_234)
     }
 
+    @Test func keepsSizesInBytes() {
+        let size = Setting<Int64>(key: "size", defaultValue: 50_000_000, allowedValues: [50_000_000, 5_000_000_000])
+        let storage = InMemoryPreferenceStorage()
+
+        Preferences(storage: storage).set(5_000_000_000, for: size)
+
+        #expect(Preferences(storage: storage).value(of: size) == 5_000_000_000)
+        #expect(storage.value(forKey: "size") as? Int64 == 5_000_000_000)
+    }
+
+    @Test func keepsListsOfStrings() {
+        let folders = Setting<[String]>(key: "folders", defaultValue: [])
+        let storage = InMemoryPreferenceStorage()
+
+        Preferences(storage: storage).set(["/Users/test/Movies", "/Users/test/Music"], for: folders)
+
+        #expect(Preferences(storage: storage).value(of: folders) == ["/Users/test/Movies", "/Users/test/Music"])
+        #expect(storage.value(forKey: "folders") as? [String] == ["/Users/test/Movies", "/Users/test/Music"])
+    }
+
+    @Test func anEmptyListIsKeptByKeepingNothing() {
+        let folders = Setting<[String]>(key: "folders", defaultValue: [])
+        let storage = InMemoryPreferenceStorage(["folders": ["/Users/test/Movies"]])
+
+        Preferences(storage: storage).set([], for: folders)
+
+        #expect(Preferences(storage: storage).value(of: folders).isEmpty)
+        #expect(storage.value(forKey: "folders") == nil)
+    }
+
+    @Test func aListWithSomethingOtherThanStringsHasTheDefault() {
+        let folders = Setting<[String]>(key: "folders", defaultValue: [])
+        let preferences = Preferences(storage: InMemoryPreferenceStorage(["folders": ["/Users/test/Movies", 3] as [Any]]))
+
+        #expect(preferences.value(of: folders).isEmpty)
+    }
+
     @Test func ignoresAValueTheSettingDoesNotTake() {
         let storage = InMemoryPreferenceStorage(["interval": 5])
         let preferences = Preferences(storage: storage)

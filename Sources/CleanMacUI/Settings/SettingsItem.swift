@@ -4,7 +4,7 @@ import SwiftUI
 /// and the section they go under.
 ///
 /// A feature defines its settings and builds the controls that change them, usually with
-/// `SettingPicker`, and lists them in `FeatureModule.settings`. The app shell puts the items
+/// `SettingPicker` or `SettingFolderList`, and lists them in `FeatureModule.settings`. The app shell puts the items
 /// of every feature under their sections, without knowing what each one holds.
 public struct SettingsItem: Identifiable {
     /// Unique among the items of the window, such as the key of the setting.
