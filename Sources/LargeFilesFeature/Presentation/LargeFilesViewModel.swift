@@ -149,6 +149,12 @@ public final class LargeFilesViewModel: ObservableObject {
         }
     }
 
+    /// Whether `scanFolder(at:)` would look in the folder at `url`, now or once the report is
+    /// left, rather than ignore it.
+    public func canScanFolder(at url: URL) -> Bool {
+        scanner.scope(limitedTo: url) != nil
+    }
+
     /// Stops the scan and reviews the files found so far.
     ///
     /// Walking the home folder can take minutes, so the partial results are kept.

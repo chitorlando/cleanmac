@@ -43,6 +43,11 @@ public final class LargeFilesModule: FeatureModule {
     public func show(itemAt url: URL) {
         viewModel.scanFolder(at: url)
     }
+
+    /// Takes only the folders that `show(itemAt:)` doesn't ignore.
+    public func canShow(itemAt url: URL) -> Bool {
+        viewModel.canScanFolder(at: url)
+    }
 }
 
 public extension LargeFilesModule {

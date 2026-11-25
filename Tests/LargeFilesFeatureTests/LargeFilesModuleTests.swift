@@ -46,4 +46,25 @@ struct LargeFilesModuleTests {
         #expect(viewModel.phase == .intro)
         #expect(scanner.scannedScopes.isEmpty)
     }
+
+    /// Other features offer its action only for the folders it would look in.
+    @Test func takesOnlyTheFoldersTheScanOfTheHomeEnters() throws {
+        let home = try TemporaryFolder()
+        try home.makeFile("Movies/trip.mov")
+        try home.makeFile("Library/Caches/cache.bin")
+        let excludedDirectories = [home.root.appending(path: "Library")]
+        let scanner = LargeFileScanner(
+            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: excludedDirectories),
+            walker: FileSystemWalker(excludedDirectories: excludedDirectories)
+        )
+        let module = LargeFilesModule(viewModel: LargeFilesViewModel(
+            scanner: scanner,
+            cleanupService: CleanupService(remover: RecordingRemover())
+        ))
+
+        #expect(module.canShow(itemAt: home.root.appending(path: "Movies")))
+        #expect(module.canShow(itemAt: home.root))
+        #expect(!module.canShow(itemAt: home.root.appending(path: "Library/Caches")))
+        #expect(!module.canShow(itemAt: home.root.appending(path: "Library")))
+    }
 }
