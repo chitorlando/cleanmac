@@ -118,11 +118,8 @@ struct DuplicatesModuleTests {
         let home = try TemporaryFolder()
         let documents = try home.makeFolder("Documents")
         let caches = try home.makeFolder("Library/Caches")
-        let excludedDirectories = [home.root.appending(path: "Library")]
         let scanner = DuplicateScanner(
-            home: home.root,
-            walker: FileSystemWalker(excludedDirectories: excludedDirectories),
-            excludedDirectories: excludedDirectories
+            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: [home.root.appending(path: "Library")])
         )
         let module = DuplicatesModule(
             viewModel: DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover())),
