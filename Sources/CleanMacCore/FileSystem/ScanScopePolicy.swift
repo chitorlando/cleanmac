@@ -114,3 +114,14 @@ public struct ScanScopePolicy: Sendable {
         names.reduce(home) { $0.appending(component: $1, directoryHint: .isDirectory) }
     }
 }
+
+public extension ScanScopePolicy {
+    /// Policy of the scans of the current user's home folder, which always leave out
+    /// `~/Library`: other features take care of it.
+    static var currentUserHome: ScanScopePolicy {
+        ScanScopePolicy(
+            home: FileManager.default.homeDirectoryForCurrentUser,
+            excludedDirectories: [FileSystemWalker.userLibrary]
+        )
+    }
+}
