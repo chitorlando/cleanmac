@@ -27,7 +27,7 @@ enum AppComposition {
             uninstaller,
             LargeFilesModule.live(preferences: preferences),
             diskMap,
-            DuplicatesModule.live(),
+            DuplicatesModule.live(preferences: preferences),
             MaintenanceModule.live(),
             LoginItemsModule.live(),
             MonitorModule.live(preferences: preferences, diskMapFeatureID: diskMap.id)

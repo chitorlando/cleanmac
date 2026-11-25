@@ -9,15 +9,28 @@ struct DuplicatesModuleTests {
     private let downloads = URL(filePath: "/Users/test/Downloads")
 
     /// A module with its view model and its scanner, which refuses the folders given.
+    ///
+    /// - Parameter preferences: What the user chose, nothing unless told otherwise.
     private func makeModule(
-        refusing refusedFolders: Set<URL> = []
+        refusing refusedFolders: Set<URL> = [],
+        preferences: Preferences? = nil
     ) -> (DuplicatesModule, DuplicatesViewModel, StubDuplicateScanner) {
         let scanner = StubDuplicateScanner(events: [], refusedFolders: refusedFolders)
         let viewModel = DuplicatesViewModel(
             scanner: scanner,
             cleanupService: CleanupService(remover: RecordingRemover())
         )
-        return (DuplicatesModule(viewModel: viewModel), viewModel, scanner)
+        let preferences = preferences ?? Preferences(storage: InMemoryPreferenceStorage())
+        return (DuplicatesModule(viewModel: viewModel, preferences: preferences), viewModel, scanner)
+    }
+
+    /// The smallest size of each scan of a module whose preferences keep `storage`.
+    private func scannedMinimumSizes(keeping storage: InMemoryPreferenceStorage) async -> [Int64] {
+        let (_, viewModel, scanner) = makeModule(preferences: Preferences(storage: storage))
+
+        await viewModel.startScan().value
+
+        return scanner.scannedMinimumSizes
     }
 
     @Test func offersToFindDuplicatesInAFolder() throws {
@@ -52,5 +65,51 @@ struct DuplicatesModuleTests {
         #expect(viewModel.phase == .intro)
         #expect(viewModel.scope == .home)
         #expect(scanner.scannedScopes.isEmpty)
+    }
+
+    // MARK: Smallest size
+
+    @Test func offersSizesFrom100KBTo100MBWith1MBAsTheDefault() {
+        let setting = DuplicatesSettings.minimumSize
+
+        #expect(setting.defaultValue == 1_000_000)
+        #expect(setting.allowedValues == [100_000, 1_000_000, 10_000_000, 100_000_000])
+    }
+
+    @Test func comparesFilesOf1MBUntilTheUserChooses() async {
+        #expect(await scannedMinimumSizes(keeping: InMemoryPreferenceStorage()) == [1_000_000])
+    }
+
+    @Test func comparesFilesOfTheSizeTheUserChose() async {
+        let storage = InMemoryPreferenceStorage(["duplicates.minimumSize": Int64(100_000)])
+
+        #expect(await scannedMinimumSizes(keeping: storage) == [100_000])
+    }
+
+    @Test func ignoresASizeItDoesNotOffer() async {
+        let storage = InMemoryPreferenceStorage(["duplicates.minimumSize": Int64(1)])
+
+        #expect(await scannedMinimumSizes(keeping: storage) == [1_000_000])
+    }
+
+    @Test func theNextScanComparesTheSizeTheUserChooses() async {
+        let preferences = Preferences(storage: InMemoryPreferenceStorage())
+        let (module, viewModel, scanner) = makeModule(preferences: preferences)
+
+        // The view model follows the preferences for as long as its module lives.
+        withExtendedLifetime(module) {
+            preferences.set(10_000_000, for: DuplicatesSettings.minimumSize)
+        }
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedMinimumSizes == [10_000_000])
+        #expect(viewModel.minimumSize == 10_000_000)
+    }
+
+    @Test func addsItsSizeToTheAnalysisSettings() {
+        let (module, _, _) = makeModule()
+
+        #expect(module.settings.map(\.id) == ["duplicates.minimumSize"])
+        #expect(module.settings.map(\.section) == [.analysis])
     }
 }

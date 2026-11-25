@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -13,13 +14,29 @@ public final class DuplicatesModule: FeatureModule {
     public let section = FeatureSection.files
 
     private let viewModel: DuplicatesViewModel
+    private let preferences: Preferences
+    private var minimumSizeChanges: AnyCancellable?
 
-    public init(viewModel: DuplicatesViewModel) {
+    /// - Parameter preferences: Where the user chooses the smallest size of the files to
+    ///   compare, which each new scan of `viewModel` compares from now on.
+    public init(viewModel: DuplicatesViewModel, preferences: Preferences) {
         self.viewModel = viewModel
+        self.preferences = preferences
+        viewModel.minimumSizeForNextScan = preferences.value(of: DuplicatesSettings.minimumSize)
+        minimumSizeChanges = preferences.changes(of: DuplicatesSettings.minimumSize)
+            .sink { [viewModel] size in viewModel.minimumSizeForNextScan = size }
     }
 
     public func makeView() -> AnyView {
         AnyView(DuplicatesView(viewModel: viewModel, theme: theme))
+    }
+
+    public var settings: [SettingsItem] {
+        [
+            SettingsItem(id: DuplicatesSettings.minimumSize.key, section: .analysis) { [preferences] in
+                MinimumSizePicker(preferences: preferences)
+            }
+        ]
     }
 
     /// Offers to look for duplicates only in a folder that another feature shows.
@@ -47,7 +64,9 @@ public final class DuplicatesModule: FeatureModule {
 
 public extension DuplicatesModule {
     /// Module that walks the current user's home folder and moves copies to the Trash.
-    static func live() -> DuplicatesModule {
+    ///
+    /// - Parameter preferences: See `init(viewModel:preferences:)`.
+    static func live(preferences: Preferences) -> DuplicatesModule {
         let excludedDirectories = [FileSystemWalker.userLibrary]
         let scanner = DuplicateScanner(
             home: FileManager.default.homeDirectoryForCurrentUser,
@@ -58,6 +77,6 @@ public extension DuplicatesModule {
             scanner: scanner,
             cleanupService: CleanupService(remover: TrashItemRemover())
         )
-        return DuplicatesModule(viewModel: viewModel)
+        return DuplicatesModule(viewModel: viewModel, preferences: preferences)
     }
 }

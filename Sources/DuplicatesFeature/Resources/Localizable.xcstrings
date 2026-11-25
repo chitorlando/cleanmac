@@ -234,6 +234,17 @@
         }
       }
     },
+    "Minimum size of duplicates" : {
+      "comment" : "Setting of the duplicates scan: the smallest size of the files it compares. A size follows, such as “1 MB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño mínimo de los duplicados"
+          }
+        }
+      }
+    },
     "Move to Trash" : {
       "comment" : "Disabled button to remove copies, shown while nothing is selected.",
       "localizations" : {
@@ -450,6 +461,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copia sugerida para conservar: «Marcar duplicados» no la marca."
+          }
+        }
+      }
+    },
+    "Takes effect the next time you scan." : {
+      "comment" : "Note under the setting of the smallest size of the duplicates.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica la próxima vez que escanees."
           }
         }
       }
