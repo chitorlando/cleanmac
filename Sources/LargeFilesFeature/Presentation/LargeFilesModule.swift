@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -13,13 +14,29 @@ public final class LargeFilesModule: FeatureModule {
     public let section = FeatureSection.files
 
     private let viewModel: LargeFilesViewModel
+    private let preferences: Preferences
+    private var minimumSizeChanges: AnyCancellable?
 
-    public init(viewModel: LargeFilesViewModel) {
+    /// - Parameter preferences: Where the user chooses the smallest size of the files to find,
+    ///   which each new scan of `viewModel` looks for from now on.
+    public init(viewModel: LargeFilesViewModel, preferences: Preferences) {
         self.viewModel = viewModel
+        self.preferences = preferences
+        viewModel.minimumSizeForNextScan = preferences.value(of: LargeFilesSettings.minimumSize)
+        minimumSizeChanges = preferences.changes(of: LargeFilesSettings.minimumSize)
+            .sink { [viewModel] size in viewModel.minimumSizeForNextScan = size }
     }
 
     public func makeView() -> AnyView {
         AnyView(LargeFilesView(viewModel: viewModel, theme: theme))
+    }
+
+    public var settings: [SettingsItem] {
+        [
+            SettingsItem(id: LargeFilesSettings.minimumSize.key, section: .analysis) { [preferences] in
+                MinimumSizePicker(preferences: preferences)
+            }
+        ]
     }
 
     /// Looks for large files in a folder that another feature shows, such as one of the disk map.
@@ -50,7 +67,9 @@ public extension LargeFilesModule {
     ///
     /// `~/Library` is left out, as other features take care of it. The walker and the scope
     /// policy get the same excluded folders, so a scan limited to one folder can't start inside them.
-    static func live() -> LargeFilesModule {
+    ///
+    /// - Parameter preferences: See `init(viewModel:preferences:)`.
+    static func live(preferences: Preferences) -> LargeFilesModule {
         let excludedDirectories = [FileSystemWalker.userLibrary]
         let scanner = LargeFileScanner(
             scopePolicy: ScanScopePolicy(
@@ -63,6 +82,6 @@ public extension LargeFilesModule {
             scanner: scanner,
             cleanupService: CleanupService(remover: TrashItemRemover())
         )
-        return LargeFilesModule(viewModel: viewModel)
+        return LargeFilesModule(viewModel: viewModel, preferences: preferences)
     }
 }

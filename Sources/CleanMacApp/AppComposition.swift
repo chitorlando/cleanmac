@@ -25,7 +25,7 @@ enum AppComposition {
             SystemJunkModule.live(),
             PrivacyModule.live(),
             uninstaller,
-            LargeFilesModule.live(),
+            LargeFilesModule.live(preferences: preferences),
             diskMap,
             DuplicatesModule.live(),
             MaintenanceModule.live(),
