@@ -7,6 +7,7 @@ public protocol DuplicateScanning: Sendable {
     /// folder itself gives `.home`.
     func scope(limitedTo url: URL) -> DuplicateScanScope?
 
-    /// Starts scanning `scope`. Ending the iteration of the stream cancels the scan.
-    func scan(_ scope: DuplicateScanScope) -> AsyncStream<DuplicateScanEvent>
+    /// Starts scanning `scope` for identical files of `minimumSize` bytes or more. Ending the
+    /// iteration of the stream cancels the scan.
+    func scan(_ scope: DuplicateScanScope, minimumSize: Int64) -> AsyncStream<DuplicateScanEvent>
 }

@@ -45,6 +45,7 @@ struct DuplicatesView: View {
         case .review where viewModel.groups.isEmpty:
             DuplicatesNoneFoundView(
                 wasStoppedEarly: viewModel.wasStoppedEarly,
+                minimumSize: viewModel.minimumSize,
                 folder: viewModel.scope.folder,
                 theme: theme
             ) {

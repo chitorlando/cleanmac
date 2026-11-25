@@ -12,7 +12,8 @@ import Foundation
 /// same size, same first 64 KB, and finally the same SHA-256 of the whole file.
 /// The copies of each group found are then checked for APFS clones, which share their data.
 public struct DuplicateScanner: DuplicateScanning {
-    /// Smaller files take long to compare and free little space.
+    /// Smallest size of the files compared until the user chooses another. Smaller files take
+    /// long to compare and free little space.
     public static let defaultMinimumSize: Int64 = 1_000_000
     public static let defaultProgressInterval = 500
 
@@ -22,7 +23,6 @@ public struct DuplicateScanner: DuplicateScanning {
     private let metadataReader: any FileMetadataReading
     private let cloneInfoReader: any CloneInfoReading
     private let matcher: ContentMatcher
-    private let minimumSize: Int64
     private let progressInterval: Int
 
     /// - Parameter excludedDirectories: Folders the walker skips with everything inside. They
@@ -34,7 +34,6 @@ public struct DuplicateScanner: DuplicateScanning {
         hasher: any FileHashing = SHA256FileHasher(),
         metadataReader: any FileMetadataReading = LocalFileMetadataReader(),
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader(),
-        minimumSize: Int64 = defaultMinimumSize,
         progressInterval: Int = defaultProgressInterval
     ) {
         self.home = home
@@ -43,7 +42,6 @@ public struct DuplicateScanner: DuplicateScanning {
         self.metadataReader = metadataReader
         self.cloneInfoReader = cloneInfoReader
         self.matcher = ContentMatcher(hasher: hasher)
-        self.minimumSize = minimumSize
         self.progressInterval = max(1, progressInterval)
     }
 
@@ -51,15 +49,16 @@ public struct DuplicateScanner: DuplicateScanning {
         scopePolicy.scope(limitedTo: url)
     }
 
-    /// Starts scanning `scope`. Ending the iteration of the stream cancels the scan.
+    /// Starts scanning `scope` for identical files of `minimumSize` bytes or more. Ending the
+    /// iteration of the stream cancels the scan.
     ///
     /// A folder that can't be scanned on its own, or no longer can, reports nothing.
-    public func scan(_ scope: DuplicateScanScope) -> AsyncStream<DuplicateScanEvent> {
+    public func scan(_ scope: DuplicateScanScope, minimumSize: Int64) -> AsyncStream<DuplicateScanEvent> {
         let scanner = self
         return AsyncStream { continuation in
             let task = Task.detached(priority: .utility) {
                 if let root = scanner.root(of: scope) {
-                    scanner.run(in: root, reportingTo: continuation)
+                    scanner.run(in: root, minimumSize: minimumSize, reportingTo: continuation)
                 }
                 continuation.finish()
             }
@@ -78,9 +77,18 @@ public struct DuplicateScanner: DuplicateScanning {
         }
     }
 
-    private func run(in root: URL, reportingTo continuation: AsyncStream<DuplicateScanEvent>.Continuation) {
+    private func run(
+        in root: URL,
+        minimumSize: Int64,
+        reportingTo continuation: AsyncStream<DuplicateScanEvent>.Continuation
+    ) {
         var progress = DuplicateScanProgress()
-        let records = collectLargeEnoughFiles(in: root, progress: &progress, continuation: continuation)
+        let records = collectLargeEnoughFiles(
+            in: root,
+            minimumSize: minimumSize,
+            progress: &progress,
+            continuation: continuation
+        )
         continuation.yield(.progress(progress))
 
         for sizeGroup in SizeGrouping.candidateGroups(records) {
@@ -97,6 +105,7 @@ public struct DuplicateScanner: DuplicateScanning {
 
     private func collectLargeEnoughFiles(
         in root: URL,
+        minimumSize: Int64,
         progress: inout DuplicateScanProgress,
         continuation: AsyncStream<DuplicateScanEvent>.Continuation
     ) -> [FileRecord] {
