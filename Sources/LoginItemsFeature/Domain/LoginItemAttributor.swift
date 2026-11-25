@@ -27,7 +27,7 @@ public struct LoginItemAttributor: Sendable {
     /// "com.example.app.agent". The most specific identifier wins.
     public func owner(of job: LaunchJobDefinition) -> LoginItemOwner? {
         let appURL = job.programURL.flatMap(enclosingApp(of:)) ?? installedApp(matching: job.label)
-        return appURL.map { LoginItemOwner(appURL: $0, name: $0.deletingPathExtension().lastPathComponent) }
+        return appURL.map { LoginItemOwner(appURL: $0) }
     }
 
     /// Whether the program the job runs, or the script or app it hands to a known interpreter

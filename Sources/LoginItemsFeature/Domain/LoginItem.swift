@@ -22,6 +22,11 @@ public struct LoginItem: Identifiable, Hashable, Sendable {
     /// Only the user's own agents can be removed without an administrator.
     public var isRemovable: Bool { scope == .currentUser }
 
+    /// Whether it belongs to the app at `appURL`, as its owner says.
+    public func belongs(toAppAt appURL: URL) -> Bool {
+        owner?.isApp(at: appURL) ?? false
+    }
+
     public init(
         item: CleanableItem,
         job: LaunchJobDefinition,
