@@ -13,6 +13,11 @@ public final class LargeFilesViewModel: ObservableObject {
     /// Where the scan looks: the whole home folder, until another feature sends a folder to
     /// look in (see `scanFolder(at:)`). The files on screen are the ones found there.
     @Published public private(set) var scope = LargeFileScanScope.home
+    /// Smallest size a file must have to be found, as the scan of the files on screen looked for it.
+    @Published public private(set) var minimumSize = LargeFileCriteria.defaultMinimumSize
+    /// Smallest size a file must have to be found by the next scan. A new value leaves the
+    /// scan in progress and the files on screen as they are.
+    public var minimumSizeForNextScan = LargeFileCriteria.defaultMinimumSize
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of files slow down as it went. Every change goes through
     /// `updateFiles(_:)`, which announces it and then edits the array in place.
@@ -74,9 +79,6 @@ public final class LargeFilesViewModel: ObservableObject {
 
     // MARK: Derived state
 
-    /// Smallest size a file must have to be found, as the scanner looks for it.
-    public var minimumSize: Int64 { scanner.criteria.minimumSize }
-
     public var foundCount: Int { files.count }
 
     public var foundSize: Int64 {
@@ -94,7 +96,7 @@ public final class LargeFilesViewModel: ObservableObject {
         filter.kindOptions(for: files)
     }
 
-    /// Size ranges shown in the filter column, from the smallest size the scanner looks for.
+    /// Size ranges shown in the filter column, from the smallest size the scan looked for.
     public var sizeBuckets: [SizeBucket] {
         SizeBucket.buckets(forMinimumSize: minimumSize)
     }
@@ -282,6 +284,10 @@ public final class LargeFilesViewModel: ObservableObject {
     /// The scope and the filter only change, and are only announced, when the scan looks
     /// somewhere else: the filter was chosen over the files of another place, and it could
     /// hide every file found in this one. Scanning the same place again keeps it.
+    ///
+    /// The scan looks for files of `minimumSizeForNextScan` or more. Like the scope, the size
+    /// only changes, and is only announced, when it's another one. The size range of the
+    /// filter is then left out if the scan can't find files in it.
     private func startScan(in newScope: LargeFileScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingScope = nil
@@ -289,18 +295,25 @@ public final class LargeFilesViewModel: ObservableObject {
             scope = newScope
             filter = LargeFileFilter()
         }
+        if minimumSizeForNextScan != minimumSize {
+            minimumSize = minimumSizeForNextScan
+            if let sizeBucket = filter.sizeBucket, !sizeBuckets.contains(sizeBucket) {
+                filter.sizeBucket = nil
+            }
+        }
         updateFiles { $0 = [] }
         selection = ItemSelection()
         scannedFileCount = 0
         wasStoppedEarly = false
         phase = .scanning
-        let task = Task { await scan(newScope) }
+        let criteria = LargeFileCriteria(minimumSize: minimumSize)
+        let task = Task { await scan(newScope, criteria: criteria) }
         activeTask = task
         return task
     }
 
-    private func scan(_ scope: LargeFileScanScope) async {
-        for await event in scanner.scan(scope) {
+    private func scan(_ scope: LargeFileScanScope, criteria: LargeFileCriteria) async {
+        for await event in scanner.scan(scope, criteria: criteria) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let scannedFiles):

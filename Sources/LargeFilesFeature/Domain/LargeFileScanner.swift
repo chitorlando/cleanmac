@@ -8,7 +8,6 @@ import Foundation
 public struct LargeFileScanner: LargeFileScanning {
     public static let defaultProgressInterval = 500
 
-    public let criteria: LargeFileCriteria
     private let scopePolicy: ScanScopePolicy
     private let walker: any FileWalking
     private let progressInterval: Int
@@ -18,12 +17,10 @@ public struct LargeFileScanner: LargeFileScanning {
     ///     Give it the folders that `walker` excludes.
     public init(
         scopePolicy: ScanScopePolicy,
-        criteria: LargeFileCriteria = LargeFileCriteria(),
         walker: any FileWalking,
         progressInterval: Int = defaultProgressInterval
     ) {
         self.scopePolicy = scopePolicy
-        self.criteria = criteria
         self.walker = walker
         self.progressInterval = max(1, progressInterval)
     }
@@ -36,9 +33,8 @@ public struct LargeFileScanner: LargeFileScanning {
     ///
     /// The policy checks the scope again here, when the walk begins: a folder that can no
     /// longer be scanned, because it's gone or is now a link to somewhere else, reports no files.
-    public func scan(_ scope: LargeFileScanScope) -> AsyncStream<LargeFileScanEvent> {
+    public func scan(_ scope: LargeFileScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> {
         let scopePolicy = scopePolicy
-        let criteria = criteria
         let walker = walker
         let interval = progressInterval
         return AsyncStream { continuation in
