@@ -70,4 +70,14 @@ struct UserDefaultsPreferenceStorageTests {
         #expect(Preferences(storage: suite.storage).value(of: size) == 5_000_000_000)
         #expect(suite.defaults.object(forKey: "size") as? Int64 == 5_000_000_000)
     }
+
+    @Test func servesListsOfStrings() throws {
+        let suite = try TemporaryDefaultsSuite()
+        let folders = Setting<[String]>(key: "folders", defaultValue: [])
+
+        Preferences(storage: suite.storage).set(["/Users/test/Movies", "/Users/test/Music"], for: folders)
+
+        #expect(Preferences(storage: suite.storage).value(of: folders) == ["/Users/test/Movies", "/Users/test/Music"])
+        #expect(suite.defaults.stringArray(forKey: "folders") == ["/Users/test/Movies", "/Users/test/Music"])
+    }
 }

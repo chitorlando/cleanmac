@@ -14,9 +14,13 @@ final class ManualLargeFileScanner: LargeFileScanning {
         self.continuation = continuation
     }
 
-    func scope(limitedTo url: URL) -> ScanScope? { .folder(url) }
+    func scope(limitedTo url: URL, excluding excludedFolders: [URL]) -> ScanScope? { .folder(url) }
 
-    func scan(_ scope: ScanScope, criteria: LargeFileCriteria) -> AsyncStream<LargeFileScanEvent> { stream }
+    func scan(
+        _ scope: ScanScope,
+        excluding excludedFolders: [URL],
+        criteria: LargeFileCriteria
+    ) -> AsyncStream<LargeFileScanEvent> { stream }
 
     func send(_ event: LargeFileScanEvent) {
         continuation.yield(event)

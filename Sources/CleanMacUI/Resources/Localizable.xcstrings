@@ -94,6 +94,28 @@
         }
       }
     },
+    "Add" : {
+      "comment" : "Button of the folder chooser opened from a setting with a list of folders. It adds the chosen folders to the list.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir"
+          }
+        }
+      }
+    },
+    "Add Folder…" : {
+      "comment" : "Button of a setting with a list of folders. It opens the folder chooser to add more.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir carpeta…"
+          }
+        }
+      }
+    },
     "Analysis" : {
       "comment" : "Section of the Settings window with settings of the features that analyze files.",
       "localizations" : {
@@ -321,6 +343,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progreso"
+          }
+        }
+      }
+    },
+    "Remove from the List" : {
+      "comment" : "Tooltip and accessibility label of the button that takes a folder out of a list of folders in the Settings window.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar de la lista"
           }
         }
       }

@@ -17,6 +17,11 @@ public final class DuplicatesViewModel: ObservableObject {
     /// Smallest size of the files the next scan compares. A new value leaves the scan in
     /// progress and the groups on screen as they are.
     public var minimumSizeForNextScan = DuplicateScanner.defaultMinimumSize
+    /// Folders the next scan leaves out with everything inside, besides the ones the scanner
+    /// always leaves out. A folder sent from now on can't be one of them or inside one (see
+    /// `scanFolder(at:)`). A new list leaves the scan in progress and the groups on screen as
+    /// they are.
+    public var excludedFoldersForNextScan: [URL] = []
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of groups slow down as it went. Every change goes through
     /// `updateGroups(_:)`, which announces it and then edits the array in place.
@@ -113,13 +118,14 @@ public final class DuplicatesViewModel: ObservableObject {
     /// is scanned when the user leaves the report, and the last folder asked for wins.
     ///
     /// The request is ignored, and nothing changes, when the scanner can't scan the folder on
-    /// its own: there is no folder at `url`, or the scan of the home folder leaves it out.
-    /// The home folder itself gets a scan of the whole home folder.
+    /// its own: there is no folder at `url`, or the scan of the home folder leaves it out, as
+    /// it does with `excludedFoldersForNextScan`. The home folder itself gets a scan of the
+    /// whole home folder.
     ///
     /// - Returns: The scan, or `nil` when the request was ignored or waits for the report.
     @discardableResult
     public func scanFolder(at url: URL) -> Task<Void, Never>? {
-        guard let folderScope = scanner.scope(limitedTo: url) else { return nil }
+        guard let folderScope = scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) else { return nil }
         switch phase {
         case .intro, .scanning, .review:
             return startScan(folderScope)
@@ -132,7 +138,7 @@ public final class DuplicatesViewModel: ObservableObject {
     /// Whether `scanFolder(at:)` would scan the folder at `url`, now or once the report is
     /// left, rather than ignore it.
     public func canScanFolder(at url: URL) -> Bool {
-        scanner.scope(limitedTo: url) != nil
+        scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) != nil
     }
 
     /// Stops the scan and reviews the groups confirmed so far, which are complete and safe to use.
@@ -168,7 +174,8 @@ public final class DuplicatesViewModel: ObservableObject {
     @discardableResult
     public func done() -> Task<Void, Never>? {
         guard case .finished = phase else { return nil }
-        if let folder = pendingFolder, let folderScope = scanner.scope(limitedTo: folder) {
+        if let folder = pendingFolder,
+           let folderScope = scanner.scope(limitedTo: folder, excluding: excludedFoldersForNextScan) {
             return startScan(folderScope)
         }
         pendingFolder = nil
@@ -256,7 +263,9 @@ public final class DuplicatesViewModel: ObservableObject {
         wasStoppedEarly = false
         focusedGroupID = nil
         phase = .scanning
-        let task = Task { [minimumSize] in await scan(newScope, minimumSize: minimumSize) }
+        let task = Task { [minimumSize, excludedFolders = excludedFoldersForNextScan] in
+            await scan(newScope, excluding: excludedFolders, minimumSize: minimumSize)
+        }
         activeTask = task
         return task
     }
@@ -286,8 +295,8 @@ public final class DuplicatesViewModel: ObservableObject {
         canToggleDuplicatesMemo.invalidate()
     }
 
-    private func scan(_ scope: ScanScope, minimumSize: Int64) async {
-        for await event in scanner.scan(scope, minimumSize: minimumSize) {
+    private func scan(_ scope: ScanScope, excluding excludedFolders: [URL], minimumSize: Int64) async {
+        for await event in scanner.scan(scope, excluding: excludedFolders, minimumSize: minimumSize) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let newProgress):

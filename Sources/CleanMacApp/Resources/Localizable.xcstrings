@@ -12,6 +12,17 @@
         }
       }
     },
+    "Excluded folders" : {
+      "comment" : "Setting of the scans of large files and of duplicates: the folders they never look in. A list of folders follows.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carpetas excluidas"
+          }
+        }
+      }
+    },
     "Language" : {
       "comment" : "Setting of the app: the language it is shown in.",
       "localizations" : {
@@ -19,6 +30,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma"
+          }
+        }
+      }
+    },
+    "Large Files and Duplicates never look in these folders, or in your Library folder. Takes effect the next time you scan." : {
+      "comment" : "Note under the setting of the folders that the scans of large files and of duplicates never look in.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivos grandes y Duplicados nunca buscan en estas carpetas ni en tu carpeta Biblioteca. Se aplica la próxima vez que escanees."
+          }
+        }
+      }
+    },
+    "No folders are excluded." : {
+      "comment" : "Shown in place of the list of excluded folders while it is empty.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay carpetas excluidas."
+          }
+        }
+      }
+    },
+    "Only folders inside your home folder that these scans look in can be excluded." : {
+      "comment" : "Shown under the list of excluded folders when some of the folders chosen can’t be added, such as the home folder itself or a folder outside it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se pueden excluir carpetas de tu carpeta de inicio en las que buscan estos análisis."
           }
         }
       }

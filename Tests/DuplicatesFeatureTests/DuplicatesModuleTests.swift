@@ -106,6 +106,70 @@ struct DuplicatesModuleTests {
         #expect(viewModel.minimumSize == 10_000_000)
     }
 
+    // MARK: Folders left out
+
+    /// The paths of the folders each scan of a module whose preferences keep `storage` left out.
+    private func scannedExcludedPaths(keeping storage: InMemoryPreferenceStorage) async -> [[String]] {
+        let (_, viewModel, scanner) = makeModule(preferences: Preferences(storage: storage))
+
+        await viewModel.startScan().value
+
+        return scanner.scannedExcludedFolders.map { folders in folders.map { $0.path } }
+    }
+
+    @Test func leavesOutNoFoldersUntilTheUserChoosesSome() async {
+        #expect(await scannedExcludedPaths(keeping: InMemoryPreferenceStorage()) == [[]])
+    }
+
+    @Test func leavesOutTheFoldersTheUserChose() async {
+        let storage = InMemoryPreferenceStorage(["scans.excludedFolders": ["/Users/test/Downloads", "/Users/test/Music"]])
+
+        #expect(await scannedExcludedPaths(keeping: storage) == [["/Users/test/Downloads", "/Users/test/Music"]])
+    }
+
+    @Test func onlyTheNextScanLeavesOutTheFoldersTheUserChooses() async {
+        let preferences = Preferences(storage: InMemoryPreferenceStorage())
+        let (module, viewModel, scanner) = makeModule(preferences: preferences)
+        let scanInProgress = viewModel.startScan()
+
+        // The view model follows the preferences for as long as its module lives.
+        withExtendedLifetime(module) {
+            preferences.set([downloads.path], for: ScanSettings.excludedFolders)
+        }
+        await scanInProgress.value
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedExcludedFolders.map { folders in folders.map { $0.path } } == [[], [downloads.path]])
+    }
+
+    /// Other features stop offering its action for the folders the user leaves out, and for
+    /// the folders inside them, as they do for `~/Library`.
+    @Test func takesNoFolderTheUserLeavesOut() throws {
+        let home = try TemporaryFolder()
+        let downloads = try home.makeFolder("Downloads")
+        let installers = try home.makeFolder("Downloads/Installers")
+        let documents = try home.makeFolder("Documents")
+        let preferences = Preferences(storage: InMemoryPreferenceStorage())
+        let scanner = DuplicateScanner(
+            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: [home.root.appending(path: "Library")])
+        )
+        let module = DuplicatesModule(
+            viewModel: DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover())),
+            preferences: preferences
+        )
+
+        preferences.set([downloads.path], for: ScanSettings.excludedFolders)
+
+        #expect(!module.canShow(itemAt: downloads))
+        #expect(!module.canShow(itemAt: installers))
+        #expect(module.canShow(itemAt: documents))
+        #expect(module.canShow(itemAt: home.root))
+
+        preferences.set([], for: ScanSettings.excludedFolders)
+
+        #expect(module.canShow(itemAt: installers))
+    }
+
     @Test func addsItsSizeToTheAnalysisSettings() {
         let (module, _, _) = makeModule()
 
@@ -118,11 +182,8 @@ struct DuplicatesModuleTests {
         let home = try TemporaryFolder()
         let documents = try home.makeFolder("Documents")
         let caches = try home.makeFolder("Library/Caches")
-        let excludedDirectories = [home.root.appending(path: "Library")]
         let scanner = DuplicateScanner(
-            home: home.root,
-            walker: FileSystemWalker(excludedDirectories: excludedDirectories),
-            excludedDirectories: excludedDirectories
+            scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: [home.root.appending(path: "Library")])
         )
         let module = DuplicatesModule(
             viewModel: DuplicatesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover())),
