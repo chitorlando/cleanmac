@@ -24,18 +24,17 @@ struct DiskMapItemMenuTests {
 
     private var featureActions: [FeatureItemAction] { [duplicates, uninstaller, largeFiles] }
 
+    /// A menu offering, for each kind of item, the actions of `featureActions` for that kind.
     private func makeMenu(
         advice: RemovalAdvice,
         canOpen: Bool = false,
         isSelected: Bool = false,
         featureActions: [FeatureItemAction]? = nil
     ) -> DiskMapItemMenu {
-        DiskMapItemMenu(
-            advice: advice,
-            canOpen: canOpen,
-            isSelected: isSelected,
-            featureActions: featureActions ?? self.featureActions
-        )
+        let actions = featureActions ?? self.featureActions
+        return DiskMapItemMenu(advice: advice, canOpen: canOpen, isSelected: isSelected) { kind in
+            actions.filter { $0.itemKind == kind }
+        }
     }
 
     @Test func offersAFolderToTheFeaturesThatLookIntoFolders() {
@@ -95,6 +94,22 @@ struct DiskMapItemMenuTests {
 
         #expect(folder.sections == [[.open, .select], [.showInFinder, .copyPath]])
         #expect(app.sections == [[.showInFinder, .copyPath]])
+    }
+
+    /// Finding out whether a feature takes the item may look at the disk, so the features are
+    /// asked only about the kind of item they would get, and not about a file.
+    @Test func asksForTheActionsOfTheKindTheItemGoesAsOnly() {
+        var askedKinds: [FeatureItemKind] = []
+        let items: [(advice: RemovalAdvice, canOpen: Bool)] = [(.allowed, true), (.useUninstaller, false), (.allowed, false)]
+
+        for item in items {
+            _ = DiskMapItemMenu(advice: item.advice, canOpen: item.canOpen, isSelected: false) { kind in
+                askedKinds.append(kind)
+                return []
+            }
+        }
+
+        #expect(askedKinds == [.folder, .app])
     }
 
     @Test func everyCommandOfAMenuHasItsOwnID() {

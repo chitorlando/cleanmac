@@ -49,9 +49,10 @@ struct DiskMapItemList: View {
             let menu = DiskMapItemMenu(
                 advice: advice,
                 canOpen: canOpen,
-                isSelected: isSelected,
-                featureActions: featureItemActions
-            )
+                isSelected: isSelected
+            ) { kind in
+                featureItemActions.filter { $0.itemKind == kind }
+            }
             DiskMapHighlightReader(highlight: viewModel.highlight) { highlightedID in
                 DiskMapItemRow(
                     node: node,
