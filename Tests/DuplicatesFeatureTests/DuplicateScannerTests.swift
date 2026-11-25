@@ -113,11 +113,13 @@ struct DuplicateScannerTests {
         try folder.write(content, to: "b.bin")
         let scanner = scanner(for: folder)
 
+        // The scan counts the space a file takes on disk, a little more than its bytes, so the
+        // larger size is well above it.
         let fromTheirSize = await events(of: scanner, scanning: .home, minimumSize: Int64(Self.fileSize))
-        let fromAboveTheirSize = await events(of: scanner, scanning: .home, minimumSize: Int64(Self.fileSize) + 1)
+        let fromTwiceTheirSize = await events(of: scanner, scanning: .home, minimumSize: 2 * Int64(Self.fileSize))
 
         #expect(groups(fromTheirSize).count == 1)
-        #expect(groups(fromAboveTheirSize).isEmpty)
+        #expect(groups(fromTwiceTheirSize).isEmpty)
     }
 
     @Test func doesNotReportHardLinksAsCopies() async throws {
