@@ -3,10 +3,11 @@ import Foundation
 
 /// Keeps the monitor's readings fresh while its screen is on view.
 ///
-/// The screen runs `run()` in a task tied to its appearance, so sampling stops as soon as it
-/// goes away. While the app can't be seen at all, such as when it's hidden or minimized,
-/// readings are skipped. After either pause, readings and their history start over, so the
-/// first reading doesn't show the average of the whole time away.
+/// Each screen showing the monitor, one per window, runs `run()` in a task tied to its
+/// appearance. They share one round of readings, which stops as soon as the last of them goes
+/// away. While the app can't be seen at all, such as when it's hidden or minimized,
+/// readings are skipped. After a pause of either kind, readings and their history start
+/// over, so the first reading doesn't show the average of the whole time away.
 @MainActor
 public final class MonitorViewModel: ObservableObject {
     public static let defaultInterval: Duration = .seconds(MonitorSettings.refreshInterval.defaultValue)
@@ -28,6 +29,7 @@ public final class MonitorViewModel: ObservableObject {
 
     private let sampler: any SystemSampling
     private let isVisible: @MainActor () -> Bool
+    private lazy var sampling = SharedTask { [weak self] in await self?.takeReadings() }
 
     /// - Parameters:
     ///   - interval: Time between readings.
@@ -50,9 +52,17 @@ public final class MonitorViewModel: ObservableObject {
         }
     }
 
-    /// Takes a reading every `interval` until the calling task is cancelled, starting over
-    /// first and whenever readings were skipped.
+    /// Takes a reading every `interval` until the calling task is cancelled.
+    ///
+    /// Calls that overlap share their readings, so they come at the chosen pace however many
+    /// screens show the monitor. They stop once every call's task is cancelled.
     public func run() async {
+        await sampling.join()
+    }
+
+    /// Takes a reading every `interval` until cancelled, starting over first and whenever
+    /// readings were skipped.
+    private func takeReadings() async {
         var isResuming = true
         while !Task.isCancelled {
             if isVisible() {

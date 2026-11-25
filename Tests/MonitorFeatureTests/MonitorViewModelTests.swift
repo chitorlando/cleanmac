@@ -121,6 +121,46 @@ struct MonitorViewModelTests {
         #expect(sampler.calls.dropFirst(readingsBeforeComingBack + 1).first == .forgetPreviousReading)
     }
 
+    @Test(.timeLimit(.minutes(1)))
+    func takesOneReadingAtATimeForAllItsScreens() async {
+        let sampler = FakeSampler([busy])
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .seconds(3_600))
+
+        let window = Task { await viewModel.run() }
+        await waitUntil { sampler.readings == 1 }
+        let otherWindow = Task { await viewModel.run() }
+        // A round of readings of its own would begin with one at once.
+        try? await Task.sleep(for: .milliseconds(100))
+
+        #expect(sampler.calls == [.forgetPreviousReading, .sample])
+        window.cancel()
+        otherWindow.cancel()
+        await window.value
+        await otherWindow.value
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func keepsReadingUntilItsLastScreenGoesAway() async {
+        let sampler = FakeSampler([busy])
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .milliseconds(5))
+
+        let window = Task { await viewModel.run() }
+        let otherWindow = Task { await viewModel.run() }
+        await waitUntil { sampler.readings >= 2 }
+        window.cancel()
+        await window.value
+        let readingsWithOneWindowLeft = sampler.readings
+        await waitUntil { sampler.readings >= readingsWithOneWindowLeft + 2 }
+        otherWindow.cancel()
+        await otherWindow.value
+        let readings = sampler.readings
+        try? await Task.sleep(for: .milliseconds(30))
+
+        #expect(sampler.readings == readings)
+        // A single round of readings, never started over while a window was left.
+        #expect(sampler.calls.filter { $0 == .forgetPreviousReading }.count == 1)
+    }
+
     @Test func startsTheHistoryOverWhenTheIntervalChanges() async {
         let viewModel = MonitorViewModel(sampler: FakeSampler([busy]), interval: .seconds(2))
         await viewModel.refresh()
