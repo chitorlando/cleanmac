@@ -23,6 +23,47 @@
         }
       }
     },
+    "%lld seconds" : {
+      "comment" : "Time between two readings of the monitor. The argument is a number of seconds.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld second"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld seconds"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld segundo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld segundos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "App Memory" : {
       "comment" : "Memory that apps allocated.",
       "localizations" : {
@@ -248,6 +289,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Procesos"
+          }
+        }
+      }
+    },
+    "Update every" : {
+      "comment" : "Setting of the monitor: the time between two readings. A duration follows, such as “2 seconds”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar cada"
           }
         }
       }

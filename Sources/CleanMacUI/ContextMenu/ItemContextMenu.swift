@@ -3,7 +3,8 @@ import SwiftUI
 /// Context menu of an item row: the entries of an `ItemMenu`, then the feature's own.
 ///
 /// Use it inside `.contextMenu { }` so every row offers the same entries with the same words.
-/// The actions other features offer come from the `featureItemActions` environment value.
+/// The actions other features offer come from the `featureItemActions` environment value,
+/// which is asked when the menu opens and leaves out the features that wouldn't take the item.
 public struct ItemContextMenu<Extra: View>: View {
     private let url: URL
     private let featureTarget: FeatureItemTarget?
@@ -61,7 +62,7 @@ public struct ItemContextMenu<Extra: View>: View {
             canOpen: canOpen,
             selection: selection,
             featureTarget: featureTarget,
-            featureActions: featureActions
+            featureActions: featureTarget.map { featureActions.offered(for: $0.kind, at: $0.url) } ?? []
         )
         ForEach(Array(menu.sections.enumerated()), id: \.offset) { index, actions in
             if index > 0 {

@@ -5,6 +5,8 @@ import SwiftUI
 /// Shown when the scan found no duplicates, or every duplicate has been removed.
 struct DuplicatesNoneFoundView: View {
     let wasStoppedEarly: Bool
+    /// Smallest size of the files the scan compared, in bytes.
+    let minimumSize: Int64
     /// The folder the scan was limited to, or `nil` when it covered the whole home folder.
     let folder: URL?
     let theme: FeatureTheme
@@ -26,7 +28,7 @@ struct DuplicatesNoneFoundView: View {
         }
     }
 
-    private var subtitle: String {
+    var subtitle: String {
         if wasStoppedEarly {
             String(
                 localized: "The scan was stopped before finding any duplicates.",
@@ -35,13 +37,13 @@ struct DuplicatesNoneFoundView: View {
             )
         } else if let folder {
             String(
-                localized: "No file of \(DuplicateScanner.defaultMinimumSize.formattedByteCount) or more in the folder “\(folder.folderDisplayName)” has an identical copy.",
+                localized: "No file of \(minimumSize.formattedByteCount) or more in the folder “\(folder.folderDisplayName)” has an identical copy.",
                 bundle: .module,
                 comment: "Message shown when a complete scan of one folder found no duplicates. The arguments are the smallest size compared, such as “1 MB”, and the name of the folder."
             )
         } else {
             String(
-                localized: "No file of \(DuplicateScanner.defaultMinimumSize.formattedByteCount) or more in your home folder has an identical copy.",
+                localized: "No file of \(minimumSize.formattedByteCount) or more in your home folder has an identical copy.",
                 bundle: .module,
                 comment: "Message shown when a complete scan found no duplicates. The argument is the smallest size compared, such as “1 MB”."
             )

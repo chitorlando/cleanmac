@@ -10,7 +10,6 @@ struct DuplicateScannerTests {
     private func scanner(
         for home: TemporaryFolder,
         excluding excluded: [String] = [],
-        minimumSize: Int64 = 100_000,
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()
     ) -> DuplicateScanner {
         let excludedDirectories = excluded.map { home.root.appending(path: $0) }
@@ -18,14 +17,17 @@ struct DuplicateScannerTests {
             home: home.root,
             walker: FileSystemWalker(excludedDirectories: excludedDirectories),
             excludedDirectories: excludedDirectories,
-            cloneInfoReader: cloneInfoReader,
-            minimumSize: minimumSize
+            cloneInfoReader: cloneInfoReader
         )
     }
 
-    private func events(of scanner: DuplicateScanner, scanning scope: DuplicateScanScope) async -> [DuplicateScanEvent] {
+    private func events(
+        of scanner: DuplicateScanner,
+        scanning scope: ScanScope,
+        minimumSize: Int64 = 100_000
+    ) async -> [DuplicateScanEvent] {
         var events: [DuplicateScanEvent] = []
-        for await event in scanner.scan(scope) {
+        for await event in scanner.scan(scope, minimumSize: minimumSize) {
             events.append(event)
         }
         return events
@@ -33,13 +35,13 @@ struct DuplicateScannerTests {
 
     private func scan(
         _ home: TemporaryFolder,
-        scope: DuplicateScanScope = .home,
+        scope: ScanScope = .home,
         excluding excluded: [String] = [],
         minimumSize: Int64 = 100_000,
         cloneInfoReader: any CloneInfoReading = APFSCloneInfoReader()
     ) async -> [DuplicateScanEvent] {
-        let scanner = scanner(for: home, excluding: excluded, minimumSize: minimumSize, cloneInfoReader: cloneInfoReader)
-        return await events(of: scanner, scanning: scope)
+        let scanner = scanner(for: home, excluding: excluded, cloneInfoReader: cloneInfoReader)
+        return await events(of: scanner, scanning: scope, minimumSize: minimumSize)
     }
 
     /// Paths of the copies in `groups`, relative to `home`, in order.
@@ -102,6 +104,22 @@ struct DuplicateScannerTests {
         try folder.write(content, to: "b.txt")
 
         #expect(groups(await scan(folder, minimumSize: DuplicateScanner.defaultMinimumSize)).isEmpty)
+    }
+
+    @Test func eachScanComparesTheFilesOfTheSmallestSizeItIsGiven() async throws {
+        let folder = try TemporaryFolder()
+        let content = Data.pattern(count: Self.fileSize, seed: 1)
+        try folder.write(content, to: "a.bin")
+        try folder.write(content, to: "b.bin")
+        let scanner = scanner(for: folder)
+
+        // The scan counts the space a file takes on disk, a little more than its bytes, so the
+        // larger size is well above it.
+        let fromTheirSize = await events(of: scanner, scanning: .home, minimumSize: Int64(Self.fileSize))
+        let fromTwiceTheirSize = await events(of: scanner, scanning: .home, minimumSize: 2 * Int64(Self.fileSize))
+
+        #expect(groups(fromTheirSize).count == 1)
+        #expect(groups(fromTwiceTheirSize).isEmpty)
     }
 
     @Test func doesNotReportHardLinksAsCopies() async throws {
@@ -213,7 +231,7 @@ struct DuplicateScannerTests {
             progressInterval: 1
         )
 
-        for await _ in scanner.scan(.home) {
+        for await _ in scanner.scan(.home, minimumSize: DuplicateScanner.defaultMinimumSize) {
             break
         }
 

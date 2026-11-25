@@ -6,12 +6,15 @@ import Testing
 struct LargeFileScannerTests {
     private let scopePolicy = ScanScopePolicy(home: URL(filePath: "/tmp"))
 
+    /// - Parameter criteria: Files of 100 KB or more unless told otherwise, as the tests
+    ///   write larger ones on disk.
     private func events(
         of scanner: LargeFileScanner,
-        in scope: LargeFileScanScope = .home
+        in scope: ScanScope = .home,
+        criteria: LargeFileCriteria = LargeFileCriteria(minimumSize: 100_000)
     ) async -> [LargeFileScanEvent] {
         var events: [LargeFileScanEvent] = []
-        for await event in scanner.scan(scope) {
+        for await event in scanner.scan(scope, criteria: criteria) {
             events.append(event)
         }
         return events
@@ -40,25 +43,31 @@ struct LargeFileScannerTests {
         let excludedDirectories = [home.root.appending(path: "Library")]
         return LargeFileScanner(
             scopePolicy: ScanScopePolicy(home: home.root, excludedDirectories: excludedDirectories),
-            criteria: LargeFileCriteria(minimumSize: 100_000),
             walker: FileSystemWalker(excludedDirectories: excludedDirectories)
         )
     }
 
     @Test func reportsOnlyFilesThatMatchTheCriteria() async {
-        let scanner = LargeFileScanner(
-            scopePolicy: scopePolicy,
-            criteria: LargeFileCriteria(minimumSize: 100),
-            walker: StubWalker(sizes: [10, 150, 99, 100, 5_000])
-        )
+        let scanner = LargeFileScanner(scopePolicy: scopePolicy, walker: StubWalker(sizes: [10, 150, 99, 100, 5_000]))
 
-        #expect(foundSizes(await events(of: scanner)) == [150, 100, 5_000])
+        let scanned = await events(of: scanner, criteria: LargeFileCriteria(minimumSize: 100))
+
+        #expect(foundSizes(scanned) == [150, 100, 5_000])
+    }
+
+    @Test func eachScanLooksForTheSmallestSizeItIsGiven() async {
+        let scanner = LargeFileScanner(scopePolicy: scopePolicy, walker: StubWalker(sizes: [10, 150, 5_000]))
+
+        let first = await events(of: scanner, criteria: LargeFileCriteria(minimumSize: 100))
+        let second = await events(of: scanner, criteria: LargeFileCriteria(minimumSize: 1_000))
+
+        #expect(foundSizes(first) == [150, 5_000])
+        #expect(foundSizes(second) == [5_000])
     }
 
     @Test func reportsProgressEveryIntervalAndAtTheEnd() async {
         let scanner = LargeFileScanner(
             scopePolicy: scopePolicy,
-            criteria: LargeFileCriteria(minimumSize: 1_000),
             walker: StubWalker(sizes: Array(repeating: 1, count: 7)),
             progressInterval: 3
         )
@@ -85,13 +94,9 @@ struct LargeFileScannerTests {
     @Test(.timeLimit(.minutes(1)))
     func stopsWalkingWhenTheConsumerStopsListening() async {
         let walker = EndlessWalker()
-        let scanner = LargeFileScanner(
-            scopePolicy: scopePolicy,
-            criteria: LargeFileCriteria(minimumSize: 1),
-            walker: walker
-        )
+        let scanner = LargeFileScanner(scopePolicy: scopePolicy, walker: walker)
 
-        for await _ in scanner.scan(.home) {
+        for await _ in scanner.scan(.home, criteria: LargeFileCriteria(minimumSize: 1)) {
             break
         }
 
@@ -106,7 +111,6 @@ struct LargeFileScannerTests {
 
         let scanner = LargeFileScanner(
             scopePolicy: ScanScopePolicy(home: folder.root),
-            criteria: LargeFileCriteria(minimumSize: 100_000),
             walker: FileSystemWalker(excludedDirectories: [])
         )
         let found = await events(of: scanner).compactMap { event in

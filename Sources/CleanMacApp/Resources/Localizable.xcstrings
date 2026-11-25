@@ -12,6 +12,17 @@
         }
       }
     },
+    "Language" : {
+      "comment" : "Setting of the app: the language it is shown in.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
+          }
+        }
+      }
+    },
     "Permissions…" : {
       "comment" : "Application menu command that opens the permissions screen.",
       "localizations" : {
@@ -30,6 +41,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronto"
+          }
+        }
+      }
+    },
+    "System Default" : {
+      "comment" : "Choice of the language setting: the language macOS picks for the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Predeterminado del sistema"
+          }
+        }
+      }
+    },
+    "Takes effect the next time you open CleanMac." : {
+      "comment" : "Note under the language setting.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica la próxima vez que abras CleanMac."
           }
         }
       }

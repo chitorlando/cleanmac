@@ -19,13 +19,28 @@ public protocol FeatureModule: AnyObject {
     /// sent to the uninstaller. Features that can't show items ignore it.
     func show(itemAt url: URL)
 
+    /// Whether `show(itemAt:)` would do something with the item at `url`, so that other
+    /// features offer this one's actions only for the items it takes. Features that take any
+    /// item of the kinds they offer actions for keep the default, `true`.
+    ///
+    /// Asked when a menu opens, so it may look at the disk, but it shouldn't take long.
+    func canShow(itemAt url: URL) -> Bool
+
     /// What the feature offers to do with items shown by other features, each carried out
-    /// by `show(itemAt:)`. Features that take no items offer nothing.
+    /// by `show(itemAt:)` on the items `canShow(itemAt:)` accepts. Features that take no items
+    /// offer nothing.
     var itemActions: [FeatureItemAction] { get }
+
+    /// What the feature adds to the Settings window. Features with no settings add nothing.
+    var settings: [SettingsItem] { get }
 }
 
 public extension FeatureModule {
     func show(itemAt url: URL) {}
 
+    func canShow(itemAt url: URL) -> Bool { true }
+
     var itemActions: [FeatureItemAction] { [] }
+
+    var settings: [SettingsItem] { [] }
 }

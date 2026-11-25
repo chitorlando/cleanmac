@@ -68,4 +68,44 @@ struct MonitorViewModelTests {
 
         #expect(sampler.readings == 0)
     }
+
+    @Test func startsTheHistoryOverWhenTheIntervalChanges() async {
+        let viewModel = MonitorViewModel(sampler: FakeSampler([busy]), interval: .seconds(2))
+        await viewModel.refresh()
+
+        viewModel.interval = .seconds(5)
+
+        #expect(viewModel.cpuHistory.isEmpty)
+        #expect(viewModel.snapshot == busy)
+    }
+
+    @Test func keepsTheHistoryWhileTheIntervalStaysTheSame() async {
+        let viewModel = MonitorViewModel(sampler: FakeSampler([busy]), interval: .seconds(2))
+        await viewModel.refresh()
+
+        viewModel.interval = .seconds(2)
+
+        #expect(viewModel.cpuHistory.count == 1)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func takesUpANewIntervalWhileItRuns() async {
+        let sampler = FakeSampler([busy])
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .milliseconds(5))
+
+        let task = Task { await viewModel.run() }
+        while sampler.readings < 2 {
+            await Task.yield()
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+        viewModel.interval = .seconds(3_600)
+        // The wait under way still ends at the old pace, and one more reading follows it.
+        try? await Task.sleep(for: .milliseconds(200))
+        let readings = sampler.readings
+        try? await Task.sleep(for: .milliseconds(100))
+
+        #expect(sampler.readings == readings)
+        task.cancel()
+        await task.value
+    }
 }

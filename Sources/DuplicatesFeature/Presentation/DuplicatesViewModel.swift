@@ -11,7 +11,12 @@ import Foundation
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
     /// What the scan on screen covers: the whole home folder, or a folder another feature sent.
-    @Published public private(set) var scope = DuplicateScanScope.home
+    @Published public private(set) var scope = ScanScope.home
+    /// Smallest size of the files the scan on screen compared.
+    @Published public private(set) var minimumSize = DuplicateScanner.defaultMinimumSize
+    /// Smallest size of the files the next scan compares. A new value leaves the scan in
+    /// progress and the groups on screen as they are.
+    public var minimumSizeForNextScan = DuplicateScanner.defaultMinimumSize
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of groups slow down as it went. Every change goes through
     /// `updateGroups(_:)`, which announces it and then edits the array in place.
@@ -124,6 +129,12 @@ public final class DuplicatesViewModel: ObservableObject {
         }
     }
 
+    /// Whether `scanFolder(at:)` would scan the folder at `url`, now or once the report is
+    /// left, rather than ignore it.
+    public func canScanFolder(at url: URL) -> Bool {
+        scanner.scope(limitedTo: url) != nil
+    }
+
     /// Stops the scan and reviews the groups confirmed so far, which are complete and safe to use.
     public func stopScan() {
         guard phase == .scanning else { return }
@@ -227,7 +238,7 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Private
 
-    private func startScan(_ newScope: DuplicateScanScope) -> Task<Void, Never> {
+    private func startScan(_ newScope: ScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingFolder = nil
         if newScope != scope {
@@ -235,13 +246,17 @@ public final class DuplicatesViewModel: ObservableObject {
             query.searchText = ""
             scope = newScope
         }
+        // Every announcement draws the screen again, so the same size isn't announced.
+        if minimumSizeForNextScan != minimumSize {
+            minimumSize = minimumSizeForNextScan
+        }
         updateGroups { $0 = [] }
         selection = ItemSelection()
         progress = DuplicateScanProgress()
         wasStoppedEarly = false
         focusedGroupID = nil
         phase = .scanning
-        let task = Task { await scan(newScope) }
+        let task = Task { [minimumSize] in await scan(newScope, minimumSize: minimumSize) }
         activeTask = task
         return task
     }
@@ -271,8 +286,8 @@ public final class DuplicatesViewModel: ObservableObject {
         canToggleDuplicatesMemo.invalidate()
     }
 
-    private func scan(_ scope: DuplicateScanScope) async {
-        for await event in scanner.scan(scope) {
+    private func scan(_ scope: ScanScope, minimumSize: Int64) async {
+        for await event in scanner.scan(scope, minimumSize: minimumSize) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let newProgress):
