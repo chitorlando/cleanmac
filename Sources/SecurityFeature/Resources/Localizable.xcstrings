@@ -1,0 +1,476 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%lld things need your attention." : {
+      "comment" : "Summary of a security review. The argument is how many findings the user should look at.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld thing needs your attention."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld things need your attention."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld cosa requiere tu atención."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld cosas requieren tu atención."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "All or part of it is off, so some system files can be changed. It’s usually turned off on purpose, such as to run macOS on an older Mac. Only macOS Recovery can turn it back on." : {
+      "comment" : "Explanation of System Integrity Protection when it is off or partly off.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está desactivada en todo o en parte, así que algunos archivos del sistema se pueden cambiar. Suele desactivarse a propósito, por ejemplo para usar macOS en un Mac antiguo. Solo se vuelve a activar desde la Recuperación de macOS."
+          }
+        }
+      }
+    },
+    "Any app opens without being checked, even one that was tampered with." : {
+      "comment" : "Explanation of Gatekeeper when it is off.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cualquier app se abre sin comprobarse, incluso una que haya sido alterada."
+          }
+        }
+      }
+    },
+    "Automatic Security Updates" : {
+      "comment" : "Name of the Software Update options that install security fixes on their own, in the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizaciones de seguridad automáticas"
+          }
+        }
+      }
+    },
+    "Check for updates" : {
+      "comment" : "Option of automatic updates in Software Update.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar actualizaciones"
+          }
+        }
+      }
+    },
+    "Checking your Mac’s protections…" : {
+      "comment" : "Status shown while the security review reads the settings of macOS, such as FileVault.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando las protecciones de tu Mac…"
+          }
+        }
+      }
+    },
+    "CleanMac couldn’t check how it’s set." : {
+      "comment" : "Explanation of a protection whose state the security review couldn't tell.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac no ha podido comprobar su estado."
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Button that closes the results of the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
+          }
+        }
+      }
+    },
+    "Download new updates when available" : {
+      "comment" : "Option of automatic updates in Software Update.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar nuevas actualizaciones cuando estén disponibles"
+          }
+        }
+      }
+    },
+    "Firewall" : {
+      "comment" : "Name of the macOS firewall in the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firewall"
+          }
+        }
+      }
+    },
+    "Incoming connections reach any app or service that waits for them. It matters most on public Wi-Fi." : {
+      "comment" : "Explanation of the firewall when it is off.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las conexiones entrantes llegan a cualquier app o servicio que las espere. Importa sobre todo en redes wifi públicas."
+          }
+        }
+      }
+    },
+    "Install Security Responses" : {
+      "comment" : "Option of automatic updates in Software Update that installs urgent security fixes.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar respuestas de seguridad"
+          }
+        }
+      }
+    },
+    "Install system data files" : {
+      "comment" : "Option of automatic updates in Software Update that installs data such as XProtect's definitions.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar archivos de datos del sistema"
+          }
+        }
+      }
+    },
+    "It blocks incoming connections you haven’t allowed." : {
+      "comment" : "Explanation of the firewall when it is on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloquea las conexiones entrantes que no has permitido."
+          }
+        }
+      }
+    },
+    "Its definitions haven’t been updated for months, so recent malware may go unnoticed. Software Update installs them with its system files." : {
+      "comment" : "Explanation of XProtect when its definitions haven't been updated for months.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus definiciones no se actualizan desde hace meses, así que el malware reciente podría pasar inadvertido. Actualización de software las instala con sus archivos del sistema."
+          }
+        }
+      }
+    },
+    "Mac Settings" : {
+      "comment" : "Title of the part of the security review about the protections built into macOS.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustes del Mac"
+          }
+        }
+      }
+    },
+    "Nothing needs your attention." : {
+      "comment" : "Summary of a security review that found nothing to look at.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada requiere tu atención."
+          }
+        }
+      }
+    },
+    "Off" : {
+      "comment" : "Badge of a protection that is turned off.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivado"
+          }
+        }
+      }
+    },
+    "On" : {
+      "comment" : "Badge of a protection that is turned on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado"
+          }
+        }
+      }
+    },
+    "Only apps from the App Store and identified developers open without asking." : {
+      "comment" : "Explanation of Gatekeeper when it is on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se abren sin preguntar las apps del App Store y de desarrolladores identificados."
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Button that opens the System Settings pane where a protection found off can be turned on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
+          }
+        }
+      }
+    },
+    "Out of Date" : {
+      "comment" : "Badge of XProtect when its definitions haven't been updated for months.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactualizado"
+          }
+        }
+      }
+    },
+    "Partly On" : {
+      "comment" : "Badge of a protection with only some of its parts turned on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activado en parte"
+          }
+        }
+      }
+    },
+    "Review" : {
+      "comment" : "Button that starts the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisar"
+          }
+        }
+      }
+    },
+    "Review Again" : {
+      "comment" : "Button that runs the security review again.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a revisar"
+          }
+        }
+      }
+    },
+    "Security" : {
+      "comment" : "Feature name in the sidebar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguridad"
+          }
+        }
+      }
+    },
+    "Security fixes and XProtect’s definitions install on their own." : {
+      "comment" : "Explanation of automatic security updates when every option is on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las correcciones de seguridad y las definiciones de XProtect se instalan solas."
+          }
+        }
+      }
+    },
+    "See how well your Mac is protected, in plain words and with the next step for anything worth a look. It isn’t an antivirus: it doesn’t look for malware. It only reads, changes nothing and sends nothing anywhere." : {
+      "comment" : "Introduction of the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprueba lo bien protegido que está tu Mac, en palabras sencillas y con el siguiente paso para lo que merezca un vistazo. No es un antivirus: no busca malware. Solo lee, no cambia nada y no envía nada a ningún sitio."
+          }
+        }
+      }
+    },
+    "Some options are off, so security fixes may arrive late:" : {
+      "comment" : "Explanation of automatic security updates when some options are off. The options follow.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas opciones están desactivadas, así que las correcciones de seguridad pueden llegar tarde:"
+          }
+        }
+      }
+    },
+    "System Integrity Protection" : {
+      "comment" : "Name of the macOS protection of system files in the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protección de la integridad del sistema"
+          }
+        }
+      }
+    },
+    "System files are protected from changes, even by apps with administrator rights." : {
+      "comment" : "Explanation of System Integrity Protection when it is on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los archivos del sistema están protegidos frente a cambios, incluso de apps con permisos de administrador."
+          }
+        }
+      }
+    },
+    "The protections built into macOS." : {
+      "comment" : "Subtitle of the Mac Settings part of the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las protecciones que trae macOS."
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "Badge of a protection whose state the security review couldn't tell.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desconocido"
+          }
+        }
+      }
+    },
+    "Updated on %@" : {
+      "comment" : "When XProtect's definitions last changed. The argument is a date.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizado el %@"
+          }
+        }
+      }
+    },
+    "Updates aren’t checked for, so security fixes only arrive when you look for them." : {
+      "comment" : "Explanation of automatic security updates when Software Update doesn't check for updates.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se buscan actualizaciones, así que las correcciones de seguridad solo llegan cuando las buscas tú."
+          }
+        }
+      }
+    },
+    "Version %@, updated on %@" : {
+      "comment" : "XProtect's version and when its definitions last changed. The arguments are a version number, such as “5377”, and a date.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión %@, actualizada el %@"
+          }
+        }
+      }
+    },
+    "Your startup disk is encrypted: no one can read your files without your password, even by taking the disk out." : {
+      "comment" : "Explanation of FileVault when it is on.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu disco de arranque está cifrado: nadie puede leer tus archivos sin tu contraseña, aunque saque el disco."
+          }
+        }
+      }
+    },
+    "Your startup disk isn’t encrypted: someone who takes this Mac could read your files without your password." : {
+      "comment" : "Explanation of FileVault when it is off.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu disco de arranque no está cifrado: quien se lleve este Mac podría leer tus archivos sin tu contraseña."
+          }
+        }
+      }
+    },
+    "apps checked" : {
+      "comment" : "Caption under the number of apps whose signature the security review has checked.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "apps comprobadas"
+          }
+        }
+      }
+    },
+    "macOS uses these definitions to block known malware." : {
+      "comment" : "Explanation of XProtect when its definitions are recent.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS usa estas definiciones para bloquear el malware conocido."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
