@@ -25,8 +25,10 @@ public struct DiskMapRemovalPolicy: Sendable {
         homeComponents = Self.components(of: home)
     }
 
+    /// What the map lets the user do with `node`. A folder that couldn't be read is only shown,
+    /// wherever it is, since what removing it would free isn't known.
     public func advice(for node: DiskNode) -> RemovalAdvice {
-        advice(for: node.url, kind: node.kind)
+        node.isUnreadable ? .unreadable : advice(for: node.url, kind: node.kind)
     }
 
     public func advice(for url: URL, kind: DiskNodeKind) -> RemovalAdvice {

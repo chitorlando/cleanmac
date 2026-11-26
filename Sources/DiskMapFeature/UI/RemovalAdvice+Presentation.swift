@@ -14,6 +14,8 @@ extension RemovalAdvice {
             Text("Protected", bundle: .module, comment: "Note on data the disk map never removes, such as mail or keychains.")
         case .useUninstaller:
             Text("Remove it with the Uninstaller", bundle: .module, comment: "Note on an app in the disk map, pointing to the Uninstaller feature.")
+        case .unreadable:
+            Text("Couldn’t be read", bundle: .module, comment: "Note on a folder of the disk map that CleanMac couldn't look into, such as one macOS keeps private.")
         }
     }
 
@@ -30,6 +32,12 @@ extension RemovalAdvice {
             Text("This holds data that can’t be recovered once removed, such as passwords, mail, photos or iCloud files.", bundle: .module, comment: "Tooltip on protected data that can't be selected in the disk map.")
         case .useUninstaller:
             Text("Use the Uninstaller to remove this app together with the files it leaves behind.", bundle: .module, comment: "Tooltip on an app that can't be selected in the disk map.")
+        case .unreadable:
+            Text(
+                "macOS doesn’t let CleanMac look inside this folder, so its size is unknown. With Full Disk Access, CleanMac can read most folders like this one.",
+                bundle: .module,
+                comment: "Tooltip on a folder of the disk map that CleanMac couldn't look into, such as one macOS keeps private."
+            )
         }
     }
 }

@@ -144,6 +144,9 @@ struct DiskMapViewModelTests {
         #expect(!viewModel.canOpen(restricted))
         viewModel.open(biome)
         #expect(viewModel.items == [restricted])
+        #expect(viewModel.advice(for: restricted) == .unreadable)
+        viewModel.toggle(restricted)
+        #expect(!viewModel.isSelected(restricted))
     }
 
     // MARK: Highlight

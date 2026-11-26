@@ -64,6 +64,16 @@ struct DiskMapRemovalPolicyTests {
         #expect(!RemovalAdvice.useUninstaller.allowsMovingToTrash)
     }
 
+    /// What removing it would free isn't known, wherever it is.
+    @Test func onlyShowsAFolderThatCouldNotBeRead() {
+        let folder = DiskNode(url: home.appending(path: "Projects/Private"), kind: .folder, size: 0, fileCount: 0, isUnreadable: true)
+        let mail = DiskNode(url: home.appending(path: "Library/Mail"), kind: .folder, size: 0, fileCount: 0, isUnreadable: true)
+
+        #expect(policy.advice(for: folder) == .unreadable)
+        #expect(policy.advice(for: mail) == .unreadable)
+        #expect(!RemovalAdvice.unreadable.allowsMovingToTrash)
+    }
+
     @Test func comparesStandardizedPaths() {
         let messy = URL(filePath: "/Users/test/Movies/../Library/Mail/V10")
         #expect(policy.advice(for: messy, kind: .folder) == .protectedData)

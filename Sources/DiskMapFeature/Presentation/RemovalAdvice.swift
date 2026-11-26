@@ -12,6 +12,9 @@ public enum RemovalAdvice: Equatable, Sendable {
     case protectedData
     /// An app, which the Uninstaller removes together with the files it leaves behind.
     case useUninstaller
+    /// A folder that couldn't be read, such as one macOS keeps private. Its size isn't known,
+    /// so it's only shown.
+    case unreadable
 
     public var allowsMovingToTrash: Bool { self == .allowed }
 }

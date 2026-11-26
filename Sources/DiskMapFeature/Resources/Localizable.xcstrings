@@ -146,6 +146,17 @@
         }
       }
     },
+    "Couldn’t be read" : {
+      "comment" : "Note on a folder of the disk map that CleanMac couldn't look into, such as one macOS keeps private.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo leer"
+          }
+        }
+      }
+    },
     "Deselect" : {
       "comment" : "Entry of the context menu of a disk map item that takes back its mark to be moved to the Trash.",
       "localizations" : {
@@ -393,6 +404,17 @@
         }
       }
     },
+    "Some folders couldn’t be read and count as empty. Full Disk Access lets CleanMac read most of them." : {
+      "comment" : "Note under the size of a folder of the disk map when some folders inside it couldn't be read.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunas carpetas no se pudieron leer y cuentan como vacías. Con Acceso total al disco, CleanMac puede leer la mayoría."
+          }
+        }
+      }
+    },
     "System folder" : {
       "comment" : "Note on a standard folder, such as Documents, that the disk map won't remove.",
       "localizations" : {
@@ -433,6 +455,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contiene datos que no se recuperan una vez borrados, como contraseñas, correo, fotos o archivos de iCloud."
+          }
+        }
+      }
+    },
+    "Unknown size" : {
+      "comment" : "Size of a folder of the disk map that CleanMac couldn't look into, as VoiceOver reads it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño desconocido"
           }
         }
       }
@@ -496,6 +529,17 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "macOS doesn’t let CleanMac look inside this folder, so its size is unknown. With Full Disk Access, CleanMac can read most folders like this one." : {
+      "comment" : "Tooltip on a folder of the disk map that CleanMac couldn't look into, such as one macOS keeps private.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no deja que CleanMac mire dentro de esta carpeta, así que no se sabe cuánto ocupa. Con Acceso total al disco, CleanMac puede leer la mayoría de carpetas como esta."
           }
         }
       }
