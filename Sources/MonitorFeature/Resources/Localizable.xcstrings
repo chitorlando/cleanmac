@@ -97,6 +97,17 @@
         }
       }
     },
+    "CleanMac Monitor" : {
+      "comment" : "Accessibility label of the icon of the monitor in the menu bar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor de CleanMac"
+          }
+        }
+      }
+    },
     "Compressed" : {
       "comment" : "Memory held compressed.",
       "localizations" : {
@@ -196,6 +207,17 @@
         }
       }
     },
+    "Open CleanMac" : {
+      "comment" : "Button of the menu bar monitor that brings back the window of the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir CleanMac"
+          }
+        }
+      }
+    },
     "Open Disk Map" : {
       "comment" : "Button that opens the disk map feature from the monitor.",
       "localizations" : {
@@ -203,6 +225,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir Mapa del disco"
+          }
+        }
+      }
+    },
+    "Open Monitor" : {
+      "comment" : "Button of the menu bar monitor that shows the monitor in the window of the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Monitor"
           }
         }
       }

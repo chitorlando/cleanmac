@@ -33,6 +33,9 @@ public final class MonitorModule: FeatureModule {
             .sink { [viewModel] seconds in viewModel.interval = .seconds(seconds) }
     }
 
+    /// The monitor in the menu bar, which shares the readings of the monitor's screens.
+    public private(set) lazy var menuBarMonitor = MenuBarMonitor(monitor: viewModel, preferences: preferences, featureID: id)
+
     public func makeView() -> AnyView {
         AnyView(MonitorView(viewModel: viewModel, theme: theme, diskMapFeatureID: diskMapFeatureID))
     }
