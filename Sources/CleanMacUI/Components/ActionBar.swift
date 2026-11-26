@@ -15,6 +15,8 @@ public struct ActionBar: View {
     ///     Without it, or without `onSecondary`, the bar shows only the main action.
     ///   - isPrimaryDefaultAction: Whether Return triggers the main button. Turn it off when the
     ///     screen uses Return for something else, such as opening the highlighted folder.
+    ///     Return presses the button like a click, so a main action that removes something
+    ///     asks first, with `trashConfirmation`, instead of removing it at once.
     ///   - onSecondary: What the secondary action does.
     public init(
         secondaryTitle: Text? = nil,
