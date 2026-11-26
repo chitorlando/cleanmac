@@ -64,8 +64,8 @@ struct SignatureClassifierTests {
         let risky: [AppSignature] = [.rejectedByGatekeeper, .adHocOrSelfSigned, .unsigned, .damaged]
         let trusted: [AppSignature] = [.apple, .appStore, .notarized, .identifiedDeveloper, .unknown]
 
-        #expect(risky.allSatisfy(\.isRisky))
-        #expect(!trusted.contains(where: \.isRisky))
+        #expect(risky.allSatisfy { $0.isRisky })
+        #expect(!trusted.contains { $0.isRisky })
     }
 
     @Test func namesTheDeveloperWithoutTheKindOfCertificate() {
