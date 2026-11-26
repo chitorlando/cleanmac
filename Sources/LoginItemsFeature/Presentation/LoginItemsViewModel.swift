@@ -11,6 +11,9 @@ public final class LoginItemsViewModel: ObservableObject {
     @Published public private(set) var phase: LoginItemsPhase = .intro
     @Published public private(set) var sections: [LoginItemSection] = []
     @Published public private(set) var selection = ItemSelection()
+    /// Whether the user is asked to confirm moving the selected agents to the Trash, which
+    /// `remove()` does.
+    @Published public private(set) var isConfirmingRemoval = false
 
     private let scanner: any LoginItemScanning
     private let cleanupService: CleanupService
@@ -58,9 +61,24 @@ public final class LoginItemsViewModel: ObservableObject {
         return task
     }
 
-    /// Moves the selected agents to the Trash. They keep running until the next login.
+    /// Asks the user to confirm moving the selected agents to the Trash, and removes nothing.
+    ///
+    /// The remove button calls it, also when Return presses that button.
+    public func requestRemoval() {
+        guard phase == .browsing, hasSelection else { return }
+        isConfirmingRemoval = true
+    }
+
+    /// Stops asking for confirmation, without removing anything.
+    public func cancelRemoval() {
+        isConfirmingRemoval = false
+    }
+
+    /// Moves the selected agents to the Trash, once the user confirmed it (see
+    /// `requestRemoval()`). They keep running until the next login.
     @discardableResult
     public func remove() -> Task<Void, Never>? {
+        isConfirmingRemoval = false
         guard phase == .browsing else { return nil }
         let items = selectedItems
         guard !items.isEmpty else { return nil }

@@ -231,6 +231,47 @@
         }
       }
     },
+    "Move %lld login items to the Trash?" : {
+      "comment" : "Title of the dialog that asks before moving login items to the Trash. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld login item to the Trash?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld login items to the Trash?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld ítem de inicio a la Papelera?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld ítems de inicio a la Papelera?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Move to Trash" : {
       "comment" : "Disabled button shown before any login item is selected.",
       "localizations" : {
@@ -414,6 +455,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dejarán de ejecutarse en tu próximo inicio de sesión. Recupéralos de la Papelera si vuelves a necesitarlos."
+          }
+        }
+      }
+    },
+    "They stop running at your next login. You can put them back from the Trash." : {
+      "comment" : "Message of the dialog that asks before moving login items to the Trash, which keep running until the next login.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejarán de ejecutarse en tu próximo inicio de sesión. Puedes recuperarlos desde la Papelera."
           }
         }
       }
