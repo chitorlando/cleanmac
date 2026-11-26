@@ -478,6 +478,54 @@ struct DuplicatesViewModelTests {
         #expect(Set(viewModel.selectedItems.map(\.id)) == [reportDownload.id, reportDesktop.id])
     }
 
+    // MARK: Confirming
+
+    @Test func askingToRemoveRemovesNothing() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.selectDuplicates()
+
+        viewModel.requestRemoval()
+
+        #expect(viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .review)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func asksNothingWithoutASelection() async {
+        let viewModel = await scannedViewModel()
+
+        viewModel.requestRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+    }
+
+    @Test func cancellingTheRemovalRemovesNothing() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.selectDuplicates()
+        viewModel.requestRemoval()
+
+        viewModel.cancelRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.selectedCount == 3)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func confirmingRemovesAndStopsAsking() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.selectDuplicates()
+        viewModel.requestRemoval()
+
+        await viewModel.remove()?.value
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(Set(remover.removed) == [reportDownload.id, reportDesktop.id, photoCopy.id])
+    }
+
     // MARK: Removal
 
     @Test func movesTheSelectedCopiesToTheTrash() async {
