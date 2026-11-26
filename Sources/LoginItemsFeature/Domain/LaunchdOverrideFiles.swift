@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Reads launchd's overrides from the property lists it keeps them in, which anyone can read

@@ -1,3 +1,4 @@
+import CleanMacCore
 import CleanMacUI
 import Foundation
 import SwiftUI

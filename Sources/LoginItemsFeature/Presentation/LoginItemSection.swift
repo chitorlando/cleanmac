@@ -1,3 +1,5 @@
+import CleanMacCore
+
 /// The items of one scope, as the list groups them.
 public struct LoginItemSection: Identifiable, Equatable, Sendable {
     public let scope: LaunchScope

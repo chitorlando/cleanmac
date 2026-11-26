@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 import LoginItemsFeature
 import Testing

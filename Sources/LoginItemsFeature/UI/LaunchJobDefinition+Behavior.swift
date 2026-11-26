@@ -1,3 +1,4 @@
+import CleanMacCore
 import SwiftUI
 
 /// When a launchd job runs, in words.

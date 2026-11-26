@@ -181,7 +181,7 @@ El proyecto es un paquete de Swift dividido en módulos con una sola responsabil
 
 ```
 Sources/
-├── CleanMacCore/         Lógica sin interfaz: recorrido de archivos, tamaños, selección, Papelera, procesos y navegadores
+├── CleanMacCore/         Lógica sin interfaz: recorrido de archivos, tamaños, selección, Papelera, procesos, navegadores e ítems de launchd
 ├── CleanMacUI/           Sistema de diseño, componentes comunes y contrato de las funciones
 ├── SystemJunkFeature/    Basura del sistema
 ├── PrivacyFeature/       Privacidad

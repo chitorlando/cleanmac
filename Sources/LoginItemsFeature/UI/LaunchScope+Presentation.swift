@@ -1,3 +1,4 @@
+import CleanMacCore
 import SwiftUI
 
 /// How each scope is introduced in the list.
