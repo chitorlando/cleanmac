@@ -13,6 +13,8 @@ import Foundation
 ///   because other features take care of them.
 /// - Files and folders that are only in the cloud, such as in iCloud Drive, are never
 ///   downloaded (see `DatalessFilePolicy`).
+/// - Folders it can't read, because macOS keeps them private or their permissions keep
+///   CleanMac out, are skipped, and reported to callers that ask for them.
 public struct FileSystemWalker: FileWalking {
     private static let resourceKeys: [URLResourceKey] = [
         .isRegularFileKey,
@@ -45,20 +47,30 @@ public struct FileSystemWalker: FileWalking {
     }
 
     public func walk(_ root: URL, visit: (FileRecord) -> Bool) {
+        walk(root, visit: visit, unreadable: { _ in })
+    }
+
+    public func walk(_ root: URL, visit: (FileRecord) -> Bool, unreadable: (URL) -> Void) {
         DatalessFilePolicy.withoutMaterializing {
-            walkLocally(root, visit: visit)
+            walkLocally(root, visit: visit, unreadable: unreadable)
         }
     }
 
-    private func walkLocally(_ root: URL, visit: (FileRecord) -> Bool) {
+    private func walkLocally(_ root: URL, visit: (FileRecord) -> Bool, unreadable: (URL) -> Void) {
+        let unreadableFolders = UnreadableFolderLog()
         guard let enumerator = FileManager.default.enumerator(
             at: root,
             includingPropertiesForKeys: Self.resourceKeys,
             options: enumerationOptions,
-            errorHandler: { _, _ in true }
+            errorHandler: { url, error in
+                unreadableFolders.record(url, failingWith: error)
+                return true
+            }
         ) else { return }
 
+        // The enumerator reports a folder it can't enter while it moves on to the next item.
         for case let url as URL in enumerator {
+            unreadableFolders.flush(into: unreadable)
             if excludedPaths.contains(url.standardizedFileURL.path) {
                 enumerator.skipDescendants()
                 continue
@@ -67,6 +79,7 @@ public struct FileSystemWalker: FileWalking {
                 return
             }
         }
+        unreadableFolders.flush(into: unreadable)
     }
 
     private var enumerationOptions: FileManager.DirectoryEnumerationOptions {

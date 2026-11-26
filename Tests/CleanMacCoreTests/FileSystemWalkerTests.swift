@@ -138,6 +138,84 @@ struct FileSystemWalkerTests {
         #expect(FileSystemWalker.userLibrary.standardizedFileURL == library.standardizedFileURL)
     }
 
+    /// Its permissions keep everyone out of the folder but root, as macOS keeps apps without
+    /// Full Disk Access out of private folders such as Mail.
+    @Test(.enabled(if: getuid() != 0, "Root reads every folder."))
+    func reportsTheFoldersItCannotRead() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Documents/report.pdf")
+        try folder.makeFile("Private/secret.bin")
+        try folder.makeFile("Private/Inside/deep.bin")
+        let locked = try folder.setPermissions("Private", to: 0)
+        defer { _ = try? folder.setPermissions("Private", to: 0o755) }
+
+        var names: Set<String> = []
+        var unreadable: [URL] = []
+        FileSystemWalker(excludedDirectories: []).walk(
+            folder.root,
+            visit: { record in
+                names.insert(record.url.lastPathComponent)
+                return true
+            },
+            unreadable: { unreadable.append($0) }
+        )
+
+        #expect(names == ["report.pdf"])
+        #expect(unreadable.map(\.standardizedFileURL.path) == [locked.standardizedFileURL.path])
+    }
+
+    @Test(.enabled(if: getuid() != 0, "Root reads every folder."))
+    func reportsTheFolderItStartsFromWhenItCannotReadIt() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Private/secret.bin")
+        let locked = try folder.setPermissions("Private", to: 0)
+        defer { _ = try? folder.setPermissions("Private", to: 0o755) }
+
+        var visited = 0
+        var unreadable: [URL] = []
+        FileSystemWalker(excludedDirectories: []).walk(
+            locked,
+            visit: { _ in
+                visited += 1
+                return true
+            },
+            unreadable: { unreadable.append($0) }
+        )
+
+        #expect(visited == 0)
+        #expect(unreadable.map(\.lastPathComponent) == ["Private"])
+    }
+
+    @Test(.enabled(if: getuid() != 0, "Root reads every folder."))
+    func neverReportsAnExcludedFolder() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Private/secret.bin")
+        let locked = try folder.setPermissions("Private", to: 0)
+        defer { _ = try? folder.setPermissions("Private", to: 0o755) }
+
+        var unreadable: [URL] = []
+        FileSystemWalker(excludedDirectories: [locked]).walk(
+            folder.root,
+            visit: { _ in true },
+            unreadable: { unreadable.append($0) }
+        )
+
+        #expect(unreadable.isEmpty)
+    }
+
+    @Test func reportsNoFolderThatIsGone() throws {
+        let folder = try TemporaryFolder()
+
+        var unreadable: [URL] = []
+        FileSystemWalker(excludedDirectories: []).walk(
+            folder.root.appending(path: "Gone"),
+            visit: { _ in true },
+            unreadable: { unreadable.append($0) }
+        )
+
+        #expect(unreadable.isEmpty)
+    }
+
     @Test func stopsWhenTheVisitorAsksTo() throws {
         let folder = try TemporaryFolder()
         for index in 0..<5 {
