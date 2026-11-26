@@ -8,8 +8,8 @@ public extension View {
         background(HostingWindowObserver(onWindowChange: action))
     }
 
-    /// Calls `action` with whether the window that holds the view is on screen, each time that
-    /// changes, and with `false` once the view leaves a window that was.
+    /// Calls `action` with whether the window that holds the view is shown, ordered in and not
+    /// minimized, each time that changes, and with `false` once the view leaves a window that was.
     ///
     /// Unlike appearing and disappearing, it also follows windows SwiftUI keeps while they're
     /// away, such as the one of a menu bar menu, which only orders out when it closes.
