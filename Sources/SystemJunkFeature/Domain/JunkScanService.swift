@@ -16,9 +16,7 @@ public struct JunkScanService: Sendable {
             let task = Task {
                 await withTaskGroup(of: CategoryScanResult.self) { group in
                     for scanner in scanners {
-                        group.addTask {
-                            CategoryScanResult(category: scanner.category, items: await scanner.scan())
-                        }
+                        group.addTask { await scanner.scan() }
                     }
                     for await result in group {
                         continuation.yield(result)

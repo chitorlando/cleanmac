@@ -56,6 +56,17 @@
         }
       }
     },
+    "Copies Finder made of your devices. Keep the latest one of each." : {
+      "comment" : "Description of the iPhone and iPad backups junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copias de tus dispositivos hechas por el Finder. Conserva la última de cada uno."
+          }
+        }
+      }
+    },
     "Debug symbols for older iOS, watchOS and tvOS versions." : {
       "comment" : "Description of the device support junk category.",
       "localizations" : {
@@ -74,6 +85,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Soporte de dispositivos"
+          }
+        }
+      }
+    },
+    "Emptying it erases what you deleted for good." : {
+      "comment" : "Description of the Trash junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciarla borra para siempre lo que eliminaste."
           }
         }
       }
@@ -107,6 +129,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compilaciones intermedias. Xcode las recrea en la siguiente compilación."
+          }
+        }
+      }
+    },
+    "Most Recent" : {
+      "comment" : "Badge on the newest backup of a device, among the iPhone and iPad backups of System Junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más reciente"
+          }
+        }
+      }
+    },
+    "No Access" : {
+      "comment" : "Shown instead of the size of a junk category that macOS keeps CleanMac from reading.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin acceso"
+          }
+        }
+      }
+    },
+    "On %@" : {
+      "comment" : "Name of the Trash bin of another volume, among the Trash bins of System Junk. The argument is the volume, such as “Backup Disk”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En %@"
+          }
+        }
+      }
+    },
+    "On This Mac" : {
+      "comment" : "Name of the Trash bin in the home folder, among the Trash bins of System Junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En este Mac"
           }
         }
       }
@@ -199,6 +265,17 @@
         }
       }
     },
+    "Trash" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papelera"
+          }
+        }
+      }
+    },
     "User Caches" : {
       "comment" : "Junk category title.",
       "localizations" : {
@@ -250,6 +327,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "encontrados"
+          }
+        }
+      }
+    },
+    "iPhone and iPad Backups" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copias de seguridad de iPhone y iPad"
+          }
+        }
+      }
+    },
+    "macOS keeps CleanMac out of it until you give CleanMac Full Disk Access." : {
+      "comment" : "Note on a junk category that macOS keeps CleanMac from reading, next to the button that opens the Full Disk Access settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS no deja entrar a CleanMac hasta que le des acceso total al disco."
           }
         }
       }

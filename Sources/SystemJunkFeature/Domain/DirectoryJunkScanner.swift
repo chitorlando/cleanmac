@@ -23,11 +23,12 @@ public struct DirectoryJunkScanner: JunkScanner {
         self.exclusions = exclusions
     }
 
-    public func scan() async -> [CleanableItem] {
-        candidateURLs()
+    public func scan() async -> CategoryScanResult {
+        let items = candidateURLs()
             .map { CleanableItem(url: $0, size: sizer.size(of: $0)) }
             .filter { $0.size > 0 }
             .sorted { $0.size > $1.size }
+        return CategoryScanResult(category: category, items: items)
     }
 
     private func candidateURLs() -> [URL] {

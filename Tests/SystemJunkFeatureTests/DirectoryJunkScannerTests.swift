@@ -23,13 +23,13 @@ struct DirectoryJunkScannerTests {
 
     @Test func returnsChildrenSortedBySizeDescending() async {
         let scanner = makeScanner(children: ["small": 10, "big": 500, "medium": 80])
-        let names = await scanner.scan().map(\.name)
+        let names = await scanner.scan().items.map(\.name)
         #expect(names == ["big", "medium", "small"])
     }
 
     @Test func skipsEmptyItems() async {
         let scanner = makeScanner(children: ["empty": 0, "full": 5])
-        #expect(await scanner.scan().map(\.name) == ["full"])
+        #expect(await scanner.scan().items.map(\.name) == ["full"])
     }
 
     @Test func skipsProtectedItems() async {
@@ -37,7 +37,7 @@ struct DirectoryJunkScannerTests {
             children: ["com.apple.bird": 900, "com.example.app": 100],
             exclusions: .standard
         )
-        #expect(await scanner.scan().map(\.name) == ["com.example.app"])
+        #expect(await scanner.scan().items.map(\.name) == ["com.example.app"])
     }
 
     @Test func skipsEveryCacheThatHoldsSyncStateAndItsOwn() async {
@@ -45,6 +45,6 @@ struct DirectoryJunkScannerTests {
         let children = Dictionary(uniqueKeysWithValues: kept.map { ($0, Int64(900)) })
         let scanner = makeScanner(children: children.merging(["com.example.app": 100]) { $1 }, exclusions: .standard)
 
-        #expect(await scanner.scan().map(\.name) == ["com.example.app"])
+        #expect(await scanner.scan().items.map(\.name) == ["com.example.app"])
     }
 }
