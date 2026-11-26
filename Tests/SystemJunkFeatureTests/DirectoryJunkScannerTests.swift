@@ -39,4 +39,12 @@ struct DirectoryJunkScannerTests {
         )
         #expect(await scanner.scan().map(\.name) == ["com.example.app"])
     }
+
+    @Test func skipsEveryCacheThatHoldsSyncStateAndItsOwn() async {
+        let kept = SyncStateCaches.names.union(["io.github.cleanmac"])
+        let children = Dictionary(uniqueKeysWithValues: kept.map { ($0, Int64(900)) })
+        let scanner = makeScanner(children: children.merging(["com.example.app": 100]) { $1 }, exclusions: .standard)
+
+        #expect(await scanner.scan().map(\.name) == ["com.example.app"])
+    }
 }

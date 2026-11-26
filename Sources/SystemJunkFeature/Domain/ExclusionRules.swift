@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Names of items that must never be offered for removal.
@@ -14,14 +15,7 @@ public struct ExclusionRules: Sendable {
 }
 
 public extension ExclusionRules {
-    /// Caches that hold sync state or credentials. Removing them can force iCloud
-    /// to resync or sign the user out, so they are always kept.
-    static let standard = ExclusionRules(protectedNames: [
-        "com.apple.bird",
-        "com.apple.akd",
-        "com.apple.ap.adprivacyd",
-        "CloudKit",
-        "FamilyCircle",
-        AppIdentity.bundleIdentifier
-    ])
+    /// Caches that hold sync state or credentials, which are always kept (see
+    /// `SyncStateCaches`), and CleanMac's own.
+    static let standard = ExclusionRules(protectedNames: SyncStateCaches.names.union([AppIdentity.bundleIdentifier]))
 }
