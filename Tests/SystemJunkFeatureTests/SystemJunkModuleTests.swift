@@ -12,7 +12,9 @@ struct SystemJunkModuleTests {
     private func makeViewModel() -> SystemJunkViewModel {
         SystemJunkViewModel(
             scanService: JunkScanService(scanners: [StubJunkScanner(category: .userCaches, items: [item])]),
-            cleanupService: CleanupService(remover: BlockingRemover())
+            cleanupService: CleanupService(remover: BlockingRemover()),
+            runningApps: FakeRunningApps(),
+            cacheUsage: BrowserCacheUsage(library: home.appending(path: "Library"))
         )
     }
 
