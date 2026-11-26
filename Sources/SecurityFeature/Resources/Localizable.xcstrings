@@ -1,6 +1,47 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld apps checked in your Applications folders." : {
+      "comment" : "Subtitle of the Apps part of the security review. The argument is how many apps had their signature checked.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld app checked in your Applications folders."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld apps checked in your Applications folders."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld app comprobada en tus carpetas de aplicaciones."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld apps comprobadas en tus carpetas de aplicaciones."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld things need your attention." : {
       "comment" : "Summary of a security review. The argument is how many findings the user should look at.",
       "localizations" : {
@@ -64,6 +105,17 @@
         }
       }
     },
+    "Apps" : {
+      "comment" : "Title of the part of the security review about the signatures of the installed apps.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps"
+          }
+        }
+      }
+    },
     "Automatic Security Updates" : {
       "comment" : "Name of the Software Update options that install security fixes on their own, in the security review.",
       "localizations" : {
@@ -75,6 +127,17 @@
         }
       }
     },
+    "Blocked by Gatekeeper" : {
+      "comment" : "Badge of an app that is signed but that Gatekeeper wouldn't let open.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueada por Gatekeeper"
+          }
+        }
+      }
+    },
     "Check for updates" : {
       "comment" : "Option of automatic updates in Software Update.",
       "localizations" : {
@@ -82,6 +145,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Buscar actualizaciones"
+          }
+        }
+      }
+    },
+    "Checking app signatures…" : {
+      "comment" : "Status shown while the security review checks the code signature of each app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando las firmas de las apps…"
           }
         }
       }
@@ -108,6 +182,17 @@
         }
       }
     },
+    "Damaged Signature" : {
+      "comment" : "Badge of an app or a program whose files no longer match its code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firma dañada"
+          }
+        }
+      }
+    },
     "Done" : {
       "comment" : "Button that closes the results of the security review.",
       "localizations" : {
@@ -126,6 +211,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Descargar nuevas actualizaciones cuando estén disponibles"
+          }
+        }
+      }
+    },
+    "Every app is signed by Apple or by an identified developer, and its signature is intact." : {
+      "comment" : "Shown when the security review found no app with a missing, broken or untrusted signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas las apps están firmadas por Apple o por un desarrollador identificado, y su firma está intacta."
           }
         }
       }
@@ -185,6 +281,17 @@
         }
       }
     },
+    "It has no signature, so nothing confirms who made it or that it wasn’t changed. Keep it if you trust where it came from." : {
+      "comment" : "Explanation of an app without a code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tiene firma, así que nada confirma quién la hizo ni que no se haya modificado. Consérvala si confías en su origen."
+          }
+        }
+      }
+    },
     "Its definitions haven’t been updated for months, so recent malware may go unnoticed. Software Update installs them with its system files." : {
       "comment" : "Explanation of XProtect when its definitions haven't been updated for months.",
       "localizations" : {
@@ -192,6 +299,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sus definiciones no se actualizan desde hace meses, así que el malware reciente podría pasar inadvertido. Actualización de software las instala con sus archivos del sistema."
+          }
+        }
+      }
+    },
+    "Its files no longer match its signature: something changed them after it was signed. Reinstalling it from its developer usually fixes that." : {
+      "comment" : "Explanation of an app whose files no longer match its code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sus archivos ya no coinciden con su firma: algo los cambió después de firmarla. Suele arreglarse reinstalándola desde su desarrollador."
+          }
+        }
+      }
+    },
+    "Its signature is intact." : {
+      "comment" : "Explanation of an app with a trusted code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su firma está intacta."
+          }
+        }
+      }
+    },
+    "It’s signed by an identified developer, but Gatekeeper wouldn’t open it: Apple hasn’t checked it for malware, or its certificate was revoked." : {
+      "comment" : "Explanation of an app that Gatekeeper wouldn't let open.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está firmada por un desarrollador identificado, pero Gatekeeper no la abriría: Apple no la ha revisado en busca de malware o su certificado se ha revocado."
+          }
+        }
+      }
+    },
+    "It’s signed, but not with a certificate from Apple, so nothing confirms who made it. That’s common for apps built by hand or installed from source. Keep it if you trust where it came from." : {
+      "comment" : "Explanation of an app signed without a certificate from Apple.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está firmada, pero no con un certificado de Apple, así que nada confirma quién la hizo. Es habitual en apps compiladas a mano o instaladas desde el código fuente. Consérvala si confías en su origen."
           }
         }
       }
@@ -339,6 +490,39 @@
         }
       }
     },
+    "Show in Finder" : {
+      "comment" : "Button that reveals an item found by the security review in Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Signed" : {
+      "comment" : "Badge of an app with a trusted code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firmada"
+          }
+        }
+      }
+    },
+    "Signed by %@" : {
+      "comment" : "Who signed an app or a program. The argument is a developer's name, such as “Example Ltd (ABCDE12345)”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firma de %@"
+          }
+        }
+      }
+    },
     "Some options are off, so security fixes may arrive late:" : {
       "comment" : "Explanation of automatic security updates when some options are off. The options follow.",
       "localizations" : {
@@ -390,6 +574,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desconocido"
+          }
+        }
+      }
+    },
+    "Unsigned" : {
+      "comment" : "Badge of an app or a program without a code signature.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin firma"
+          }
+        }
+      }
+    },
+    "Unverified Developer" : {
+      "comment" : "Badge of an app signed without a certificate from Apple.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desarrollador sin verificar"
           }
         }
       }

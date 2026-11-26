@@ -19,4 +19,5 @@ public enum SecurityReviewEvent: Hashable, Sendable {
 /// The parts of a review, in the order it goes through them.
 public enum SecurityReviewStep: CaseIterable, Hashable, Sendable {
     case protections
+    case apps
 }

@@ -14,6 +14,7 @@ struct SecurityResultsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ProtectionsCard(checks: report.protections)
+                    AppsCard(checkedCount: report.apps.count, apps: report.appsNeedingAttention)
                 }
             }
             .scrollIndicators(.never)

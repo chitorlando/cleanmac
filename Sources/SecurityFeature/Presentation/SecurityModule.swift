@@ -24,9 +24,20 @@ public final class SecurityModule: FeatureModule {
 }
 
 public extension SecurityModule {
-    /// Module that reads this Mac's real settings.
+    /// Module that reads this Mac's real settings and checks the apps of its application folders.
     static func live() -> SecurityModule {
-        let reviewer = SecurityReviewer(protections: ProtectionReader())
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let reviewer = SecurityReviewer(
+            protections: ProtectionReader(),
+            appFinder: ApplicationFolderAppFinder(folders: [
+                URL(filePath: "/Applications"),
+                home.appending(path: "Applications")
+            ]),
+            signatureChecker: AppSignatureChecker(
+                inspector: SecurityFrameworkSignatureInspector(),
+                gatekeeper: SystemPolicyGatekeeper()
+            )
+        )
         return SecurityModule(viewModel: SecurityViewModel(reviewer: reviewer))
     }
 }
