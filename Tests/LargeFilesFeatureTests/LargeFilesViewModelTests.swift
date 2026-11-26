@@ -357,6 +357,54 @@ struct LargeFilesViewModelTests {
         #expect(viewModel.allSelectionState == .none)
     }
 
+    // MARK: Confirming
+
+    @Test func askingToRemoveRemovesNothing() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.toggle(trip)
+
+        viewModel.requestRemoval()
+
+        #expect(viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .review)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func asksNothingWithoutASelection() async {
+        let viewModel = await scannedViewModel()
+
+        viewModel.requestRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+    }
+
+    @Test func cancellingTheRemovalRemovesNothing() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.toggle(trip)
+        viewModel.requestRemoval()
+
+        viewModel.cancelRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.selectedCount == 1)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func confirmingRemovesAndStopsAsking() async {
+        let remover = RecordingRemover()
+        let viewModel = await scannedViewModel(remover: remover)
+        viewModel.toggle(trip)
+        viewModel.requestRemoval()
+
+        await viewModel.remove()?.value
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(remover.removed == [trip.id])
+    }
+
     // MARK: Removal
 
     @Test func movesTheSelectedFilesToTheTrash() async {

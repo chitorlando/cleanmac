@@ -35,6 +35,9 @@ public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var scannedFileCount = 0
     /// The user stopped the scan, so the list only has the files found until then.
     @Published public private(set) var wasStoppedEarly = false
+    /// Whether the user is asked to confirm moving the selected files to the Trash, which
+    /// `remove()` does.
+    @Published public private(set) var isConfirmingRemoval = false
     @Published public private(set) var selection = ItemSelection() {
         didSet { selectionDidChange() }
     }
@@ -172,9 +175,23 @@ public final class LargeFilesViewModel: ObservableObject {
         phase = .review
     }
 
-    /// Moves the selected files to the Trash.
+    /// Asks the user to confirm moving the selected files to the Trash, and removes nothing.
+    ///
+    /// The remove button calls it, also when Return presses that button.
+    public func requestRemoval() {
+        guard phase == .review, hasSelection else { return }
+        isConfirmingRemoval = true
+    }
+
+    /// Stops asking for confirmation, without removing anything.
+    public func cancelRemoval() {
+        isConfirmingRemoval = false
+    }
+
+    /// Moves the selected files to the Trash, once the user confirmed it (see `requestRemoval()`).
     @discardableResult
     public func remove() -> Task<Void, Never>? {
+        isConfirmingRemoval = false
         guard phase == .review else { return nil }
         let items = selectedItems
         guard !items.isEmpty else { return nil }
