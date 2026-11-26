@@ -19,12 +19,18 @@ public enum JunkCatalog {
             )
         }
         let trash = TrashJunkScanner(reader: TrashSizeReader(home: home, sizer: sizer, fullDiskAccess: fullDiskAccess))
-        return folders + [trash]
+        let backups = DeviceBackupScanner(folder: deviceBackups(home: home), sizer: sizer)
+        return folders + [trash, backups]
     }
 
     /// Every folder whose items are offered as junk, for the home folder `home`.
     public static func locations(home: URL) -> [URL] {
-        entries(home: home).flatMap { $0.1 }
+        entries(home: home).flatMap { $0.1 } + [deviceBackups(home: home)]
+    }
+
+    /// The folder where Finder keeps a folder per iPhone or iPad backup.
+    private static func deviceBackups(home: URL) -> URL {
+        home.appending(path: "Library/Application Support/MobileSync/Backup")
     }
 
     private static func entries(home: URL) -> [(JunkCategory, [URL])] {
@@ -111,6 +117,19 @@ public extension JunkCategory {
         ),
         symbolName: "trash",
         removal: .emptyTrash,
+        preselectsItems: false
+    )
+
+    /// A backup may be the only copy of a device's data, so backups wait for the user to pick them.
+    static let deviceBackups = JunkCategory(
+        id: "device-backups",
+        title: String(localized: "iPhone and iPad Backups", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Copies Finder made of your devices. Keep the latest one of each.",
+            bundle: .module,
+            comment: "Description of the iPhone and iPad backups junk category."
+        ),
+        symbolName: "ipad.and.iphone",
         preselectsItems: false
     )
 }

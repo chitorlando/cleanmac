@@ -106,6 +106,8 @@ struct JunkCategoryCard: View {
                 CleanableItemRow(
                     item: item,
                     title: result.detail(of: item)?.title,
+                    subtitle: result.detail(of: item)?.subtitle,
+                    badge: result.detail(of: item)?.badge,
                     isSelected: viewModel.isSelected(item),
                     isToggleEnabled: viewModel.canSelect(item),
                     tint: theme.primary

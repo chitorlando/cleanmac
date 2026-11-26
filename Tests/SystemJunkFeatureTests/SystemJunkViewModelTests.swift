@@ -254,6 +254,31 @@ struct SystemJunkViewModelTests {
         #expect(remover.removed == [log.url])
     }
 
+    // MARK: Device backups
+
+    @Test func leavesBackupsUnselectedAndMovesTheOnesPickedToTheTrash() async {
+        let older = CleanableItem(url: URL(filePath: "/home/Library/Application Support/MobileSync/Backup/0001-20260105"), size: 40_000)
+        let newer = CleanableItem(url: URL(filePath: "/home/Library/Application Support/MobileSync/Backup/0001"), size: 48_000)
+        let viewModel = makeViewModel(remover: remover, scanners: [
+            StubJunkScanner(category: .deviceBackups, items: [newer, older]),
+            StubJunkScanner(category: .userLogs, items: [log])
+        ])
+        await viewModel.startScan().value
+
+        #expect(viewModel.selectedItems == [log])
+
+        viewModel.toggle(older)
+        viewModel.requestClean()
+
+        #expect(!viewModel.emptiesTrash)
+        #expect(Set(viewModel.itemsToMove) == [older, log])
+
+        await viewModel.clean()?.value
+
+        #expect(Set(remover.removed) == [older.url, log.url])
+        #expect(emptier.emptyings.isEmpty)
+    }
+
     @Test func restartingDuringACleanupIgnoresItsResult() async {
         let remover = BlockingRemover()
         let viewModel = makeViewModel(remover: remover)

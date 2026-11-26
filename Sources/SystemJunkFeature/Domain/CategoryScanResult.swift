@@ -40,4 +40,6 @@ public struct CategoryScanResult: Identifiable, Sendable {
 public enum JunkItemDetail: Hashable, Sendable {
     /// One of the folders that make up the user's Trash.
     case trashBin(TrashBin)
+    /// An iPhone or iPad backup.
+    case deviceBackup(DeviceBackup)
 }

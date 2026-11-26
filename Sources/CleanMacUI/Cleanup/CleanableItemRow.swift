@@ -5,6 +5,8 @@ import SwiftUI
 public struct CleanableItemRow: View {
     private let item: CleanableItem
     private let title: String
+    private let subtitle: String?
+    private let badge: Text?
     private let isSelected: Bool
     private let isToggleEnabled: Bool
     private let tint: Color
@@ -14,10 +16,15 @@ public struct CleanableItemRow: View {
     /// - Parameters:
     ///   - title: What the item is called, when its file name doesn't tell, such as the volume
     ///     a Trash bin is on. By default, its file name.
+    ///   - subtitle: What's shown below the title, such as the model of an iPhone a backup
+    ///     belongs to. By default, the folder that holds the item.
+    ///   - badge: A short label next to the title, such as “Most Recent”.
     ///   - isToggleEnabled: `false` keeps the item visible but prevents changing its selection.
     public init(
         item: CleanableItem,
         title: String? = nil,
+        subtitle: String? = nil,
+        badge: Text? = nil,
         isSelected: Bool,
         isToggleEnabled: Bool = true,
         tint: Color,
@@ -25,6 +32,8 @@ public struct CleanableItemRow: View {
     ) {
         self.item = item
         self.title = title ?? item.name
+        self.subtitle = subtitle
+        self.badge = badge
         self.isSelected = isSelected
         self.isToggleEnabled = isToggleEnabled
         self.tint = tint
@@ -42,8 +51,13 @@ public struct CleanableItemRow: View {
                 .disabled(!isToggleEnabled)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(verbatim: title).lineLimit(1)
-                Text(verbatim: parentPath)
+                HStack(spacing: 6) {
+                    Text(verbatim: title).lineLimit(1)
+                    if let badge {
+                        StatusBadge(badge, color: tint)
+                    }
+                }
+                Text(verbatim: subtitle ?? parentPath)
                     .font(.caption)
                     .foregroundStyle(.supportingText)
                     .lineLimit(1)

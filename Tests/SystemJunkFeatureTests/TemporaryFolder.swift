@@ -32,6 +32,16 @@ final class TemporaryFolder {
         return url
     }
 
+    /// Writes `properties` as an XML property list at `path`, relative to the root.
+    @discardableResult
+    func writePlist(_ properties: [String: Any], to path: String) throws -> URL {
+        let url = root.appending(path: path)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let data = try PropertyListSerialization.data(fromPropertyList: properties, format: .xml, options: 0)
+        try data.write(to: url)
+        return url
+    }
+
     /// Gives the item at `path`, relative to the root, the POSIX permissions `mode`, such as
     /// `0` to keep everyone out but root.
     func setPermissions(_ path: String, to mode: Int) throws {

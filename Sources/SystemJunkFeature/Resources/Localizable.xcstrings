@@ -56,6 +56,17 @@
         }
       }
     },
+    "Copies Finder made of your devices. Keep the latest one of each." : {
+      "comment" : "Description of the iPhone and iPad backups junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copias de tus dispositivos hechas por el Finder. Conserva la última de cada uno."
+          }
+        }
+      }
+    },
     "Debug symbols for older iOS, watchOS and tvOS versions." : {
       "comment" : "Description of the device support junk category.",
       "localizations" : {
@@ -118,6 +129,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compilaciones intermedias. Xcode las recrea en la siguiente compilación."
+          }
+        }
+      }
+    },
+    "Most Recent" : {
+      "comment" : "Badge on the newest backup of a device, among the iPhone and iPad backups of System Junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más reciente"
           }
         }
       }
@@ -305,6 +327,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "encontrados"
+          }
+        }
+      }
+    },
+    "iPhone and iPad Backups" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copias de seguridad de iPhone y iPad"
           }
         }
       }
