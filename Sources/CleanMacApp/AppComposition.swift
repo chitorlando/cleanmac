@@ -7,6 +7,7 @@ import LoginItemsFeature
 import MaintenanceFeature
 import MonitorFeature
 import PrivacyFeature
+import SecurityFeature
 import SystemJunkFeature
 import UninstallerFeature
 
@@ -25,6 +26,7 @@ enum AppComposition {
             SystemJunkModule.live(),
             PrivacyModule.live(),
             uninstaller,
+            SecurityModule.live(),
             LargeFilesModule.live(preferences: preferences),
             diskMap,
             DuplicatesModule.live(preferences: preferences),

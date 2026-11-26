@@ -35,7 +35,7 @@ public struct CommandRunner: CommandRunning {
             let (text, message) = await (output, errorOutput)
             try Task.checkCancellation()
             guard status == 0 else {
-                throw CommandFailure(status: status, message: message.trimmed)
+                throw CommandFailure(status: status, message: message.trimmed, output: text)
             }
             return text
         } onCancel: {

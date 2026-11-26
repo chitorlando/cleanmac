@@ -76,6 +76,11 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "SecurityFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "OnboardingFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
@@ -85,7 +90,7 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "OnboardingFeature",
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "SecurityFeature", "OnboardingFeature",
                 "Sparkle"
             ],
             resources: [.process("Resources")],
@@ -136,6 +141,10 @@ let package = Package(
         .testTarget(
             name: "MonitorFeatureTests",
             dependencies: ["MonitorFeature", "CleanMacCore"]
+        ),
+        .testTarget(
+            name: "SecurityFeatureTests",
+            dependencies: ["SecurityFeature", "CleanMacCore"]
         ),
         .testTarget(
             name: "OnboardingFeatureTests",

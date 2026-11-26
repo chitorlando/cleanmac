@@ -77,6 +77,13 @@ public extension FeatureTheme {
         secondary: Color(red: 0.98, green: 0.55, blue: 0.76)
     )
 
+    /// Spring green to jade, a hue no other feature uses: greener than the junk's mint and
+    /// bluer than the disk map's leaf green. Dark button labels keep at least 9.9:1 across it.
+    static let security = FeatureTheme(
+        primary: Color(red: 0.62, green: 0.97, blue: 0.58),
+        secondary: Color(red: 0.28, green: 0.84, blue: 0.40)
+    )
+
     /// The background of planned features and of the empty detail pane. No button uses it.
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
@@ -96,6 +103,7 @@ extension FeatureTheme {
         "diskMap": .diskMap,
         "loginItems": .loginItems,
         "monitor": .monitor,
-        "privacy": .privacy
+        "privacy": .privacy,
+        "security": .security
     ]
 }

@@ -1,3 +1,5 @@
+import CleanMacCore
+
 /// Reads which jobs launchd was told to enable or disable, as `launchctl enable` and
 /// `launchctl disable` do, whatever the `Disabled` key of their property lists says.
 public protocol LaunchOverridesReading: Sendable {

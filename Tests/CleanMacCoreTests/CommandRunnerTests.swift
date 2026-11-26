@@ -16,6 +16,12 @@ struct CommandRunnerTests {
         }
     }
 
+    @Test func keepsTheStandardOutputOfAFailedCommand() async {
+        await #expect(throws: CommandFailure(status: 1, message: "", output: "assessments disabled\n")) {
+            try await CommandRunner().run(shell, arguments: ["-c", "echo assessments disabled; exit 1"])
+        }
+    }
+
     @Test func describesFailuresWithoutOutputByTheirStatus() {
         let failure = CommandFailure(status: 7, message: "")
 

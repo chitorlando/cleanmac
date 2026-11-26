@@ -1,4 +1,3 @@
-import CleanMacCore
 import Foundation
 
 /// Finds the app a launchd job belongs to and whether its program still exists.
