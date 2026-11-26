@@ -65,6 +65,7 @@ struct DiskTreeBuilderTests {
         #expect(tool.kind == .package)
         #expect(tool.fileCount == 1)
         #expect(tool.children.isEmpty)
+        #expect(tool.url == root.appending(path: "Applications/Tool.app", directoryHint: .isDirectory))
     }
 
     @Test func givesFoldersTheirURLInsideTheRoot() throws {

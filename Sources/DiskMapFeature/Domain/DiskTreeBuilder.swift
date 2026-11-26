@@ -22,8 +22,10 @@ public final class DiskTreeBuilder {
     /// Adds a file or package found inside the root. Anything outside it is ignored.
     public func add(_ record: FileRecord) {
         guard let relativePath = relativePath(of: record.url), !relativePath.isEmpty else { return }
-        let folderPath = relativePath.lastIndex(of: "/").map { relativePath[..<$0] } ?? ""
-        folder(at: String(folderPath)).add(DiskNode(record: record), grouping: grouping)
+        let separator = relativePath.lastIndex(of: "/")
+        let folderPath = separator.map { relativePath[..<$0] } ?? ""
+        let name = separator.map { relativePath[relativePath.index(after: $0)...] } ?? relativePath
+        folder(at: String(folderPath)).add(record, named: String(name), grouping: grouping)
     }
 
     /// Adds a folder the walk couldn't look into, the root or one inside it, which the map
