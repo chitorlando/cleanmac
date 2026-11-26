@@ -12,7 +12,7 @@ struct FinderAutomationCard: View {
             symbolName: "folder.fill",
             title: Text("Finder Automation", bundle: .module, comment: "Name of the permission to control Finder."),
             explanation: Text(
-                "Lets CleanMac ask Finder to move protected apps to the Trash, so you can still put them back.",
+                "Lets CleanMac ask Finder to move protected apps to the Trash, so you can still put them back, and to empty the Trash when you ask.",
                 bundle: .module,
                 comment: "Why CleanMac asks to control Finder."
             ),

@@ -1,7 +1,7 @@
 import CleanMacCore
 import SwiftUI
 
-/// Result of a cleanup: space freed, items moved and anything that failed.
+/// Result of a cleanup: space freed, items moved or the Trash emptied, and anything that failed.
 public struct CleanupCompletionView: View {
     private let report: CleanupReport
     private let theme: FeatureTheme
@@ -38,10 +38,24 @@ public struct CleanupCompletionView: View {
     }
 
     private var summary: String {
-        String(
-            localized: "\(report.removedCount) items moved to the Trash. Empty it to reclaim the disk space.",
+        guard report.emptiedTrash else {
+            return String(
+                localized: "\(report.removedCount) items moved to the Trash. Empty it to reclaim the disk space.",
+                bundle: .module,
+                comment: "Summary after a cleanup. The argument is the number of items removed."
+            )
+        }
+        guard report.removedCount > 0 else {
+            return String(
+                localized: "The Trash was emptied for good.",
+                bundle: .module,
+                comment: "Summary after a cleanup that emptied the Trash."
+            )
+        }
+        return String(
+            localized: "The Trash was emptied for good, then \(report.removedCount) items moved to it. Empty it again to reclaim their space.",
             bundle: .module,
-            comment: "Summary after a cleanup. The argument is the number of items removed."
+            comment: "Summary after a cleanup that emptied the Trash and then moved other items to it. The argument is the number of items moved."
         )
     }
 }

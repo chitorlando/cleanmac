@@ -149,6 +149,17 @@
         }
       }
     },
+    "Cancel" : {
+      "comment" : "Button that closes the dialog that asks before emptying the Trash, without erasing anything.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
     "Cleanup" : {
       "comment" : "Sidebar section with features that remove junk.",
       "localizations" : {
@@ -200,6 +211,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Listo"
+          }
+        }
+      }
+    },
+    "Empty Trash" : {
+      "comment" : "Button that confirms emptying the Trash, which erases what it holds for good.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciar Papelera"
+          }
+        }
+      }
+    },
+    "Empty Trash and Move Items" : {
+      "comment" : "Button that confirms emptying the Trash, which erases what it holds for good, and then moving other items to it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciar Papelera y mover elementos"
+          }
+        }
+      }
+    },
+    "Empty the Trash and move %lld items to it?" : {
+      "comment" : "Title of the dialog that asks before emptying the Trash and then moving other items to it. The argument is the number of items moved.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Empty the Trash and move %lld item to it?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Empty the Trash and move %lld items to it?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Vaciar la Papelera y mover %lld elemento a ella?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Vaciar la Papelera y mover %lld elementos a ella?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Empty the Trash?" : {
+      "comment" : "Title of the dialog that asks before emptying the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Vaciar la Papelera?"
+          }
+        }
+      }
+    },
+    "Everything in the Trash is erased for good. You can’t undo this." : {
+      "comment" : "Message of the dialog that asks before emptying the Trash, when CleanMac couldn’t measure it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo lo que hay en la Papelera se borra para siempre. No se puede deshacer."
+          }
+        }
+      }
+    },
+    "Everything in the Trash, %@, is erased for good. You can’t undo this." : {
+      "comment" : "Message of the dialog that asks before emptying the Trash. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo lo que hay en la Papelera, %@, se borra para siempre. No se puede deshacer."
           }
         }
       }
@@ -461,6 +568,69 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detener"
+          }
+        }
+      }
+    },
+    "The Trash was emptied for good, then %lld items moved to it. Empty it again to reclaim their space." : {
+      "comment" : "Summary after a cleanup that emptied the Trash and then moved other items to it. The argument is the number of items moved.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash was emptied for good, then %lld item moved to it. Empty it again to reclaim its space."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash was emptied for good, then %lld items moved to it. Empty it again to reclaim their space."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La Papelera se vació para siempre y después se movió %lld elemento a ella. Vacíala de nuevo para recuperar su espacio."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "La Papelera se vació para siempre y después se movieron %lld elementos a ella. Vacíala de nuevo para recuperar su espacio."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "The Trash was emptied for good." : {
+      "comment" : "Summary after a cleanup that emptied the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Papelera se vació para siempre."
+          }
+        }
+      }
+    },
+    "Then the other items, which take up %@, go to the Trash, where you can put them back." : {
+      "comment" : "Second part of the message of the dialog that asks before emptying the Trash and then moving other items to it. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Después, los demás elementos, que ocupan %@, van a la Papelera. Puedes recuperarlos desde allí."
           }
         }
       }

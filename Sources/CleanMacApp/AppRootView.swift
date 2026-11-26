@@ -12,10 +12,11 @@ struct AppRootView: View {
     let modules: [any FeatureModule]
     let upcoming: [UpcomingFeature]
     @ObservedObject var permissions: PermissionsViewModel
+    let mainWindows: MainWindows
 
     var body: some View {
         ZStack {
-            RootView(modules: modules, upcoming: upcoming, sidebarNotice: notice)
+            RootView(modules: modules, upcoming: upcoming, mainWindows: mainWindows, sidebarNotice: notice)
                 // Underneath the onboarding, its buttons and shortcuts must not react.
                 .disabled(permissions.isPresented)
                 .accessibilityHidden(permissions.isPresented)

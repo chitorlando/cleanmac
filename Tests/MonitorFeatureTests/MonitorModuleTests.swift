@@ -53,7 +53,15 @@ struct MonitorModuleTests {
     @Test func addsItsIntervalToTheMonitorSettings() {
         let module = MonitorModule(viewModel: viewModel, preferences: Preferences(storage: InMemoryPreferenceStorage()))
 
-        #expect(module.settings.map(\.id) == ["monitor.refreshInterval"])
-        #expect(module.settings.map(\.section) == [.monitor])
+        #expect(module.settings.filter { $0.section == .monitor }.map(\.id) == ["monitor.refreshInterval"])
+    }
+
+    /// Being in the menu bar keeps the app running without windows, so it goes with the
+    /// settings of the whole app.
+    @Test func addsTheMenuBarToTheGeneralSettings() {
+        let module = MonitorModule(viewModel: viewModel, preferences: Preferences(storage: InMemoryPreferenceStorage()))
+
+        #expect(module.settings.filter { $0.section == .general }.map(\.id) == ["monitor.showsMenuBarExtra"])
+        #expect(module.settings.count == 2)
     }
 }

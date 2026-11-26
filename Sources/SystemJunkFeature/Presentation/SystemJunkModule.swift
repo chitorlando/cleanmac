@@ -63,11 +63,13 @@ public extension SystemJunkModule {
         let scanners = JunkCatalog.scanners(
             home: home,
             reader: LocalDirectoryReader(),
-            sizer: AllocatedSizeCalculator()
+            sizer: AllocatedSizeCalculator(),
+            fullDiskAccess: ProtectedFileFullDiskAccessChecker()
         )
         let viewModel = SystemJunkViewModel(
             scanService: JunkScanService(scanners: scanners),
             cleanupService: CleanupService(remover: TrashItemRemover(), skipsMissingItems: true),
+            trashEmptying: TrashEmptyingService(emptier: FinderTrashEmptier()),
             runningApps: WorkspaceRunningApps(),
             cacheUsage: BrowserCacheUsage(library: home.appending(path: "Library"))
         )

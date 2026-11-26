@@ -49,4 +49,19 @@ enum AppComposition {
         }
         return SettingsSections(items: [language] + modules.flatMap { $0.settings } + [excludedFolders])
     }
+
+    /// The monitor in the menu bar, which shares the readings of the monitor feature among
+    /// `modules`, always one of them, and shows and empties the user's Trash.
+    static func makeMenuBarMonitor(modules: [any FeatureModule]) -> MenuBarMonitor {
+        guard let monitor = modules.lazy.compactMap({ $0 as? MonitorModule }).first else {
+            preconditionFailure("makeModules always includes the monitor, whose readings the menu bar monitor shares.")
+        }
+        return monitor.makeMenuBarMonitor(trash: .live())
+    }
+
+    /// Whether the app goes on running once its last window closes: while the monitor is in
+    /// the menu bar, whose menu brings a window back. Quitting would take the menu away too.
+    static func keepsRunningWithoutWindows(preferences: Preferences) -> Bool {
+        preferences.value(of: MonitorSettings.showsMenuBarExtra)
+    }
 }

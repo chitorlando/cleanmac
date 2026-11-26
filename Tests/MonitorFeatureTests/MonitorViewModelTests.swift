@@ -122,6 +122,43 @@ struct MonitorViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    func keepsReadingForAPartOnScreenWhileNoWindowCanBeSeen() async {
+        let sampler = FakeSampler([busy])
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .milliseconds(5), isVisible: { false })
+
+        let menu = Task { await viewModel.runOnScreen() }
+        await waitUntil { sampler.readings >= 2 }
+        menu.cancel()
+        await menu.value
+        let readings = sampler.readings
+        try? await Task.sleep(for: .milliseconds(30))
+
+        #expect(sampler.readings == readings)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func skipsReadingsAgainOnceThePartOnScreenGoesAway() async {
+        let sampler = FakeSampler([busy])
+        let app = FakeAppVisibility()
+        app.isHidden = true
+        let viewModel = MonitorViewModel(sampler: sampler, interval: .milliseconds(5), isVisible: { app.isVisible() })
+
+        let window = Task { await viewModel.run() }
+        let menu = Task { await viewModel.runOnScreen() }
+        await waitUntil { sampler.readings >= 2 }
+        menu.cancel()
+        await menu.value
+        let checks = app.checksWhileHidden
+        await waitUntil { app.checksWhileHidden >= checks + 2 }
+        let readings = sampler.readings
+        await waitUntil { app.checksWhileHidden >= checks + 5 }
+
+        #expect(sampler.readings == readings)
+        window.cancel()
+        await window.value
+    }
+
+    @Test(.timeLimit(.minutes(1)))
     func takesOneReadingAtATimeForAllItsScreens() async {
         let sampler = FakeSampler([busy])
         let viewModel = MonitorViewModel(sampler: sampler, interval: .seconds(3_600))
