@@ -6,8 +6,10 @@ import Foundation
 /// Each screen showing the monitor, one per window, runs `run()` in a task tied to its
 /// appearance. They share one round of readings, which stops as soon as the last of them goes
 /// away. While the app can't be seen at all, such as when it's hidden or minimized,
-/// readings are skipped. After a pause of either kind, readings and their history start
-/// over, so the first reading doesn't show the average of the whole time away.
+/// readings are skipped, unless a part of the app that's on screen by itself, such as an open
+/// menu in the menu bar, runs `runOnScreen()`. After a pause of either kind, readings and
+/// their history start over, so the first reading doesn't show the average of the whole time
+/// away.
 @MainActor
 public final class MonitorViewModel: ObservableObject {
     public static let defaultInterval: Duration = .seconds(MonitorSettings.refreshInterval.defaultValue)
@@ -30,6 +32,8 @@ public final class MonitorViewModel: ObservableObject {
     private let sampler: any SystemSampling
     private let isVisible: @MainActor () -> Bool
     private lazy var sampling = SharedTask { [weak self] in await self?.takeReadings() }
+    /// Calls of `runOnScreen()` under way.
+    private var callersOnScreen = 0
 
     /// - Parameters:
     ///   - interval: Time between readings.
@@ -60,12 +64,21 @@ public final class MonitorViewModel: ObservableObject {
         await sampling.join()
     }
 
+    /// Takes readings like `run()`, for a part of the app that's on screen for as long as the
+    /// calling task runs, such as an open menu in the menu bar: they go on while no window of
+    /// the app can be seen.
+    public func runOnScreen() async {
+        callersOnScreen += 1
+        await sampling.join()
+        callersOnScreen -= 1
+    }
+
     /// Takes a reading every `interval` until cancelled, starting over first and whenever
     /// readings were skipped.
     private func takeReadings() async {
         var isResuming = true
         while !Task.isCancelled {
-            if isVisible() {
+            if callersOnScreen > 0 || isVisible() {
                 if isResuming {
                     await startOver()
                 }
