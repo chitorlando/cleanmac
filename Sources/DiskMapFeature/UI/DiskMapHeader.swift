@@ -1,7 +1,8 @@
 import CleanMacUI
 import SwiftUI
 
-/// Breadcrumbs of the focused folder, with its size and number of files.
+/// Breadcrumbs of the focused folder, with its size and number of files, and a note when some
+/// folders inside it couldn't be read.
 struct DiskMapHeader: View {
     @ObservedObject var viewModel: DiskMapViewModel
     let theme: FeatureTheme
@@ -25,6 +26,9 @@ struct DiskMapHeader: View {
                         comment: "Shown after the size of the focused folder, as in “120 GB in 3,000 files”. The argument is the number of files."
                     )
                     .foregroundStyle(.secondary)
+                }
+                if folder.unreadableFolderCount > 0 {
+                    UnreadableFoldersNote()
                 }
             }
         }

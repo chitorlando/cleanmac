@@ -1,9 +1,10 @@
-import AppKit
+import CleanMacCore
+import CleanMacUI
 import SwiftUI
 
 /// Explains that some folders stay out of the map without Full Disk Access, with a way to grant it.
 struct FullDiskAccessNote: View {
-    private static let settingsURL = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles")
+    @Environment(\.permissionSettings) private var permissionSettings
 
     var body: some View {
         VStack(spacing: 8) {
@@ -21,14 +22,12 @@ struct FullDiskAccessNote: View {
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
 
-            if let url = Self.settingsURL {
-                Button {
-                    NSWorkspace.shared.open(url)
-                } label: {
-                    Text("Open Privacy & Security", bundle: .module, comment: "Button that opens the Privacy & Security pane of System Settings.")
-                }
-                .buttonStyle(.borderless)
+            Button {
+                permissionSettings.open(.fullDiskAccess)
+            } label: {
+                Text("Open Privacy & Security", bundle: .module, comment: "Button that opens the Privacy & Security pane of System Settings.")
             }
+            .buttonStyle(.borderless)
         }
         .frame(minWidth: 320, maxWidth: 460)
     }

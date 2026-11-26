@@ -53,14 +53,8 @@ struct DiskMapItemRow: View {
 
             Spacer(minLength: 0)
 
-            VStack(alignment: .trailing, spacing: 1) {
-                Text(node.size.formattedByteCount)
-                    .font(.callout.monospacedDigit())
-                Text(share, format: .percent.precision(.fractionLength(0)))
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
-            .fixedSize()
+            sizeColumn
+                .fixedSize()
 
             actions
         }
@@ -70,6 +64,26 @@ struct DiskMapItemRow: View {
         .contentShape(.rect)
         .onTapGesture(count: 2) { if canOpen { onOpen() } }
         .accessibilityElement(children: .contain)
+    }
+
+    /// The size and share of the item, unless it's a folder that couldn't be read: a size of
+    /// zero would say it's empty, when it's only unknown.
+    @ViewBuilder
+    private var sizeColumn: some View {
+        if node.isUnreadable {
+            Text(verbatim: "—")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .accessibilityLabel(Text("Unknown size", bundle: .module, comment: "Size of a folder of the disk map that CleanMac couldn't look into, as VoiceOver reads it."))
+        } else {
+            VStack(alignment: .trailing, spacing: 1) {
+                Text(node.size.formattedByteCount)
+                    .font(.callout.monospacedDigit())
+                Text(share, format: .percent.precision(.fractionLength(0)))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+        }
     }
 
     @ViewBuilder

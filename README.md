@@ -22,7 +22,7 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | ✅ | **Archivos grandes y antiguos** | Recorre tu carpeta de inicio en busca de archivos de 50 MB o más y los filtra por tipo, tamaño, último uso y nombre. Puedes detener el análisis y revisar lo encontrado hasta entonces. También busca solo en una carpeta que elijas en el Mapa del disco, con las mismas exclusiones que el análisis completo. En CleanMac > Ajustes… (⌘,) eliges el tamaño mínimo, de 10 MB a 1 GB, que se aplica desde el siguiente análisis. Allí también excluyes carpetas, que ni este análisis ni el de Duplicados recorren desde el siguiente; el Mapa del disco las sigue mostrando. |
 | ✅ | **Duplicados** | Busca en tu carpeta de inicio archivos idénticos de 1 MB o más: compara el tamaño, los primeros 64 KB y el SHA-256 completo. Muestra el espacio recuperable de cada grupo y sugiere qué copia conservar. También puede buscar solo en una carpeta que elijas en el Mapa del disco, con las mismas exclusiones que en toda la carpeta de inicio. En CleanMac > Ajustes… (⌘,) eliges el tamaño mínimo que compara, de 100 KB a 100 MB, que se aplica desde el siguiente análisis. Las carpetas que excluyas allí tampoco se analizan aquí. |
 | ✅ | **Mantenimiento** | Cinco tareas a elegir: vaciar la caché DNS, liberar memoria, reindexar Spotlight, reconstruir Launch Services y restablecer la caché de Quick Look. |
-| ✅ | **Mapa del disco** | Dibuja en anillos lo que ocupa cada carpeta de tu carpeta de inicio, `~/Library` incluida, junto a una lista ordenada por tamaño. Puedes entrar en las carpetas, volver con las migas y mover a la Papelera lo que no necesites. Con clic derecho sobre un elemento de la lista puedes mostrarlo en Finder, copiar su ruta o pasarlo a otra función, como el Desinstalador si es una app. |
+| ✅ | **Mapa del disco** | Dibuja en anillos lo que ocupa cada carpeta de tu carpeta de inicio, junto a una lista ordenada por tamaño. Lo recorre todo: también la Biblioteca (`~/Library`) y los ítems ocultos, como la Papelera (`~/.Trash`) o las cachés de herramientas como `~/.npm`. Cuenta el espacio que cada archivo ocupa de verdad en el disco, mide las apps y demás paquetes como un solo elemento, no sigue los enlaces simbólicos y nunca descarga lo que solo está en iCloud u otro servicio en la nube: cuenta lo que hay en este Mac. Las carpetas que no puede leer, como Mail o Mensajes sin Acceso total al disco, aparecen con un candado y sin tamaño, y un aviso te lleva a darle ese permiso; sin él tampoco entra en los contenedores de otras apps, para que macOS no te pregunte en cada análisis. Puedes entrar en las carpetas, volver con las migas y mover a la Papelera lo que no necesites. Con clic derecho sobre un elemento de la lista puedes mostrarlo en Finder, copiar su ruta o pasarlo a otra función, como el Desinstalador si es una app o Basura del sistema si es una carpeta que limpia, como Caches. |
 | ✅ | **Ítems de inicio** | Lista lo que arranca al iniciar sesión o funciona en segundo plano: los agentes de `~/Library/LaunchAgents` («Solo tú») y los agentes y daemons de `/Library` («Todos los usuarios»), con la app a la que pertenecen. Marca como huérfanos los que apuntan a un programa que ya no existe. Tus agentes se pueden mover a la Papelera; los de `/Library` solo se muestran en Finder. Abre también los ajustes de ítems de inicio de macOS. |
 | ✅ | **Monitor** | Muestra en directo el uso de la CPU con su historial, la memoria y su presión, el espacio del disco de arranque y del de tu carpeta de inicio, y tus procesos que más CPU o memoria usan. Solo lee: no cierra ni cambia nada, y deja de medir cuando no está a la vista. En CleanMac > Ajustes… (⌘,) eliges si se actualiza cada 1, 2 o 5 segundos; la preferencia se guarda solo en tu Mac. |
 
@@ -36,10 +36,12 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
   Archivos grandes, Duplicados e Ítems de inicio no se marca nada hasta que lo eliges tú.
 - **Apps abiertas y residuos compartidos.** No se puede desinstalar una app abierta: hay que cerrarla antes.
   Los residuos que comparten varias copias de una misma app nunca se marcan solos.
-- **Mapa del disco con candado.** Dentro de `~/Library` solo se puede borrar el contenido de Caches y Logs;
-  lo demás se abre en Finder. Llaveros, Mail, Mensajes, iCloud Drive y los contenedores de apps nunca se tocan,
-  las fototecas y las carpetas estándar como Documentos no se borran enteras, y las apps se eliminan
-  con el Desinstalador.
+- **Mapa del disco con candado.** Dentro de la Biblioteca (`~/Library`) solo se puede borrar el contenido
+  de Caches y Logs, salvo las cachés que guardan la sincronización con iCloud; lo demás se abre en Finder.
+  Llaveros, Mail, Mensajes, iCloud Drive y los contenedores de apps nunca se tocan, las bibliotecas de Fotos,
+  Música y TV y las carpetas estándar como Documentos no se borran enteras, y las apps se eliminan
+  con el Desinstalador. Los ítems ocultos, como `~/.ssh` o la carpeta `.git` de un proyecto, solo se muestran,
+  lo que está en la Papelera se libera vaciándola, y una carpeta que no se pudo leer no se puede borrar.
 - **Privacidad solo con cachés.** Cada navegador tiene una lista de carpetas de caché permitidas: todo lo que
   no está en ella, como el historial, las cookies o las contraseñas, nunca aparece. Si el navegador está abierto,
   CleanMac te pide que salgas de él y nunca lo cierra a la fuerza.
@@ -124,13 +126,13 @@ puedes continuar u omitirlos, y volver a esa pantalla cuando quieras desde el me
   la pantalla vuelve a aparecer al abrir la app.
 
 - **Acceso total al disco.** Opcional y recomendado: permite analizar carpetas protegidas.
-  Sin él, la app simplemente las omite.
+  Sin él, la app simplemente las omite, y el Mapa del disco las muestra con un candado.
 - **Automatización de Finder.** Al desinstalar una app protegida, CleanMac pide a Finder que la mueva
   a la Papelera, para que puedas recuperarla con «Devolver».
 - **Escritorio, Documentos y Descargas.** En el primer análisis de Archivos grandes, Duplicados
   o Mapa del disco, que recorren tu carpeta de inicio.
-- **Datos de otras apps.** Cuando el Desinstalador o el Mapa del disco miden los contenedores de otras apps
-  en tu Library.
+- **Datos de otras apps.** Cuando el Desinstalador mide los contenedores de otras apps en tu Biblioteca.
+  El Mapa del disco no entra en ellos hasta que le das Acceso total al disco, con el que macOS no pregunta.
 - **Contraseña de administrador.** En Mantenimiento, para las tareas que lo necesitan (DNS, memoria
   y Spotlight), una sola vez por ejecución.
 

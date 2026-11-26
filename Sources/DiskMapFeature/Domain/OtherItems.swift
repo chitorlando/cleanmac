@@ -13,9 +13,9 @@ public struct OtherItems: Equatable, Sendable {
         self.fileCount = fileCount
     }
 
-    mutating func add(_ node: DiskNode) {
+    mutating func add(size: Int64, fileCount: Int) {
         itemCount += 1
-        size += node.size
-        fileCount += node.fileCount
+        self.size += size
+        self.fileCount += fileCount
     }
 }

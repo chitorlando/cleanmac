@@ -88,6 +88,13 @@ struct DiskMapItemMenuTests {
         ])
     }
 
+    /// Nothing is known about what's inside, so it's neither opened nor handed to a feature.
+    @Test func onlyRevealsAFolderThatCouldNotBeRead() {
+        let menu = makeMenu(advice: .unreadable)
+
+        #expect(menu.sections == [[.showInFinder, .copyPath]])
+    }
+
     @Test func leavesOutTheGroupOfTheFeaturesWhenNoneTakesTheItem() {
         let folder = makeMenu(advice: .allowed, canOpen: true, featureActions: [uninstaller])
         let app = makeMenu(advice: .useUninstaller, featureActions: [])
