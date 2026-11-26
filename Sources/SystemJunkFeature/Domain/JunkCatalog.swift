@@ -3,12 +3,14 @@ import Foundation
 
 /// Every junk category CleanMac knows about and where to find it.
 public enum JunkCatalog {
+    /// - Parameter fullDiskAccess: Tells whether the scan may look at the Trash of other volumes.
     public static func scanners(
         home: URL,
         reader: any DirectoryReading,
-        sizer: any SizeCalculating
+        sizer: any SizeCalculating,
+        fullDiskAccess: any FullDiskAccessChecking
     ) -> [any JunkScanner] {
-        entries(home: home).map { category, locations in
+        let folders: [any JunkScanner] = entries(home: home).map { category, locations in
             DirectoryJunkScanner(
                 category: category,
                 locations: locations,
@@ -16,6 +18,8 @@ public enum JunkCatalog {
                 sizer: sizer
             )
         }
+        let trash = TrashJunkScanner(reader: TrashSizeReader(home: home, sizer: sizer, fullDiskAccess: fullDiskAccess))
+        return folders + [trash]
     }
 
     /// Every folder whose items are offered as junk, for the home folder `home`.
@@ -94,5 +98,19 @@ public extension JunkCategory {
             comment: "Description of the simulator caches junk category."
         ),
         symbolName: "macbook.and.iphone"
+    )
+
+    /// Emptying the Trash erases what it holds for good, so its bins wait for the user to pick them.
+    static let trashBins = JunkCategory(
+        id: "trash-bins",
+        title: String(localized: "Trash", bundle: .module, comment: "Junk category title."),
+        summary: String(
+            localized: "Emptying it erases what you deleted for good.",
+            bundle: .module,
+            comment: "Description of the Trash junk category."
+        ),
+        symbolName: "trash",
+        removal: .emptyTrash,
+        preselectsItems: false
     )
 }

@@ -13,6 +13,7 @@ struct SystemJunkModuleTests {
         SystemJunkViewModel(
             scanService: JunkScanService(scanners: [StubJunkScanner(category: .userCaches, items: [item])]),
             cleanupService: CleanupService(remover: BlockingRemover()),
+            trashEmptying: TrashEmptyingService(emptier: RecordingTrashEmptier()),
             runningApps: FakeRunningApps(),
             cacheUsage: BrowserCacheUsage(library: home.appending(path: "Library"))
         )

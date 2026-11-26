@@ -105,6 +105,7 @@ struct JunkCategoryCard: View {
             ForEach(result.items) { item in
                 CleanableItemRow(
                     item: item,
+                    title: result.detail(of: item)?.title,
                     isSelected: viewModel.isSelected(item),
                     isToggleEnabled: viewModel.canSelect(item),
                     tint: theme.primary

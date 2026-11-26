@@ -78,6 +78,17 @@
         }
       }
     },
+    "Emptying it erases what you deleted for good." : {
+      "comment" : "Description of the Trash junk category.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciarla borra para siempre lo que eliminaste."
+          }
+        }
+      }
+    },
     "Free up space by removing caches, logs and development leftovers you no longer need." : {
       "comment" : "Introduction of the system junk feature.",
       "localizations" : {
@@ -118,6 +129,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sin acceso"
+          }
+        }
+      }
+    },
+    "On %@" : {
+      "comment" : "Name of the Trash bin of another volume, among the Trash bins of System Junk. The argument is the volume, such as “Backup Disk”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En %@"
+          }
+        }
+      }
+    },
+    "On This Mac" : {
+      "comment" : "Name of the Trash bin in the home folder, among the Trash bins of System Junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En este Mac"
           }
         }
       }
@@ -206,6 +239,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Archivos temporales que las apps vuelven a generar cuando los necesitan."
+          }
+        }
+      }
+    },
+    "Trash" : {
+      "comment" : "Junk category title.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papelera"
           }
         }
       }
