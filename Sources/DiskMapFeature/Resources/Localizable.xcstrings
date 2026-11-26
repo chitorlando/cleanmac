@@ -124,6 +124,17 @@
         }
       }
     },
+    "Apps and tools keep settings and data in hidden items, such as keys, history or caches. Removing them could break them, so the map only shows them." : {
+      "comment" : "Tooltip on a hidden item, such as ~/.ssh, that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las apps y herramientas guardan ajustes y datos en ítems ocultos, como claves, historiales o cachés. Borrarlos podría estropearlas, así que el mapa solo los muestra."
+          }
+        }
+      }
+    },
     "Apps keep their data here. Removing it could break them, so the map only shows it." : {
       "comment" : "Tooltip on app data in Library that can't be selected in the disk map.",
       "localizations" : {
@@ -179,6 +190,17 @@
         }
       }
     },
+    "Empty the Trash to free this space." : {
+      "comment" : "Tooltip on the Trash, or an item in it, that can't be selected in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vacía la Papelera para liberar este espacio."
+          }
+        }
+      }
+    },
     "Enclosing Folder" : {
       "comment" : "Button that goes up one folder in the disk map.",
       "localizations" : {
@@ -197,6 +219,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Para un mapa completo, da a CleanMac Acceso total al disco. Sin él, macOS deja fuera del mapa algunas carpetas, como Mail o Mensajes."
+          }
+        }
+      }
+    },
+    "Hidden" : {
+      "comment" : "Note on a hidden item of the disk map, such as ~/.ssh, which the map only shows.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculto"
+          }
+        }
+      }
+    },
+    "In the Trash" : {
+      "comment" : "Note on the Trash, or an item in it, in the disk map.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la Papelera"
           }
         }
       }

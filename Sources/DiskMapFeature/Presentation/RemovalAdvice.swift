@@ -7,6 +7,12 @@ public enum RemovalAdvice: Equatable, Sendable {
     case standardFolder
     /// Data that apps keep in `~/Library`. Removing it could break them, so it's only shown.
     case appData
+    /// A hidden item, whose name starts with a dot, or anything inside one, such as `~/.ssh`
+    /// or a project's `.git`. Apps and tools keep their settings and data there, so it's
+    /// only shown.
+    case hiddenData
+    /// The Trash or something in it, which emptying the Trash removes.
+    case inTrash
     /// Data that must never be removed from here: keychains, mail, messages,
     /// iCloud Drive, cloud storage, app containers and photo libraries.
     case protectedData

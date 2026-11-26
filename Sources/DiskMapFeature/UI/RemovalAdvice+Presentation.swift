@@ -10,6 +10,10 @@ extension RemovalAdvice {
             Text("System folder", bundle: .module, comment: "Note on a standard folder, such as Documents, that the disk map won't remove.")
         case .appData:
             Text("Used by apps", bundle: .module, comment: "Note on app data in Library that the disk map only shows.")
+        case .hiddenData:
+            Text("Hidden", bundle: .module, comment: "Note on a hidden item of the disk map, such as ~/.ssh, which the map only shows.")
+        case .inTrash:
+            Text("In the Trash", bundle: .module, comment: "Note on the Trash, or an item in it, in the disk map.")
         case .protectedData:
             Text("Protected", bundle: .module, comment: "Note on data the disk map never removes, such as mail or keychains.")
         case .useUninstaller:
@@ -28,6 +32,14 @@ extension RemovalAdvice {
             Text("macOS expects this folder. You can remove what’s inside it.", bundle: .module, comment: "Tooltip on a standard folder that can't be selected in the disk map.")
         case .appData:
             Text("Apps keep their data here. Removing it could break them, so the map only shows it.", bundle: .module, comment: "Tooltip on app data in Library that can't be selected in the disk map.")
+        case .hiddenData:
+            Text(
+                "Apps and tools keep settings and data in hidden items, such as keys, history or caches. Removing them could break them, so the map only shows them.",
+                bundle: .module,
+                comment: "Tooltip on a hidden item, such as ~/.ssh, that can't be selected in the disk map."
+            )
+        case .inTrash:
+            Text("Empty the Trash to free this space.", bundle: .module, comment: "Tooltip on the Trash, or an item in it, that can't be selected in the disk map.")
         case .protectedData:
             Text("This holds data that can’t be recovered once removed, such as passwords, mail, photos or iCloud files.", bundle: .module, comment: "Tooltip on protected data that can't be selected in the disk map.")
         case .useUninstaller:
