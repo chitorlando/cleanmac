@@ -1,3 +1,4 @@
+import CleanMacCore
 import CleanMacUI
 import DiskMapFeature
 import DuplicatesFeature
@@ -12,19 +13,38 @@ import UninstallerFeature
 /// Composition root: the only place that knows every feature and its concrete dependencies.
 @MainActor
 enum AppComposition {
-    static func makeModules() -> [any FeatureModule] {
+    /// What the user chose in the Settings window, kept in the defaults of the app.
+    static func makePreferences() -> Preferences {
+        Preferences(storage: UserDefaultsPreferenceStorage.standard())
+    }
+
+    static func makeModules(preferences: Preferences) -> [any FeatureModule] {
         let uninstaller = UninstallerModule.live()
         let diskMap = DiskMapModule.live(uninstallerFeatureID: uninstaller.id)
         return [
             SystemJunkModule.live(),
             PrivacyModule.live(),
             uninstaller,
-            LargeFilesModule.live(),
+            LargeFilesModule.live(preferences: preferences),
             diskMap,
-            DuplicatesModule.live(),
+            DuplicatesModule.live(preferences: preferences),
             MaintenanceModule.live(),
             LoginItemsModule.live(),
-            MonitorModule.live(diskMapFeatureID: diskMap.id)
+            MonitorModule.live(preferences: preferences, diskMapFeatureID: diskMap.id)
         ]
+    }
+
+    /// Everything in the Settings window: the settings of the app itself, then what each
+    /// feature adds, in the order of the features, and last the settings features share,
+    /// shown once.
+    static func makeSettings(modules: [any FeatureModule], preferences: Preferences) -> SettingsSections {
+        let language = SettingsItem(id: AppSettings.language.key, section: .general) {
+            LanguagePicker(preferences: preferences)
+        }
+        // Followed by the large files and the duplicates features, neither of which owns it.
+        let excludedFolders = SettingsItem(id: ScanSettings.excludedFolders.key, section: .analysis) {
+            ExcludedFolderList(preferences: preferences)
+        }
+        return SettingsSections(items: [language] + modules.flatMap { $0.settings } + [excludedFolders])
     }
 }

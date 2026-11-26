@@ -240,6 +240,17 @@
         }
       }
     },
+    "Minimum size of large files" : {
+      "comment" : "Setting of the large files scan: the smallest size of the files it finds. A size follows, such as “50 MB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño mínimo de los archivos grandes"
+          }
+        }
+      }
+    },
     "More than %@" : {
       "comment" : "Size filter for the largest files. The argument is a size, such as “1 GB”.",
       "localizations" : {
@@ -369,17 +380,6 @@
         }
       }
     },
-    "Only in: %@" : {
-      "comment" : "Pill shown while the scan is limited to one folder. The argument is the name of the folder.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo en: %@"
-          }
-        }
-      }
-    },
     "Other" : {
       "comment" : "File kind filter: files of any other kind.",
       "localizations" : {
@@ -409,17 +409,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volver a escanear"
-          }
-        }
-      }
-    },
-    "Scan the Whole Home Folder" : {
-      "comment" : "Tooltip and accessibility label of the button, in the pill that names the folder a scan is limited to, that scans the whole home folder instead.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Analizar toda la carpeta de inicio"
           }
         }
       }
@@ -475,6 +464,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ordenar por"
+          }
+        }
+      }
+    },
+    "Takes effect the next time you scan." : {
+      "comment" : "Note under the setting of the smallest size of the large files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se aplica la próxima vez que escanees."
           }
         }
       }

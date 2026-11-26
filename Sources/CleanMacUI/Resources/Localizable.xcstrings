@@ -94,6 +94,39 @@
         }
       }
     },
+    "Add" : {
+      "comment" : "Button of the folder chooser opened from a setting with a list of folders. It adds the chosen folders to the list.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir"
+          }
+        }
+      }
+    },
+    "Add Folder…" : {
+      "comment" : "Button of a setting with a list of folders. It opens the folder chooser to add more.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir carpeta…"
+          }
+        }
+      }
+    },
+    "Analysis" : {
+      "comment" : "Section of the Settings window with settings of the features that analyze files.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análisis"
+          }
+        }
+      }
+    },
     "Another app is using it. Quit that app and try again." : {
       "comment" : "Why an item couldn't be moved to the Trash: it's open in another app.",
       "localizations" : {
@@ -182,6 +215,17 @@
         }
       }
     },
+    "General" : {
+      "comment" : "Section of the Settings window with settings of the whole app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        }
+      }
+    },
     "It couldn’t be moved to the Trash." : {
       "comment" : "Why an item couldn't be moved to the Trash, when the reason isn't known.",
       "localizations" : {
@@ -204,6 +248,17 @@
         }
       }
     },
+    "Monitor" : {
+      "comment" : "Section of the Settings window with settings of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitor"
+          }
+        }
+      }
+    },
     "Moving to the Trash…" : {
       "comment" : "Status shown while items are moved to the Trash.",
       "localizations" : {
@@ -222,6 +277,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No seleccionado"
+          }
+        }
+      }
+    },
+    "Only in: %@" : {
+      "comment" : "Pill shown while a scan is limited to one folder. The argument is the name of the folder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo en: %@"
           }
         }
       }
@@ -277,6 +343,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progreso"
+          }
+        }
+      }
+    },
+    "Remove from the List" : {
+      "comment" : "Tooltip and accessibility label of the button that takes a folder out of a list of folders in the Settings window.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar de la lista"
+          }
+        }
+      }
+    },
+    "Scan the Whole Home Folder" : {
+      "comment" : "Tooltip and accessibility label of the button, on the pill that names the folder a scan is limited to, that scans the whole home folder instead.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analizar toda la carpeta de inicio"
           }
         }
       }

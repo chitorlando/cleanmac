@@ -3,12 +3,14 @@ import Foundation
 
 /// Keeps the monitor's readings fresh while its screen is on view.
 ///
-/// The screen runs `run()` in a task tied to its appearance, so sampling stops as soon as it
-/// goes away. While the app can't be seen at all, such as when it's hidden or minimized,
-/// readings are skipped.
+/// Each screen showing the monitor, one per window, runs `run()` in a task tied to its
+/// appearance. They share one round of readings, which stops as soon as the last of them goes
+/// away. While the app can't be seen at all, such as when it's hidden or minimized,
+/// readings are skipped. After a pause of either kind, readings and their history start
+/// over, so the first reading doesn't show the average of the whole time away.
 @MainActor
 public final class MonitorViewModel: ObservableObject {
-    public static let defaultInterval: Duration = .seconds(2)
+    public static let defaultInterval: Duration = .seconds(MonitorSettings.refreshInterval.defaultValue)
     /// Two minutes of history at the default interval.
     public static let historyLength = 60
 
@@ -16,9 +18,18 @@ public final class MonitorViewModel: ObservableObject {
     @Published public private(set) var cpuHistory = SampleHistory<CPUUsage>(capacity: historyLength)
     @Published public var processRanking = ProcessRanking.cpu
 
+    /// Time between readings. `run()` takes a new one from its next wait on, and the history
+    /// starts over, since it holds readings taken at the same pace.
+    public var interval: Duration {
+        didSet {
+            guard interval != oldValue else { return }
+            cpuHistory = SampleHistory(capacity: Self.historyLength)
+        }
+    }
+
     private let sampler: any SystemSampling
-    private let interval: Duration
     private let isVisible: @MainActor () -> Bool
+    private lazy var sampling = SharedTask { [weak self] in await self?.takeReadings() }
 
     /// - Parameters:
     ///   - interval: Time between readings.
@@ -42,22 +53,46 @@ public final class MonitorViewModel: ObservableObject {
     }
 
     /// Takes a reading every `interval` until the calling task is cancelled.
+    ///
+    /// Calls that overlap share their readings, so they come at the chosen pace however many
+    /// screens show the monitor. They stop once every call's task is cancelled.
     public func run() async {
+        await sampling.join()
+    }
+
+    /// Takes a reading every `interval` until cancelled, starting over first and whenever
+    /// readings were skipped.
+    private func takeReadings() async {
+        var isResuming = true
         while !Task.isCancelled {
             if isVisible() {
+                if isResuming {
+                    await startOver()
+                }
                 await refresh()
+                isResuming = false
+            } else {
+                isResuming = true
             }
             try? await Task.sleep(for: interval)
         }
     }
 
-    /// Takes one reading, unless the task is cancelled while it's being taken.
+    /// Takes one reading, unless the task is cancelled before or while it's being taken.
     public func refresh() async {
+        guard !Task.isCancelled else { return }
         let newSnapshot = await sampler.sample()
         guard !Task.isCancelled else { return }
         snapshot = newSnapshot
         if let cpu = newSnapshot.cpu {
             cpuHistory.append(cpu)
         }
+    }
+
+    /// Leaves the readings taken before a pause behind: the history starts over, since the
+    /// chart can't show a gap, and the next reading compares with nothing, as the first does.
+    private func startOver() async {
+        cpuHistory = SampleHistory(capacity: Self.historyLength)
+        await sampler.forgetPreviousReading()
     }
 }

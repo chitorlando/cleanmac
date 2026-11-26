@@ -11,7 +11,17 @@ import Foundation
 public final class DuplicatesViewModel: ObservableObject {
     @Published public private(set) var phase: DuplicatesPhase = .intro
     /// What the scan on screen covers: the whole home folder, or a folder another feature sent.
-    @Published public private(set) var scope = DuplicateScanScope.home
+    @Published public private(set) var scope = ScanScope.home
+    /// Smallest size of the files the scan on screen compared.
+    @Published public private(set) var minimumSize = DuplicateScanner.defaultMinimumSize
+    /// Smallest size of the files the next scan compares. A new value leaves the scan in
+    /// progress and the groups on screen as they are.
+    public var minimumSizeForNextScan = DuplicateScanner.defaultMinimumSize
+    /// Folders the next scan leaves out with everything inside, besides the ones the scanner
+    /// always leaves out. A folder sent from now on can't be one of them or inside one (see
+    /// `scanFolder(at:)`). A new list leaves the scan in progress and the groups on screen as
+    /// they are.
+    public var excludedFoldersForNextScan: [URL] = []
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of groups slow down as it went. Every change goes through
     /// `updateGroups(_:)`, which announces it and then edits the array in place.
@@ -108,13 +118,14 @@ public final class DuplicatesViewModel: ObservableObject {
     /// is scanned when the user leaves the report, and the last folder asked for wins.
     ///
     /// The request is ignored, and nothing changes, when the scanner can't scan the folder on
-    /// its own: there is no folder at `url`, or the scan of the home folder leaves it out.
-    /// The home folder itself gets a scan of the whole home folder.
+    /// its own: there is no folder at `url`, or the scan of the home folder leaves it out, as
+    /// it does with `excludedFoldersForNextScan`. The home folder itself gets a scan of the
+    /// whole home folder.
     ///
     /// - Returns: The scan, or `nil` when the request was ignored or waits for the report.
     @discardableResult
     public func scanFolder(at url: URL) -> Task<Void, Never>? {
-        guard let folderScope = scanner.scope(limitedTo: url) else { return nil }
+        guard let folderScope = scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) else { return nil }
         switch phase {
         case .intro, .scanning, .review:
             return startScan(folderScope)
@@ -122,6 +133,12 @@ public final class DuplicatesViewModel: ObservableObject {
             pendingFolder = url
             return nil
         }
+    }
+
+    /// Whether `scanFolder(at:)` would scan the folder at `url`, now or once the report is
+    /// left, rather than ignore it.
+    public func canScanFolder(at url: URL) -> Bool {
+        scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) != nil
     }
 
     /// Stops the scan and reviews the groups confirmed so far, which are complete and safe to use.
@@ -157,7 +174,8 @@ public final class DuplicatesViewModel: ObservableObject {
     @discardableResult
     public func done() -> Task<Void, Never>? {
         guard case .finished = phase else { return nil }
-        if let folder = pendingFolder, let folderScope = scanner.scope(limitedTo: folder) {
+        if let folder = pendingFolder,
+           let folderScope = scanner.scope(limitedTo: folder, excluding: excludedFoldersForNextScan) {
             return startScan(folderScope)
         }
         pendingFolder = nil
@@ -227,7 +245,7 @@ public final class DuplicatesViewModel: ObservableObject {
 
     // MARK: Private
 
-    private func startScan(_ newScope: DuplicateScanScope) -> Task<Void, Never> {
+    private func startScan(_ newScope: ScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingFolder = nil
         if newScope != scope {
@@ -235,13 +253,19 @@ public final class DuplicatesViewModel: ObservableObject {
             query.searchText = ""
             scope = newScope
         }
+        // Every announcement draws the screen again, so the same size isn't announced.
+        if minimumSizeForNextScan != minimumSize {
+            minimumSize = minimumSizeForNextScan
+        }
         updateGroups { $0 = [] }
         selection = ItemSelection()
         progress = DuplicateScanProgress()
         wasStoppedEarly = false
         focusedGroupID = nil
         phase = .scanning
-        let task = Task { await scan(newScope) }
+        let task = Task { [minimumSize, excludedFolders = excludedFoldersForNextScan] in
+            await scan(newScope, excluding: excludedFolders, minimumSize: minimumSize)
+        }
         activeTask = task
         return task
     }
@@ -271,8 +295,8 @@ public final class DuplicatesViewModel: ObservableObject {
         canToggleDuplicatesMemo.invalidate()
     }
 
-    private func scan(_ scope: DuplicateScanScope) async {
-        for await event in scanner.scan(scope) {
+    private func scan(_ scope: ScanScope, excluding excludedFolders: [URL], minimumSize: Int64) async {
+        for await event in scanner.scan(scope, excluding: excludedFolders, minimumSize: minimumSize) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let newProgress):

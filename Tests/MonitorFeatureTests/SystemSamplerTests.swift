@@ -42,6 +42,36 @@ struct SystemSamplerTests {
         #expect(second.cpu == CPUUsage(user: 0.3, system: 0.1))
     }
 
+    @Test func leavesTheTimeAwayOutOfTheReadingAfterAPause() async {
+        let sampler = sampler(
+            ticks: [
+                CPUTicks(user: 0, system: 0, idle: 0),
+                CPUTicks(user: 30, system: 10, idle: 60),
+                CPUTicks(user: 900, system: 100, idle: 59_000),
+                CPUTicks(user: 950, system: 120, idle: 59_030)
+            ],
+            processes: [
+                [process(1, "Safari", seconds: 1, memory: 500)],
+                [process(1, "Safari", seconds: 2, memory: 500)],
+                [process(1, "Safari", seconds: 300, memory: 500)],
+                [process(1, "Safari", seconds: 301, memory: 500)]
+            ],
+            times: [0, 2_000_000_000, 600_000_000_000, 602_000_000_000]
+        )
+        _ = await sampler.sample()
+        _ = await sampler.sample()
+
+        await sampler.forgetPreviousReading()
+        let afterThePause = await sampler.sample()
+        let next = await sampler.sample()
+
+        #expect(afterThePause.cpu == nil)
+        #expect(afterThePause.topByCPU.isEmpty)
+        #expect(afterThePause.topByMemory.map(\.name) == ["Safari"])
+        #expect(next.cpu == CPUUsage(user: 0.5, system: 0.2))
+        #expect(next.topByCPU.map(\.cpu) == [0.5])
+    }
+
     @Test func readsMemoryPressureAndVolumes() async {
         let snapshot = await sampler().sample()
 

@@ -98,18 +98,110 @@ struct LargeFilesViewModelTests {
         #expect(!viewModel.wasStoppedEarly)
     }
 
-    @Test func offersSizeBucketsFromTheMinimumSizeTheScannerLooksFor() {
-        let scanner = StubLargeFileScanner(events: [], criteria: LargeFileCriteria(minimumSize: 200_000_000))
+    // MARK: Smallest size
+
+    @Test func looksForFilesOf50MBUntilToldOtherwise() async {
+        let scanner = StubLargeFileScanner(events: [])
         let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedMinimumSizes == [50_000_000])
+        #expect(viewModel.minimumSize == 50_000_000)
+    }
+
+    @Test func looksForFilesOfTheSizeChosenForTheNextScan() async {
+        let scanner = StubLargeFileScanner(events: [])
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        viewModel.minimumSizeForNextScan = 200_000_000
+
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedMinimumSizes == [200_000_000])
+        #expect(viewModel.minimumSize == 200_000_000)
+    }
+
+    @Test func offersSizeBucketsFromTheMinimumSizeTheScanLookedFor() async {
+        let scanner = StubLargeFileScanner(events: [])
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        viewModel.minimumSizeForNextScan = 200_000_000
+
+        await viewModel.startScan().value
 
         #expect(viewModel.sizeBuckets == [.from100MBTo1GB, .over1GB])
     }
 
-    @Test func exposesTheMinimumSizeTheScannerLooksFor() {
-        let scanner = StubLargeFileScanner(events: [], criteria: LargeFileCriteria(minimumSize: 200_000_000))
+    @Test func aNewSizeWaitsForTheNextScan() async {
+        let scanner = StubLargeFileScanner(events: [])
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        await viewModel.startScan().value
+
+        viewModel.minimumSizeForNextScan = 200_000_000
+
+        #expect(viewModel.minimumSize == 50_000_000)
+        #expect(viewModel.sizeBuckets == [.upTo100MB, .from100MBTo1GB, .over1GB])
+        await viewModel.startScan().value
+        #expect(viewModel.minimumSize == 200_000_000)
+        #expect(scanner.scannedMinimumSizes == [50_000_000, 200_000_000])
+    }
+
+    @Test func aLargerSizeLeavesOutTheSizeFilterItCannotFindFilesIn() async {
+        let viewModel = await scannedViewModel()
+        viewModel.filter.sizeBucket = .upTo100MB
+
+        viewModel.minimumSizeForNextScan = 200_000_000
+        await viewModel.startScan().value
+
+        #expect(viewModel.filter.sizeBucket == nil)
+    }
+
+    @Test func aLargerSizeKeepsTheSizeFilterItCanStillFindFilesIn() async {
+        let viewModel = await scannedViewModel()
+        viewModel.filter.sizeBucket = .over1GB
+
+        viewModel.minimumSizeForNextScan = 200_000_000
+        await viewModel.startScan().value
+
+        #expect(viewModel.filter.sizeBucket == .over1GB)
+    }
+
+    // MARK: Folders left out
+
+    @Test func leavesOutNoMoreFoldersUntilToldOtherwise() async {
+        let scanner = StubLargeFileScanner(events: [])
         let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
 
-        #expect(viewModel.minimumSize == 200_000_000)
+        await viewModel.startScan().value
+
+        #expect(scanner.scannedExcludedFolders == [[]])
+    }
+
+    @Test func aNewListOfFoldersLeftOutWaitsForTheNextScan() async {
+        let music = URL(filePath: "/Users/test/Music")
+        let scanner = StubLargeFileScanner(events: [])
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        let scan = viewModel.startScan()
+
+        viewModel.excludedFoldersForNextScan = [music]
+        await scan.value
+
+        #expect(scanner.scannedExcludedFolders == [[]])
+        await viewModel.startScan().value
+        #expect(scanner.scannedExcludedFolders == [[], [music]])
+    }
+
+    @Test func refusesAFolderLeftOutOfTheNextScan() {
+        let music = URL(filePath: "/Users/test/Music")
+        let scanner = StubLargeFileScanner(events: [])
+        let viewModel = LargeFilesViewModel(scanner: scanner, cleanupService: CleanupService(remover: RecordingRemover()))
+        #expect(viewModel.canScanFolder(at: music))
+
+        viewModel.excludedFoldersForNextScan = [music]
+
+        #expect(!viewModel.canScanFolder(at: music))
+        #expect(viewModel.scanFolder(at: music) == nil)
+        #expect(viewModel.phase == .intro)
+        #expect(scanner.scannedScopes.isEmpty)
     }
 
     @Test func stoppingTheScanReviewsThePartialResults() async {

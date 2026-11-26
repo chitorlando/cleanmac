@@ -3,43 +3,47 @@ import Foundation
 
 /// Walks a folder in the background and reports the files that match the criteria as they're found.
 ///
-/// The folder is the home folder or one inside it, as the scope policy allows. The same walker
-/// walks both, so what a scan of the home folder skips is skipped in a single folder too.
+/// The folder is the home folder or one inside it, as the scope policy allows. Each scan gets
+/// a policy and a walker that leave out the same folders, the policy's own and those left out
+/// of that scan, so what a scan of the home folder skips is skipped in a single folder too.
 public struct LargeFileScanner: LargeFileScanning {
     public static let defaultProgressInterval = 500
 
-    public let criteria: LargeFileCriteria
     private let scopePolicy: ScanScopePolicy
-    private let walker: any FileWalking
+    private let makeWalker: @Sendable ([URL]) -> any FileWalking
     private let progressInterval: Int
 
     /// - Parameters:
-    ///   - scopePolicy: Says which folders the scan may look in, starting with the home folder.
-    ///     Give it the folders that `walker` excludes.
+    ///   - scopePolicy: Says which folders every scan may look in, starting with the home folder.
+    ///   - makeWalker: The walker of a scan, given the folders it skips with everything inside.
     public init(
         scopePolicy: ScanScopePolicy,
-        criteria: LargeFileCriteria = LargeFileCriteria(),
-        walker: any FileWalking,
+        makeWalker: @escaping @Sendable (_ excludedDirectories: [URL]) -> any FileWalking = {
+            FileSystemWalker(excludedDirectories: $0)
+        },
         progressInterval: Int = defaultProgressInterval
     ) {
         self.scopePolicy = scopePolicy
-        self.criteria = criteria
-        self.walker = walker
+        self.makeWalker = makeWalker
         self.progressInterval = max(1, progressInterval)
     }
 
-    public func scope(limitedTo url: URL) -> LargeFileScanScope? {
-        scopePolicy.scope(limitedTo: url)
+    public func scope(limitedTo url: URL, excluding excludedFolders: [URL]) -> ScanScope? {
+        scopePolicy.excluding(excludedFolders).scope(limitedTo: url)
     }
 
     /// Starts the scan. Ending the iteration of the stream cancels the walk.
     ///
     /// The policy checks the scope again here, when the walk begins: a folder that can no
-    /// longer be scanned, because it's gone or is now a link to somewhere else, reports no files.
-    public func scan(_ scope: LargeFileScanScope) -> AsyncStream<LargeFileScanEvent> {
-        let scopePolicy = scopePolicy
-        let criteria = criteria
-        let walker = walker
+    /// longer be scanned, because it's gone, is now a link to somewhere else or is left out,
+    /// reports no files.
+    public func scan(
+        _ scope: ScanScope,
+        excluding excludedFolders: [URL],
+        criteria: LargeFileCriteria
+    ) -> AsyncStream<LargeFileScanEvent> {
+        let scopePolicy = self.scopePolicy.excluding(excludedFolders)
+        let walker = makeWalker(scopePolicy.excludedDirectories)
         let interval = progressInterval
         return AsyncStream { continuation in
             let task = Task.detached(priority: .utility) {

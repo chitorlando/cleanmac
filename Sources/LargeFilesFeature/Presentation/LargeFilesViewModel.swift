@@ -12,7 +12,17 @@ public final class LargeFilesViewModel: ObservableObject {
     @Published public private(set) var phase: LargeFilesPhase = .intro
     /// Where the scan looks: the whole home folder, until another feature sends a folder to
     /// look in (see `scanFolder(at:)`). The files on screen are the ones found there.
-    @Published public private(set) var scope = LargeFileScanScope.home
+    @Published public private(set) var scope = ScanScope.home
+    /// Smallest size a file must have to be found, as the scan of the files on screen looked for it.
+    @Published public private(set) var minimumSize = LargeFileCriteria.defaultMinimumSize
+    /// Smallest size a file must have to be found by the next scan. A new value leaves the
+    /// scan in progress and the files on screen as they are.
+    public var minimumSizeForNextScan = LargeFileCriteria.defaultMinimumSize
+    /// Folders the next scan leaves out with everything inside, besides the ones the scanner
+    /// always leaves out. A folder sent from now on can't be one of them or inside one (see
+    /// `scanFolder(at:)`). A new list leaves the scan in progress and the files on screen as
+    /// they are.
+    public var excludedFoldersForNextScan: [URL] = []
     /// Not `@Published`: its setter copies the whole array on every change, which made a scan
     /// that finds thousands of files slow down as it went. Every change goes through
     /// `updateFiles(_:)`, which announces it and then edits the array in place.
@@ -44,7 +54,7 @@ public final class LargeFilesViewModel: ObservableObject {
     private var activeTask: Task<Void, Never>?
     /// Scope asked for while files were being removed or their report was on screen, which
     /// `done()` scans.
-    private var pendingScope: LargeFileScanScope?
+    private var pendingScope: ScanScope?
 
     // Derived state kept between reads. Every change re-renders all the views that observe
     // the view model, and several of them read these values in each pass, which took several
@@ -74,9 +84,6 @@ public final class LargeFilesViewModel: ObservableObject {
 
     // MARK: Derived state
 
-    /// Smallest size a file must have to be found, as the scanner looks for it.
-    public var minimumSize: Int64 { scanner.criteria.minimumSize }
-
     public var foundCount: Int { files.count }
 
     public var foundSize: Int64 {
@@ -94,7 +101,7 @@ public final class LargeFilesViewModel: ObservableObject {
         filter.kindOptions(for: files)
     }
 
-    /// Size ranges shown in the filter column, from the smallest size the scanner looks for.
+    /// Size ranges shown in the filter column, from the smallest size the scan looked for.
     public var sizeBuckets: [SizeBucket] {
         SizeBucket.buckets(forMinimumSize: minimumSize)
     }
@@ -134,12 +141,12 @@ public final class LargeFilesViewModel: ObservableObject {
     /// neither is disturbed: the folder waits and `done()` scans it.
     ///
     /// Ignored when the scanner can't look in `url`: it's not a folder, or it's one the scan
-    /// of the home folder never enters.
+    /// of the home folder never enters, such as one of `excludedFoldersForNextScan`.
     ///
     /// - Returns: The scan, or `nil` when the folder is ignored or left for later.
     @discardableResult
     public func scanFolder(at url: URL) -> Task<Void, Never>? {
-        guard let scope = scanner.scope(limitedTo: url) else { return nil }
+        guard let scope = scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) else { return nil }
         switch phase {
         case .intro, .scanning, .review:
             return startScan(in: scope)
@@ -147,6 +154,12 @@ public final class LargeFilesViewModel: ObservableObject {
             pendingScope = scope
             return nil
         }
+    }
+
+    /// Whether `scanFolder(at:)` would look in the folder at `url`, now or once the report is
+    /// left, rather than ignore it.
+    public func canScanFolder(at url: URL) -> Bool {
+        scanner.scope(limitedTo: url, excluding: excludedFoldersForNextScan) != nil
     }
 
     /// Stops the scan and reviews the files found so far.
@@ -282,25 +295,40 @@ public final class LargeFilesViewModel: ObservableObject {
     /// The scope and the filter only change, and are only announced, when the scan looks
     /// somewhere else: the filter was chosen over the files of another place, and it could
     /// hide every file found in this one. Scanning the same place again keeps it.
-    private func startScan(in newScope: LargeFileScanScope) -> Task<Void, Never> {
+    ///
+    /// The scan looks for files of `minimumSizeForNextScan` or more. Like the scope, the size
+    /// only changes, and is only announced, when it's another one. The size range of the
+    /// filter is then left out if the scan can't find files in it.
+    ///
+    /// The scan leaves out `excludedFoldersForNextScan`. A scope that is one of them, or inside
+    /// one, finds no files.
+    private func startScan(in newScope: ScanScope) -> Task<Void, Never> {
         activeTask?.cancel()
         pendingScope = nil
         if newScope != scope {
             scope = newScope
             filter = LargeFileFilter()
         }
+        if minimumSizeForNextScan != minimumSize {
+            minimumSize = minimumSizeForNextScan
+            if let sizeBucket = filter.sizeBucket, !sizeBuckets.contains(sizeBucket) {
+                filter.sizeBucket = nil
+            }
+        }
         updateFiles { $0 = [] }
         selection = ItemSelection()
         scannedFileCount = 0
         wasStoppedEarly = false
         phase = .scanning
-        let task = Task { await scan(newScope) }
+        let criteria = LargeFileCriteria(minimumSize: minimumSize)
+        let excludedFolders = excludedFoldersForNextScan
+        let task = Task { await scan(newScope, excluding: excludedFolders, criteria: criteria) }
         activeTask = task
         return task
     }
 
-    private func scan(_ scope: LargeFileScanScope) async {
-        for await event in scanner.scan(scope) {
+    private func scan(_ scope: ScanScope, excluding excludedFolders: [URL], criteria: LargeFileCriteria) async {
+        for await event in scanner.scan(scope, excluding: excludedFolders, criteria: criteria) {
             guard !Task.isCancelled else { return }
             switch event {
             case .progress(let scannedFiles):

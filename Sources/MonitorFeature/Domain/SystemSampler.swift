@@ -76,6 +76,12 @@ public actor SystemSampler: SystemSampling {
         )
     }
 
+    public func forgetPreviousReading() {
+        previousTicks = nil
+        previousProcessTimes = [:]
+        previousTime = nil
+    }
+
     private func topProcesses(at time: UInt64) -> ([ProcessUsage], [ProcessUsage]) {
         let samples = readers.processes.processes()
         let elapsed = previousTime.map { time > $0 ? time - $0 : 0 } ?? 0
