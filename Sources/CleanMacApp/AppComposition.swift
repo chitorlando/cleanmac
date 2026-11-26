@@ -56,4 +56,10 @@ enum AppComposition {
         }
         return monitor.menuBarMonitor
     }
+
+    /// Whether the app goes on running once its last window closes: while the monitor is in
+    /// the menu bar, whose menu brings a window back. Quitting would take the menu away too.
+    static func keepsRunningWithoutWindows(preferences: Preferences) -> Bool {
+        preferences.value(of: MonitorSettings.showsMenuBarExtra)
+    }
 }

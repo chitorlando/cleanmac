@@ -8,6 +8,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        !AppComposition.keepsRunningWithoutWindows(preferences: AppComposition.makePreferences())
     }
 }
