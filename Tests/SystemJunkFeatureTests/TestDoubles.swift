@@ -19,12 +19,21 @@ struct FakeSizeCalculator: SizeCalculating {
     func size(of url: URL) -> Int64 { sizes[url] ?? 0 }
 }
 
-/// Returns fixed items for one category.
+/// Returns a fixed result for one category.
 struct StubJunkScanner: JunkScanner {
-    let category: JunkCategory
-    let items: [CleanableItem]
+    let result: CategoryScanResult
 
-    func scan() async -> [CleanableItem] { items }
+    var category: JunkCategory { result.category }
+
+    init(category: JunkCategory, items: [CleanableItem]) {
+        result = CategoryScanResult(category: category, items: items)
+    }
+
+    init(result: CategoryScanResult) {
+        self.result = result
+    }
+
+    func scan() async -> CategoryScanResult { result }
 }
 
 /// Removes nothing and remembers which URLs it was asked to remove.

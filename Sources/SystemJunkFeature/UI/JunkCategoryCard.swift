@@ -3,6 +3,7 @@ import CleanMacUI
 import SwiftUI
 
 /// Expandable card for one category with its items. The ones an open browser is using are locked.
+/// A category macOS keeps CleanMac out of shows how to give it Full Disk Access instead.
 struct JunkCategoryCard: View {
     let result: CategoryScanResult
     @ObservedObject var viewModel: SystemJunkViewModel
@@ -14,10 +15,13 @@ struct JunkCategoryCard: View {
         GlassCard {
             VStack(spacing: 0) {
                 header
+                if result.needsFullDiskAccess {
+                    JunkFullDiskAccessNote().padding(.top, 12)
+                }
                 if !lockingAppNames.isEmpty {
                     WarningNotice(lockedNotice).padding(.top, 12)
                 }
-                if isExpanded {
+                if isExpanded, !result.items.isEmpty {
                     Divider().padding(.vertical, 12)
                     itemList
                 }
@@ -50,10 +54,16 @@ struct JunkCategoryCard: View {
 
             Spacer()
 
-            Text(result.totalSize.formattedByteCount)
-                .font(.headline.monospacedDigit())
+            if result.needsFullDiskAccess {
+                Text("No Access", bundle: .module, comment: "Shown instead of the size of a junk category that macOS keeps CleanMac from reading.")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text(result.totalSize.formattedByteCount)
+                    .font(.headline.monospacedDigit())
 
-            expandButton
+                expandButton
+            }
         }
     }
 

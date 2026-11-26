@@ -13,9 +13,9 @@ struct SystemJunkViewModelTests {
     private let runningApps = FakeRunningApps()
     private let remover = RecordingRemover()
 
-    private func makeViewModel(remover: any ItemRemoving) -> SystemJunkViewModel {
+    private func makeViewModel(remover: any ItemRemoving, scanners: [any JunkScanner]? = nil) -> SystemJunkViewModel {
         SystemJunkViewModel(
-            scanService: JunkScanService(scanners: [
+            scanService: JunkScanService(scanners: scanners ?? [
                 StubJunkScanner(category: .userCaches, items: [vivaldiCache, vivaldiNamedCache, item]),
                 StubJunkScanner(category: .userLogs, items: [log])
             ]),
@@ -95,6 +95,21 @@ struct SystemJunkViewModelTests {
 
         #expect(viewModel.selectedSize == viewModel.foundSize)
         #expect(viewModel.selectedItems.count == 4)
+    }
+
+    @Test func showsACategoryMacOSKeepsCleanMacOutOfWithNothingToSelect() async {
+        let viewModel = makeViewModel(remover: remover, scanners: [
+            StubJunkScanner(result: .unreadable(.userLogs)),
+            StubJunkScanner(category: .userCaches, items: [])
+        ])
+
+        await viewModel.startScan().value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.results.map(\.category) == [.userLogs])
+        #expect(viewModel.results.allSatisfy(\.needsFullDiskAccess))
+        #expect(viewModel.foundSize == 0)
+        #expect(!viewModel.hasSelection)
     }
 
     @Test func locksTheCachesOfAnOpenBrowser() async throws {

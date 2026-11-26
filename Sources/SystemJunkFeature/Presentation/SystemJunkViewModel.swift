@@ -174,7 +174,7 @@ public final class SystemJunkViewModel: ObservableObject {
         for await result in scanService.scan() {
             guard !Task.isCancelled else { return }
             scannedCategoryCount += 1
-            guard !result.items.isEmpty else { continue }
+            guard !result.items.isEmpty || result.needsFullDiskAccess else { continue }
             results.append(result)
             selection.select(result.items)
             refreshOpenApps()
