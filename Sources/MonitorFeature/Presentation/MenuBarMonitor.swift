@@ -13,9 +13,16 @@ import SwiftUI
 public final class MenuBarMonitor: ObservableObject {
     /// Whether the icon is in the menu bar, as the user chose in the Settings window. Taking the
     /// icon out of the menu bar, by dragging it away with the Command key held, turns it off.
-    @Published public var isShown: Bool {
-        didSet {
-            preferences.set(isShown, for: MonitorSettings.showsMenuBarExtra)
+    ///
+    /// Setting what's already the case changes nothing and tells no one. SwiftUI sets it again
+    /// each time it updates the menu bar, and the app would otherwise update over and over.
+    public var isShown: Bool {
+        get { isInMenuBar }
+        set {
+            guard newValue != isInMenuBar else { return }
+            objectWillChange.send()
+            isInMenuBar = newValue
+            preferences.set(newValue, for: MonitorSettings.showsMenuBarExtra)
             updateMenuBarReadings()
         }
     }
@@ -30,6 +37,7 @@ public final class MenuBarMonitor: ObservableObject {
     /// Id of the monitor feature, which the menu opens in the window of the app.
     let featureID: String
     private let preferences: Preferences
+    private var isInMenuBar: Bool
     private var menuReadings: Task<Void, Never>?
     private var menuBarReadings: Task<Void, Never>?
     private var settingChanges: [AnyCancellable] = []
@@ -43,12 +51,11 @@ public final class MenuBarMonitor: ObservableObject {
         self.monitor = monitor
         self.preferences = preferences
         self.featureID = featureID
-        isShown = preferences.value(of: MonitorSettings.showsMenuBarExtra)
+        isInMenuBar = preferences.value(of: MonitorSettings.showsMenuBarExtra)
         showsCPU = preferences.value(of: MonitorSettings.showsCPUInMenuBar)
         settingChanges = [
             preferences.changes(of: MonitorSettings.showsMenuBarExtra).sink { [weak self] isShown in
-                guard let self, self.isShown != isShown else { return }
-                self.isShown = isShown
+                self?.isShown = isShown
             },
             preferences.changes(of: MonitorSettings.showsCPUInMenuBar).sink { [weak self] showsCPU in
                 self?.showsCPU = showsCPU

@@ -74,6 +74,20 @@ struct MenuBarMonitorTests {
         #expect(preferences.value(of: MonitorSettings.showsMenuBarExtra) == false)
     }
 
+    /// SwiftUI sets whether the icon is in the menu bar again each time it updates the menu bar.
+    /// Telling about it would have SwiftUI update the menu bar again, and so on forever.
+    @Test func tellsNothingWhenToldWhatIsAlreadyTheCase() {
+        let menuBar = makeMenuBar(sampler: FakeSampler([]))
+        var changes = 0
+        let observation = menuBar.objectWillChange.sink { changes += 1 }
+
+        menuBar.isShown = true
+        #expect(changes == 0)
+        menuBar.isShown = false
+        #expect(changes == 1)
+        observation.cancel()
+    }
+
     @Test func opensTheMonitorFeature() {
         let module = MonitorModule(viewModel: MonitorViewModel(sampler: FakeSampler([])), preferences: Preferences(storage: InMemoryPreferenceStorage()))
 
