@@ -8,6 +8,9 @@ public final class SystemJunkViewModel: ObservableObject {
     @Published public private(set) var results: [CategoryScanResult] = []
     @Published public private(set) var selection = ItemSelection()
     @Published public private(set) var scannedCategoryCount = 0
+    /// Whether the user is asked to confirm moving the selected junk to the Trash, which
+    /// `clean()` does.
+    @Published public private(set) var isConfirmingClean = false
 
     private let scanService: JunkScanService
     private let cleanupService: CleanupService
@@ -27,6 +30,7 @@ public final class SystemJunkViewModel: ObservableObject {
 
     public var foundSize: Int64 { allItems.totalSize }
     public var selectedSize: Int64 { selectedItems.totalSize }
+    public var selectedCount: Int { selectedItems.count }
     public var hasSelection: Bool { !selection.isEmpty }
 
     private var allItems: [CleanableItem] { results.flatMap(\.items) }
@@ -51,8 +55,23 @@ public final class SystemJunkViewModel: ObservableObject {
         phase = .idle
     }
 
+    /// Asks the user to confirm moving the selected junk to the Trash, and removes nothing.
+    ///
+    /// The clean button calls it, also when Return presses that button.
+    public func requestClean() {
+        guard phase == .review, hasSelection else { return }
+        isConfirmingClean = true
+    }
+
+    /// Stops asking for confirmation, without removing anything.
+    public func cancelClean() {
+        isConfirmingClean = false
+    }
+
+    /// Moves the selected junk to the Trash, once the user confirmed it (see `requestClean()`).
     @discardableResult
     public func clean() -> Task<Void, Never>? {
+        isConfirmingClean = false
         let items = selectedItems
         guard !items.isEmpty else { return nil }
         phase = .cleaning

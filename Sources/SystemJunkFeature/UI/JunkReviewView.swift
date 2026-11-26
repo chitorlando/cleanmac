@@ -1,7 +1,7 @@
 import CleanMacUI
 import SwiftUI
 
-/// List of findings where the user decides what to remove.
+/// List of findings where the user decides what to remove, and confirms it before it's removed.
 struct JunkReviewView: View {
     @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
@@ -18,10 +18,17 @@ struct JunkReviewView: View {
                 isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
-                onPrimary: { viewModel.clean() }
+                onPrimary: { viewModel.requestClean() }
             )
         }
         .frame(maxWidth: 760)
+        .trashConfirmation(
+            itemCount: viewModel.selectedCount,
+            size: viewModel.selectedSize,
+            isPresented: viewModel.isConfirmingClean,
+            onConfirm: { viewModel.clean() },
+            onDismiss: { viewModel.cancelClean() }
+        )
     }
 
     private var cleanTitle: Text {
