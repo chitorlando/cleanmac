@@ -1,5 +1,5 @@
 /* Copyright line shown in the About window. */
 "NSHumanReadableCopyright" = "Software libre bajo la licencia MIT.";
 
-/* Explains why CleanMac asks to control Finder: moving protected apps to the Trash. */
-"NSAppleEventsUsageDescription" = "CleanMac usa el Finder para mover a la Papelera las apps protegidas, así podrás recuperarlas con «Devolver».";
+/* Explains why CleanMac asks to control Finder: moving protected apps to the Trash and emptying it. */
+"NSAppleEventsUsageDescription" = "CleanMac usa el Finder para mover a la Papelera las apps protegidas, así podrás recuperarlas con «Devolver», y para vaciar la Papelera cuando se lo pidas.";
