@@ -96,3 +96,10 @@ struct StubProtectionReader: ProtectionReading {
 
     func protections() async -> [ProtectionCheck] { checks }
 }
+
+/// Reports fixed login and background items.
+struct StubPersistenceScanner: PersistenceScanning {
+    var results: [PersistenceFinding] = []
+
+    func findings() -> [PersistenceFinding] { results }
+}

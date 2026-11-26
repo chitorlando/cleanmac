@@ -20,4 +20,5 @@ public enum SecurityReviewEvent: Hashable, Sendable {
 public enum SecurityReviewStep: CaseIterable, Hashable, Sendable {
     case protections
     case apps
+    case persistence
 }

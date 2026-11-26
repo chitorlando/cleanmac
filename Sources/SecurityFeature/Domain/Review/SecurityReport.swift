@@ -4,10 +4,17 @@ public struct SecurityReport: Hashable, Sendable {
     public let protections: [ProtectionCheck]
     /// Every app checked, in the order they were found.
     public let apps: [AppSignatureCheck]
+    /// The login and background items that deserve a look.
+    public let persistence: [PersistenceFinding]
 
-    public init(protections: [ProtectionCheck] = [], apps: [AppSignatureCheck] = []) {
+    public init(
+        protections: [ProtectionCheck] = [],
+        apps: [AppSignatureCheck] = [],
+        persistence: [PersistenceFinding] = []
+    ) {
         self.protections = protections
         self.apps = apps
+        self.persistence = persistence
     }
 
     /// The protections that are off, partly off or out of date.
@@ -22,6 +29,6 @@ public struct SecurityReport: Hashable, Sendable {
 
     /// How many findings the user should look at.
     public var attentionCount: Int {
-        protectionsNeedingAttention.count + appsNeedingAttention.count
+        protectionsNeedingAttention.count + appsNeedingAttention.count + persistence.count
     }
 }

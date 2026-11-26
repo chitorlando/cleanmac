@@ -5,6 +5,7 @@ public struct SecurityReviewer: SecurityReviewing {
     private let protections: any ProtectionReading
     private let appFinder: any AppFinding
     private let signatureChecker: AppSignatureChecker
+    private let persistence: any PersistenceScanning
     private let maximumConcurrentChecks: Int
 
     /// - Parameter maximumConcurrentChecks: How many signatures are checked at once. Each check
@@ -13,11 +14,13 @@ public struct SecurityReviewer: SecurityReviewing {
         protections: any ProtectionReading,
         appFinder: any AppFinding,
         signatureChecker: AppSignatureChecker,
+        persistence: any PersistenceScanning,
         maximumConcurrentChecks: Int = min(4, ProcessInfo.processInfo.activeProcessorCount)
     ) {
         self.protections = protections
         self.appFinder = appFinder
         self.signatureChecker = signatureChecker
+        self.persistence = persistence
         self.maximumConcurrentChecks = max(1, maximumConcurrentChecks)
     }
 
@@ -43,7 +46,15 @@ public struct SecurityReviewer: SecurityReviewing {
         let appChecks = await checkSignatures(of: apps, reportingTo: continuation)
         guard !Task.isCancelled else { return }
 
-        continuation.yield(.finished(SecurityReport(protections: protectionChecks, apps: appChecks)))
+        continuation.yield(.started(.persistence))
+        let persistenceFindings = persistence.findings()
+        guard !Task.isCancelled else { return }
+
+        continuation.yield(.finished(SecurityReport(
+            protections: protectionChecks,
+            apps: appChecks,
+            persistence: persistenceFindings
+        )))
     }
 
     /// Checks a few apps at a time, reporting each one, and returns them in the order given.

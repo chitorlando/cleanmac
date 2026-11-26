@@ -160,6 +160,17 @@
         }
       }
     },
+    "Checking login and background items…" : {
+      "comment" : "Status shown while the security review checks what launchd starts at login or in the background.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprobando los ítems de inicio y en segundo plano…"
+          }
+        }
+      }
+    },
     "Checking your Mac’s protections…" : {
       "comment" : "Status shown while the security review reads the settings of macOS, such as FileVault.",
       "localizations" : {
@@ -292,6 +303,28 @@
         }
       }
     },
+    "It runs something from a hidden folder, which Finder doesn’t show. Some developer tools do that; if you don’t recognize it, take a closer look." : {
+      "comment" : "Why a login or background item stands out: it runs something from a folder whose name starts with a dot.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta algo desde una carpeta oculta, que Finder no muestra. Algunas herramientas para desarrolladores lo hacen; si no lo reconoces, échale un vistazo."
+          }
+        }
+      }
+    },
+    "It runs something from a temporary or shared folder, where any app can put files. Installers don’t usually leave programs there." : {
+      "comment" : "Why a login or background item stands out: it runs something from a folder such as /tmp or /Users/Shared.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ejecuta algo desde una carpeta temporal o compartida, donde cualquier app puede dejar archivos. Los instaladores no suelen dejar programas ahí."
+          }
+        }
+      }
+    },
     "Its definitions haven’t been updated for months, so recent malware may go unnoticed. Software Update installs them with its system files." : {
       "comment" : "Explanation of XProtect when its definitions haven't been updated for months.",
       "localizations" : {
@@ -310,6 +343,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sus archivos ya no coinciden con su firma: algo los cambió después de firmarla. Suele arreglarse reinstalándola desde su desarrollador."
+          }
+        }
+      }
+    },
+    "Its program has no signature, so nothing confirms who made it." : {
+      "comment" : "Why a login or background item stands out: its program isn't signed.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su programa no tiene firma, así que nada confirma quién lo hizo."
+          }
+        }
+      }
+    },
+    "Its program no longer matches its signature: something changed it after it was signed." : {
+      "comment" : "Why a login or background item stands out: its program's signature is damaged.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su programa ya no coincide con su firma: algo lo cambió después de firmarlo."
           }
         }
       }
@@ -347,6 +402,17 @@
         }
       }
     },
+    "Login & Background Items" : {
+      "comment" : "Title of the part of the security review about what launchd starts on its own.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ítems de inicio y en segundo plano"
+          }
+        }
+      }
+    },
     "Mac Settings" : {
       "comment" : "Title of the part of the security review about the protections built into macOS.",
       "localizations" : {
@@ -354,6 +420,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajustes del Mac"
+          }
+        }
+      }
+    },
+    "No item runs an unsigned program, or one from a temporary or hidden folder." : {
+      "comment" : "Shown when the security review found no login or background item worth a look.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ningún ítem ejecuta un programa sin firma ni uno de una carpeta temporal u oculta."
           }
         }
       }
@@ -629,6 +706,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Versión %@, actualizada el %@"
+          }
+        }
+      }
+    },
+    "What starts on its own at login or in the background, from your Library and the Mac’s." : {
+      "comment" : "Subtitle of the Login & Background Items part of the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo que se inicia solo al iniciar sesión o en segundo plano, desde tu Biblioteca y la del Mac."
           }
         }
       }

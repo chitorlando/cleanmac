@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 import SecurityFeature
 import Testing
@@ -6,12 +7,23 @@ import Testing
 struct SecurityReviewerTests {
     private let apps = (1...10).map { URL(filePath: "/Applications/App \($0).app") }
     private let protections = [ProtectionCheck(kind: .firewall, state: .off)]
+    private let persistence = [
+        PersistenceFinding(
+            plistURL: URL(filePath: "/Library/LaunchDaemons/com.example.plist"),
+            job: LaunchJobDefinition(label: "com.example", programPath: "/tmp/x", runsAtLoad: true, keepsAlive: true, isDisabled: false),
+            kind: .daemon,
+            scope: .allUsers,
+            owner: nil,
+            concerns: [.temporaryOrSharedFolder]
+        )
+    ]
 
     private func reviewer(inspector: StubSignatureInspector = StubSignatureInspector()) -> SecurityReviewer {
         SecurityReviewer(
             protections: StubProtectionReader(checks: protections),
             appFinder: StubAppFinder(urls: apps),
             signatureChecker: AppSignatureChecker(inspector: inspector, gatekeeper: SpyGatekeeper()),
+            persistence: StubPersistenceScanner(results: persistence),
             maximumConcurrentChecks: 3
         )
     }
@@ -31,7 +43,11 @@ struct SecurityReviewerTests {
         let events = await events(of: reviewer(inspector: inspector))
 
         #expect(events.first == .started(.protections))
-        #expect(events.contains(.started(.apps)))
+        let steps = events.compactMap { event -> SecurityReviewStep? in
+            guard case .started(let step) = event else { return nil }
+            return step
+        }
+        #expect(steps == SecurityReviewStep.allCases)
         guard case .finished(let report) = try #require(events.last) else {
             Issue.record("The review didn't finish with its report")
             return
@@ -39,7 +55,8 @@ struct SecurityReviewerTests {
         #expect(report.protections == protections)
         #expect(report.apps.map(\.url) == apps)
         #expect(report.appsNeedingAttention.map(\.url) == [apps[4]])
-        #expect(report.attentionCount == 2)
+        #expect(report.persistence == persistence)
+        #expect(report.attentionCount == 3)
     }
 
     @Test func reportsEachAppItChecks() async {

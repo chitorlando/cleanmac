@@ -26,6 +26,8 @@ private extension SecurityReviewStep {
             Text("Checking your Mac’s protections…", bundle: .module, comment: "Status shown while the security review reads the settings of macOS, such as FileVault.")
         case .apps:
             Text("Checking app signatures…", bundle: .module, comment: "Status shown while the security review checks the code signature of each app.")
+        case .persistence:
+            Text("Checking login and background items…", bundle: .module, comment: "Status shown while the security review checks what launchd starts at login or in the background.")
         }
     }
 }
