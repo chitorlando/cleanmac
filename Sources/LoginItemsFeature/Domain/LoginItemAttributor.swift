@@ -9,10 +9,17 @@ public struct LoginItemAttributor: Sendable {
 
     private let appLocator: any AppLocating
     private let reader: any DirectoryReading
+    private let presence: any ItemPresenceChecking
 
-    public init(appLocator: any AppLocating, reader: any DirectoryReading) {
+    /// - Parameter presence: Tells a program that is gone from one that can't be reached.
+    public init(
+        appLocator: any AppLocating,
+        reader: any DirectoryReading,
+        presence: any ItemPresenceChecking = FileSystemItemPresenceChecker()
+    ) {
         self.appLocator = appLocator
         self.reader = reader
+        self.presence = presence
     }
 
     /// The app whose bundle contains the program or, failing that, an installed app whose
@@ -20,14 +27,15 @@ public struct LoginItemAttributor: Sendable {
     /// "com.example.app.agent". The most specific identifier wins.
     public func owner(of job: LaunchJobDefinition) -> LoginItemOwner? {
         let appURL = job.programURL.flatMap(enclosingApp(of:)) ?? installedApp(matching: job.label)
-        return appURL.map { LoginItemOwner(appURL: $0, name: $0.deletingPathExtension().lastPathComponent) }
+        return appURL.map { LoginItemOwner(appURL: $0) }
     }
 
-    /// Whether the program the job runs is missing. Jobs without an absolute program path
-    /// can't be checked, so they never count as orphaned.
+    /// Whether the program the job runs, or the script or app it hands to a known interpreter
+    /// or launcher, is known to be missing. A job without an absolute program path, or whose
+    /// program can't be reached, such as a helper in a folder only root can enter, can't be
+    /// checked, so it never counts as orphaned.
     public func isOrphaned(_ job: LaunchJobDefinition) -> Bool {
-        guard let programURL = job.programURL else { return false }
-        return !reader.itemExists(at: programURL)
+        job.requiredItems.contains { presence.presence(of: $0) == .missing }
     }
 
     /// The outermost ".app" bundle in the program's path, such as the app that embeds a helper.

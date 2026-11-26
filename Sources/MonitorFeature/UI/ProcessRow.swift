@@ -55,7 +55,7 @@ struct ProcessRow: View {
         case .cpu:
             Text(process.cpu, format: .percent.precision(.fractionLength(0)))
         case .memory:
-            Text(Int64(clamping: process.memoryBytes).formattedByteCount)
+            Text(process.memoryBytes.formattedMemorySize)
         }
     }
 }

@@ -9,4 +9,15 @@ public struct LoginItemOwner: Hashable, Sendable {
         self.appURL = appURL
         self.name = name
     }
+
+    /// The app at `appURL`, named after its bundle without the extension.
+    public init(appURL: URL) {
+        self.init(appURL: appURL, name: appURL.deletingPathExtension().lastPathComponent)
+    }
+
+    /// Whether it is the app at `url`, whichever way the path is written, such as with a
+    /// trailing slash.
+    public func isApp(at url: URL) -> Bool {
+        appURL.standardizedFileURL.path == url.standardizedFileURL.path
+    }
 }
