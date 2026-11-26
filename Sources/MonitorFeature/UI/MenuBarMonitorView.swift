@@ -22,6 +22,7 @@ struct MenuBarMonitorView: View {
                 memory(readout.memory, pressure: readout.memoryPressure)
                 disk(readout.startupVolume)
                 processes(readout.busiestProcesses)
+                MenuBarTrashCard(trash: menuBar.trash, theme: theme)
                 buttons
             }
             .padding(14)

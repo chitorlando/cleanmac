@@ -13,11 +13,16 @@ struct MenuBarMonitorTests {
     private func makeMenuBar(
         sampler: FakeSampler,
         preferences: Preferences? = nil,
-        interval: Duration = .milliseconds(5)
+        interval: Duration = .milliseconds(5),
+        trashReader: FakeTrashReader = FakeTrashReader([MenuBarTrashFixtures.full])
     ) -> MenuBarMonitor {
         let monitor = MonitorViewModel(sampler: sampler, interval: interval, isVisible: { false })
         let preferences = preferences ?? Preferences(storage: InMemoryPreferenceStorage())
-        return MenuBarMonitor(monitor: monitor, preferences: preferences, featureID: "monitor")
+        return MenuBarMonitor(monitor: monitor, preferences: preferences, featureID: "monitor", trash: makeTrash(trashReader))
+    }
+
+    private func makeTrash(_ reader: FakeTrashReader) -> MenuBarTrash {
+        MenuBarTrash(reader: reader, service: TrashEmptyingService(emptier: FakeTrashEmptier()), homeBin: MenuBarTrashFixtures.homeBin)
     }
 
     /// Checks `condition` a little at a time until it holds. The tests' time limits end a wait
@@ -91,7 +96,25 @@ struct MenuBarMonitorTests {
     @Test func opensTheMonitorFeature() {
         let module = MonitorModule(viewModel: MonitorViewModel(sampler: FakeSampler([])), preferences: Preferences(storage: InMemoryPreferenceStorage()))
 
-        #expect(module.menuBarMonitor.featureID == module.id)
+        #expect(module.makeMenuBarMonitor(trash: makeTrash(FakeTrashReader([]))).featureID == module.id)
+    }
+
+    @Test(.timeLimit(.minutes(1)))
+    func measuresTheTrashEachTimeItsMenuOpens() async {
+        let sampler = FakeSampler([busy])
+        let reader = FakeTrashReader([MenuBarTrashFixtures.full, MenuBarTrashFixtures.empty])
+        let menuBar = makeMenuBar(sampler: sampler, trashReader: reader)
+        #expect(reader.reads == 0)
+
+        menuBar.menuVisibilityDidChange(isOpen: true)
+        await waitUntil { menuBar.trash.usage == MenuBarTrashFixtures.full }
+        menuBar.menuVisibilityDidChange(isOpen: false)
+        menuBar.menuVisibilityDidChange(isOpen: true)
+        await waitUntil { menuBar.trash.usage == MenuBarTrashFixtures.empty }
+        menuBar.menuVisibilityDidChange(isOpen: false)
+
+        #expect(reader.reads == 2)
+        await waitUntilReadingsStop(sampler)
     }
 
     @Test(.timeLimit(.minutes(1)))

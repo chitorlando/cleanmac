@@ -8,7 +8,8 @@ import SwiftUI
 ///
 /// It reads through the monitor's view model, so the menu bar and the monitor's screens share
 /// one round of readings at the pace the user chose. It only asks for readings while something
-/// shows them: the menu while it's open, and the menu bar while it shows the processor use.
+/// shows them: the menu while it's open, and the menu bar while it shows the processor use. The
+/// menu also measures the Trash each time it opens.
 @MainActor
 public final class MenuBarMonitor: ObservableObject {
     /// Whether the icon is in the menu bar, as the user chose in the Settings window. Taking the
@@ -36,6 +37,8 @@ public final class MenuBarMonitor: ObservableObject {
     let monitor: MonitorViewModel
     /// Id of the monitor feature, which the menu opens in the window of the app.
     let featureID: String
+    /// The Trash the menu shows and empties.
+    let trash: MenuBarTrash
     private let preferences: Preferences
     private var isInMenuBar: Bool
     private var menuReadings: Task<Void, Never>?
@@ -47,10 +50,12 @@ public final class MenuBarMonitor: ObservableObject {
     ///   - preferences: Where the user chooses whether the icon is in the menu bar and whether
     ///     the processor use shows next to it, which it follows from now on.
     ///   - featureID: See `featureID`.
-    public init(monitor: MonitorViewModel, preferences: Preferences, featureID: String) {
+    ///   - trash: See `trash`.
+    public init(monitor: MonitorViewModel, preferences: Preferences, featureID: String, trash: MenuBarTrash) {
         self.monitor = monitor
         self.preferences = preferences
         self.featureID = featureID
+        self.trash = trash
         isInMenuBar = preferences.value(of: MonitorSettings.showsMenuBarExtra)
         showsCPU = preferences.value(of: MonitorSettings.showsCPUInMenuBar)
         settingChanges = [
@@ -87,6 +92,7 @@ public final class MenuBarMonitor: ObservableObject {
     /// else shows them.
     func menuVisibilityDidChange(isOpen: Bool) {
         if isOpen {
+            trash.startReading()
             guard menuReadings == nil else { return }
             menuReadings = Task { [monitor] in await monitor.runOnScreen() }
         } else {

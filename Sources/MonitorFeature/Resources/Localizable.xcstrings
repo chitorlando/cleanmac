@@ -12,6 +12,17 @@
         }
       }
     },
+    "%@ in the Trash" : {
+      "comment" : "What the Trash holds, in the menu bar monitor. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ en la Papelera"
+          }
+        }
+      }
+    },
     "%@ of %@ used" : {
       "comment" : "Memory in use out of the installed memory. The arguments are sizes, such as “9 GB” and “16 GB”.",
       "localizations" : {
@@ -152,6 +163,28 @@
         }
       }
     },
+    "Empty Trash…" : {
+      "comment" : "Button of the menu bar monitor that asks before emptying the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciar Papelera…"
+          }
+        }
+      }
+    },
+    "Emptying the Trash…" : {
+      "comment" : "Shown in the menu bar monitor while Finder empties the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaciando la Papelera…"
+          }
+        }
+      }
+    },
     "High pressure" : {
       "comment" : "Badge: macOS is compressing memory and dropping caches.",
       "localizations" : {
@@ -159,6 +192,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presión alta"
+          }
+        }
+      }
+    },
+    "Measuring the Trash needs Full Disk Access." : {
+      "comment" : "Shown in the menu bar monitor when macOS keeps CleanMac out of the Trash, so its size is unknown.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para medir la Papelera hace falta el Acceso total al disco."
           }
         }
       }
@@ -348,6 +392,28 @@
         }
       }
     },
+    "The Trash couldn’t be emptied." : {
+      "comment" : "Shown in the menu bar monitor when Finder couldn’t empty the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar la Papelera."
+          }
+        }
+      }
+    },
+    "The Trash is empty." : {
+      "comment" : "Shown in the menu bar monitor when the Trash holds nothing.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La Papelera está vacía."
+          }
+        }
+      }
+    },
     "Top Processes" : {
       "comment" : "Title of the list of the busiest processes.",
       "localizations" : {
@@ -355,6 +421,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Procesos"
+          }
+        }
+      }
+    },
+    "Trash" : {
+      "comment" : "Title of the Trash section of the menu bar monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Papelera"
           }
         }
       }
