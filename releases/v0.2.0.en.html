@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>CleanMac 0.2.0</title>
+<body><h1>CleanMac 0.2.0</h1>
+<h2>What's new</h2>
+<ul>
+  <li>A Settings window (CleanMac › Settings…, ⌘,): the app's language, the Monitor's refresh rate, the minimum size for Large Files and Duplicates, and excluded folders those two features never look in.</li>
+  <li>The Disk Map shows all your space: your Library and hidden items too. Folders macOS protects are marked, with a shortcut to the Full Disk Access settings, and iCloud files are never downloaded.</li>
+  <li>A welcome screen on first launch to grant Full Disk Access and Finder automation. You can return to it from CleanMac › Permissions….</li>
+  <li>“Show Login Items” in an app's menu lists only that app's items, and the menu of cache and log folders offers “Review in System Junk”.</li>
+  <li>Menus no longer offer to find duplicates or large files in folders those features don't look in.</li>
+  <li>Permissions now survive updates: releases are signed with a stable certificate of their own. Coming from 0.1.0, you'll grant them one last time.</li>
+</ul>
+<h2>Safer</h2>
+<ul>
+  <li>CleanMac asks before moving anything to the Trash in the Uninstaller, System Junk, Privacy, Large Files, Duplicates and Login Items, also when you press Return.</li>
+  <li>System Junk leaves the caches of open browsers unselected and locked, as Privacy already did, including editions such as Beta, Canary or Nightly.</li>
+  <li>Clear messages when macOS protects an item, with buttons to show it in Finder or open the Full Disk Access settings. The Uninstaller marks such leftovers before moving them.</li>
+</ul>
+<h2>Fixes</h2>
+<ul>
+  <li>Monitor: memory is shown in the same units as Activity Monitor, the first reading after coming back no longer averages the time away, and several windows no longer shorten the history.</li>
+  <li>Login Items: the “Disabled” badge reflects the system's real state, and an agent is only marked orphaned when its program is gone, also when an interpreter launches it.</li>
+  <li>Space freed is no longer counted twice when Privacy and System Junk share a cache.</li>
+</ul>
+<p>Free and open source. Distributed without Apple notarization.</p>
+</body></html>
