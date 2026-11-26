@@ -68,18 +68,24 @@ public struct FileSystemWalker: FileWalking {
             }
         ) else { return }
 
-        // The enumerator reports a folder it can't enter while it moves on to the next item.
-        for case let url as URL in enumerator {
-            unreadableFolders.flush(into: unreadable)
-            if excludedPaths.contains(url.standardizedFileURL.path) {
-                enumerator.skipDescendants()
-                continue
-            }
-            if let record = record(for: url), !visit(record) {
-                return
+        // Each item gets its own autorelease pool. The enumerator hands out autoreleased URLs,
+        // holding the values read for them, and a walk on a background thread would otherwise
+        // keep every one of them until it ends: hundreds of megabytes in a large home folder.
+        var isWalking = true
+        while isWalking {
+            isWalking = autoreleasepool {
+                // The enumerator reports a folder it can't enter while it moves on to the next item.
+                let next = enumerator.nextObject() as? URL
+                unreadableFolders.flush(into: unreadable)
+                guard let url = next else { return false }
+                if excludedPaths.contains(url.standardizedFileURL.path) {
+                    enumerator.skipDescendants()
+                    return true
+                }
+                guard let record = record(for: url) else { return true }
+                return visit(record)
             }
         }
-        unreadableFolders.flush(into: unreadable)
     }
 
     private var enumerationOptions: FileManager.DirectoryEnumerationOptions {
