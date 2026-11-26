@@ -6,7 +6,6 @@ import SwiftUI
 /// the System Settings pane that changes it.
 struct ProtectionRow: View {
     let check: ProtectionCheck
-    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -40,11 +39,7 @@ struct ProtectionRow: View {
             }
             Spacer(minLength: 8)
             if check.state.needsAttention, let url = check.kind.settingsURL {
-                Button {
-                    openURL(url)
-                } label: {
-                    Text("Open Settings", bundle: .module, comment: "Button that opens the System Settings pane where a protection found off can be turned on.")
-                }
+                OpenSettingsButton(url: url)
             }
         }
     }

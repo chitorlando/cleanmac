@@ -83,6 +83,17 @@
         }
       }
     },
+    "Accessibility" : {
+      "comment" : "Name of the macOS permission that lets an app control the Mac.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesibilidad"
+          }
+        }
+      }
+    },
     "All or part of it is off, so some system files can be changed. It’s usually turned off on purpose, such as to run macOS on an older Mac. Only macOS Recovery can turn it back on." : {
       "comment" : "Explanation of System Integrity Protection when it is off or partly off.",
       "localizations" : {
@@ -116,6 +127,17 @@
         }
       }
     },
+    "Apps you allowed to see or control more than usual. There’s nothing to fix unless you don’t recognize one." : {
+      "comment" : "Subtitle of the Sensitive Permissions part of the security review.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apps a las que permitiste ver o controlar más de lo habitual. No hay nada que corregir salvo que no reconozcas alguna."
+          }
+        }
+      }
+    },
     "Automatic Security Updates" : {
       "comment" : "Name of the Software Update options that install security fixes on their own, in the security review.",
       "localizations" : {
@@ -134,6 +156,83 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bloqueada por Gatekeeper"
+          }
+        }
+      }
+    },
+    "Camera" : {
+      "comment" : "Name of the macOS permission that lets an app use the camera.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cámara"
+          }
+        }
+      }
+    },
+    "Can control your Mac and other apps." : {
+      "comment" : "What Accessibility lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede controlar tu Mac y otras apps."
+          }
+        }
+      }
+    },
+    "Can read all your files, including Mail, Messages and Safari’s." : {
+      "comment" : "What Full Disk Access lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede leer todos tus archivos, incluidos los de Mail, Mensajes y Safari."
+          }
+        }
+      }
+    },
+    "Can read what you type, even in other apps." : {
+      "comment" : "What Input Monitoring lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede leer lo que escribes, incluso en otras apps."
+          }
+        }
+      }
+    },
+    "Can see everything on your screen." : {
+      "comment" : "What Screen Recording lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede ver todo lo que hay en tu pantalla."
+          }
+        }
+      }
+    },
+    "Can use the camera." : {
+      "comment" : "What the Camera permission lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede usar la cámara."
+          }
+        }
+      }
+    },
+    "Can use the microphone." : {
+      "comment" : "What the Microphone permission lets an app do.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puede usar el micrófono."
           }
         }
       }
@@ -248,6 +347,17 @@
         }
       }
     },
+    "Full Disk Access" : {
+      "comment" : "Name of the macOS permission that lets an app read every file.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso total al disco"
+          }
+        }
+      }
+    },
     "Incoming connections reach any app or service that waits for them. It matters most on public Wi-Fi." : {
       "comment" : "Explanation of the firewall when it is off.",
       "localizations" : {
@@ -255,6 +365,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Las conexiones entrantes llegan a cualquier app o servicio que las espere. Importa sobre todo en redes wifi públicas."
+          }
+        }
+      }
+    },
+    "Input Monitoring" : {
+      "comment" : "Name of the macOS permission that lets an app read the keyboard and mouse.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monitorización de entrada"
           }
         }
       }
@@ -424,6 +545,28 @@
         }
       }
     },
+    "Microphone" : {
+      "comment" : "Name of the macOS permission that lets an app use the microphone.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micrófono"
+          }
+        }
+      }
+    },
+    "No app has any of these permissions." : {
+      "comment" : "Shown when no app is allowed any of the sensitive permissions the security review lists.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna app tiene estos permisos."
+          }
+        }
+      }
+    },
     "No item runs an unsigned program, or one from a temporary or hidden folder." : {
       "comment" : "Shown when the security review found no login or background item worth a look.",
       "localizations" : {
@@ -479,8 +622,19 @@
         }
       }
     },
+    "Open Privacy & Security" : {
+      "comment" : "Button that opens the Privacy & Security pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Privacidad y seguridad"
+          }
+        }
+      }
+    },
     "Open Settings" : {
-      "comment" : "Button that opens the System Settings pane where a protection found off can be turned on.",
+      "comment" : "Button that opens the System Settings pane of a finding of the security review, such as FileVault or Full Disk Access.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -512,6 +666,17 @@
         }
       }
     },
+    "Reading app permissions…" : {
+      "comment" : "Status shown while the security review reads which apps have sensitive permissions, such as Full Disk Access.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leyendo los permisos de las apps…"
+          }
+        }
+      }
+    },
     "Review" : {
       "comment" : "Button that starts the security review.",
       "localizations" : {
@@ -530,6 +695,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Volver a revisar"
+          }
+        }
+      }
+    },
+    "Screen Recording" : {
+      "comment" : "Name of the macOS permission that lets an app see the screen.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabación de pantalla"
           }
         }
       }
@@ -563,6 +739,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comprueba lo bien protegido que está tu Mac, en palabras sencillas y con el siguiente paso para lo que merezca un vistazo. No es un antivirus: no busca malware. Solo lee, no cambia nada y no envía nada a ningún sitio."
+          }
+        }
+      }
+    },
+    "Sensitive Permissions" : {
+      "comment" : "Title of the part of the security review about the apps allowed permissions such as Full Disk Access.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permisos sensibles"
           }
         }
       }
@@ -607,6 +794,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Algunas opciones están desactivadas, así que las correcciones de seguridad pueden llegar tarde:"
+          }
+        }
+      }
+    },
+    "Some permissions couldn’t be read. Give CleanMac Full Disk Access to see them all, then review again." : {
+      "comment" : "Shown above the sensitive permissions when only part of them could be read.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se han podido leer algunos permisos. Da a CleanMac Acceso total al disco para verlos todos y vuelve a revisar."
           }
         }
       }
@@ -750,6 +948,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "apps comprobadas"
+          }
+        }
+      }
+    },
+    "macOS only lets apps with Full Disk Access read which apps have these permissions. Give CleanMac Full Disk Access to see them, then review again." : {
+      "comment" : "Shown instead of the sensitive permissions when CleanMac doesn't have Full Disk Access.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS solo deja que las apps con Acceso total al disco lean qué apps tienen estos permisos. Da a CleanMac Acceso total al disco para verlos y vuelve a revisar."
           }
         }
       }

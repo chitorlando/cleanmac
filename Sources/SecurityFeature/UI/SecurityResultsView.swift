@@ -16,6 +16,7 @@ struct SecurityResultsView: View {
                     ProtectionsCard(checks: report.protections)
                     AppsCard(checkedCount: report.apps.count, apps: report.appsNeedingAttention)
                     PersistenceCard(findings: report.persistence)
+                    PermissionsCard(review: report.permissions)
                 }
             }
             .scrollIndicators(.never)

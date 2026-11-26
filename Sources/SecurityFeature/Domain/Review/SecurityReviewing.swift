@@ -21,4 +21,5 @@ public enum SecurityReviewStep: CaseIterable, Hashable, Sendable {
     case protections
     case apps
     case persistence
+    case permissions
 }

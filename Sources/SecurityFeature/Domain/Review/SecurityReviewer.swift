@@ -6,6 +6,7 @@ public struct SecurityReviewer: SecurityReviewing {
     private let appFinder: any AppFinding
     private let signatureChecker: AppSignatureChecker
     private let persistence: any PersistenceScanning
+    private let permissions: any PermissionsReviewing
     private let maximumConcurrentChecks: Int
 
     /// - Parameter maximumConcurrentChecks: How many signatures are checked at once. Each check
@@ -15,12 +16,14 @@ public struct SecurityReviewer: SecurityReviewing {
         appFinder: any AppFinding,
         signatureChecker: AppSignatureChecker,
         persistence: any PersistenceScanning,
+        permissions: any PermissionsReviewing,
         maximumConcurrentChecks: Int = min(4, ProcessInfo.processInfo.activeProcessorCount)
     ) {
         self.protections = protections
         self.appFinder = appFinder
         self.signatureChecker = signatureChecker
         self.persistence = persistence
+        self.permissions = permissions
         self.maximumConcurrentChecks = max(1, maximumConcurrentChecks)
     }
 
@@ -50,10 +53,15 @@ public struct SecurityReviewer: SecurityReviewing {
         let persistenceFindings = persistence.findings()
         guard !Task.isCancelled else { return }
 
+        continuation.yield(.started(.permissions))
+        let permissionsReview = permissions.review(knownApps: appChecks)
+        guard !Task.isCancelled else { return }
+
         continuation.yield(.finished(SecurityReport(
             protections: protectionChecks,
             apps: appChecks,
-            persistence: persistenceFindings
+            persistence: persistenceFindings,
+            permissions: permissionsReview
         )))
     }
 

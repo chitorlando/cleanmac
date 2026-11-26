@@ -24,11 +24,12 @@ public final class SecurityModule: FeatureModule {
 }
 
 public extension SecurityModule {
-    /// Module that reads this Mac's real settings, apps and launchd folders.
+    /// Module that reads this Mac's real settings, apps, launchd folders and privacy databases.
     static func live() -> SecurityModule {
         let home = FileManager.default.homeDirectoryForCurrentUser
         let reader = LocalDirectoryReader()
         let inspector = SecurityFrameworkSignatureInspector()
+        let appLocator = LaunchServicesAppLocator()
         let reviewer = SecurityReviewer(
             protections: ProtectionReader(),
             appFinder: ApplicationFolderAppFinder(
@@ -39,7 +40,14 @@ public extension SecurityModule {
             persistence: PersistenceScanner(
                 folders: LaunchFolder.standard(home: home),
                 reader: reader,
-                attributor: LoginItemAttributor(appLocator: LaunchServicesAppLocator(), reader: reader),
+                attributor: LoginItemAttributor(appLocator: appLocator, reader: reader),
+                inspector: inspector
+            ),
+            permissions: PermissionsReviewer(
+                databases: PermissionsReviewer.standardDatabases(home: home),
+                reader: TCCDatabaseReader(),
+                appLocator: appLocator,
+                files: reader,
                 inspector: inspector
             )
         )

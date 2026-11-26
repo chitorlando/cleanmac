@@ -28,6 +28,8 @@ private extension SecurityReviewStep {
             Text("Checking app signatures…", bundle: .module, comment: "Status shown while the security review checks the code signature of each app.")
         case .persistence:
             Text("Checking login and background items…", bundle: .module, comment: "Status shown while the security review checks what launchd starts at login or in the background.")
+        case .permissions:
+            Text("Reading app permissions…", bundle: .module, comment: "Status shown while the security review reads which apps have sensitive permissions, such as Full Disk Access.")
         }
     }
 }

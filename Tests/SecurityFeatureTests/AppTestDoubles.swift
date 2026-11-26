@@ -103,3 +103,20 @@ struct StubPersistenceScanner: PersistenceScanning {
 
     func findings() -> [PersistenceFinding] { results }
 }
+
+/// Reports a fixed review of the permissions and remembers the apps it was given.
+final class StubPermissionsReviewer: PermissionsReviewing, Sendable {
+    private let result: PermissionsReview
+    private let given = OSAllocatedUnfairLock(initialState: [AppSignatureCheck]())
+
+    init(_ result: PermissionsReview = PermissionsReview(availability: .complete)) {
+        self.result = result
+    }
+
+    var knownApps: [AppSignatureCheck] { given.withLock { $0 } }
+
+    func review(knownApps: [AppSignatureCheck]) -> PermissionsReview {
+        given.withLock { $0 = knownApps }
+        return result
+    }
+}

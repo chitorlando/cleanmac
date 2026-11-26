@@ -18,12 +18,15 @@ struct SecurityReviewerTests {
         )
     ]
 
+    private let permissions = StubPermissionsReviewer(PermissionsReview(availability: .partial))
+
     private func reviewer(inspector: StubSignatureInspector = StubSignatureInspector()) -> SecurityReviewer {
         SecurityReviewer(
             protections: StubProtectionReader(checks: protections),
             appFinder: StubAppFinder(urls: apps),
             signatureChecker: AppSignatureChecker(inspector: inspector, gatekeeper: SpyGatekeeper()),
             persistence: StubPersistenceScanner(results: persistence),
+            permissions: permissions,
             maximumConcurrentChecks: 3
         )
     }
@@ -56,6 +59,8 @@ struct SecurityReviewerTests {
         #expect(report.apps.map(\.url) == apps)
         #expect(report.appsNeedingAttention.map(\.url) == [apps[4]])
         #expect(report.persistence == persistence)
+        #expect(report.permissions == PermissionsReview(availability: .partial))
+        #expect(permissions.knownApps.map(\.url) == apps)
         #expect(report.attentionCount == 3)
     }
 
