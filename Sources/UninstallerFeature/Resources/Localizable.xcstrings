@@ -1,6 +1,47 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld leftover items will also be moved to the Trash, %@ in all. You can put everything back from there." : {
+      "comment" : "Message of the dialog that asks before uninstalling apps. The arguments are how many of their leftover files go to the Trash with them, and the size of everything, such as “1.2 GB”.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld leftover item will also be moved to the Trash, %@ in all. You can put everything back from there."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld leftover items will also be moved to the Trash, %@ in all. You can put everything back from there."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "También se moverá a la Papelera %lld resto, %@ en total. Puedes recuperarlo todo desde allí."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "También se moverán a la Papelera %lld restos, %@ en total. Puedes recuperarlo todo desde allí."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Analyzing installed apps…" : {
       "comment" : "Status shown while the installed apps are measured.",
       "localizations" : {
@@ -96,6 +137,47 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Registros"
+          }
+        }
+      }
+    },
+    "Move %lld leftover items to the Trash?" : {
+      "comment" : "Title of the dialog that asks before uninstalling, when only leftover files of apps are selected. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld leftover item to the Trash?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld leftover items to the Trash?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld resto a la Papelera?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld restos a la Papelera?"
+                }
+              }
+            }
           }
         }
       }
@@ -309,6 +391,17 @@
         }
       }
     },
+    "That’s %@ in all. You can put everything back from the Trash." : {
+      "comment" : "Message of the dialog that asks before uninstalling, when there are no leftovers besides the apps or only leftovers. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son %@ en total. Puedes recuperarlo todo desde la Papelera."
+          }
+        }
+      }
+    },
     "This app is open. Quit it to uninstall it." : {
       "comment" : "Notice shown on the details of a running app.",
       "localizations" : {
@@ -338,6 +431,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desinstalar %@"
+          }
+        }
+      }
+    },
+    "Uninstall %@?" : {
+      "comment" : "Title of the dialog that asks before uninstalling a few apps. The argument lists their names, such as “Notes and Zoom”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Desinstalar %@?"
+          }
+        }
+      }
+    },
+    "Uninstall %lld apps?" : {
+      "comment" : "Title of the dialog that asks before uninstalling more than three apps. The argument is how many.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Desinstalar %lld apps?"
           }
         }
       }

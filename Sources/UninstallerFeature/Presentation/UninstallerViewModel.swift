@@ -38,6 +38,9 @@ public final class UninstallerViewModel: ObservableObject {
         didSet { forgetDerivedState(allSelectionState: true) }
     }
     @Published public private(set) var quittingAppIDs: Set<InstalledApp.ID> = []
+    /// What the user is asked to confirm before `uninstall()` moves it to the Trash, or
+    /// `nil` while nothing is asked.
+    @Published public private(set) var pendingUninstall: UninstallConfirmation?
     @Published public var query = AppListQuery() {
         didSet {
             forgetDerivedState(
@@ -201,9 +204,33 @@ public final class UninstallerViewModel: ObservableObject {
         return didQuit
     }
 
-    /// Moves the selected items of apps that are not running to the Trash.
+    /// Asks the user to confirm what `uninstall()` would move to the Trash, and removes nothing.
+    ///
+    /// The uninstall button calls it, also when Return presses that button.
+    public func requestUninstall() {
+        guard phase == .browsing else { return }
+        refreshRunningApps()
+        let items = selectedItems
+        guard !items.isEmpty else { return }
+        let apps = selectedApps
+        let bundleIDs = Set(apps.map(\.bundle.id))
+        pendingUninstall = UninstallConfirmation(
+            appNames: apps.map(\.info.name),
+            leftoverCount: items.count { !bundleIDs.contains($0.id) },
+            size: items.totalSize
+        )
+    }
+
+    /// Stops asking for confirmation, without removing anything.
+    public func cancelUninstall() {
+        pendingUninstall = nil
+    }
+
+    /// Moves the selected items of apps that are not running to the Trash, once the user
+    /// confirmed it (see `requestUninstall()`).
     @discardableResult
     public func uninstall() -> Task<Void, Never>? {
+        pendingUninstall = nil
         guard phase == .browsing else { return nil }
         refreshRunningApps()
         let items = selectedItems
@@ -282,6 +309,11 @@ public final class UninstallerViewModel: ObservableObject {
     // MARK: Private
 
     private var rule: AppSelectionRule { AppSelectionRule(shared: sharedLeftovers) }
+
+    /// Apps whose bundle is selected, so they will be uninstalled, in the order of the list.
+    private var selectedApps: [InstalledApp] {
+        sortedApps.filter { selection.contains($0.bundle) && !isRunning($0) }
+    }
 
     private var selectableVisibleApps: [InstalledApp] {
         visibleApps.filter { !isRunning($0) }
