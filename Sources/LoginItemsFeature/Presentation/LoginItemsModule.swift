@@ -21,6 +21,33 @@ public final class LoginItemsModule: FeatureModule {
     public func makeView() -> AnyView {
         AnyView(LoginItemsView(viewModel: viewModel, theme: theme))
     }
+
+    /// Offers to list the login items of an app that another feature shows, such as one of
+    /// the uninstaller.
+    public var itemActions: [FeatureItemAction] {
+        [
+            FeatureItemAction(
+                featureID: id,
+                itemKind: .app,
+                title: String(
+                    localized: "Show Login Items",
+                    bundle: .module,
+                    comment: "Entry of the context menu of an app listed by another feature, such as the uninstaller. It shows only the login items of that app."
+                ),
+                symbolName: symbolName
+            )
+        ]
+    }
+
+    /// Lists only the login items of the app at `url`, reading them first if they weren't yet.
+    public func show(itemAt url: URL) {
+        viewModel.showItems(ofAppAt: url)
+    }
+
+    /// Takes every app bundle, with login items or not, without reading anything.
+    public func canShow(itemAt url: URL) -> Bool {
+        viewModel.canShowItems(ofAppAt: url)
+    }
 }
 
 public extension LoginItemsModule {
@@ -31,7 +58,8 @@ public extension LoginItemsModule {
             folders: LaunchFolder.standard(home: FileManager.default.homeDirectoryForCurrentUser),
             reader: reader,
             sizer: AllocatedSizeCalculator(),
-            attributor: LoginItemAttributor(appLocator: LaunchServicesAppLocator(), reader: reader)
+            attributor: LoginItemAttributor(appLocator: LaunchServicesAppLocator(), reader: reader),
+            overrides: LaunchdOverrideFiles()
         )
         let viewModel = LoginItemsViewModel(
             scanner: scanner,

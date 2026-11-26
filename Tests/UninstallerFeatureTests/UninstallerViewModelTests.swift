@@ -235,6 +235,74 @@ struct UninstallerViewModelTests {
         #expect(viewModel.isRunning(zoom))
     }
 
+    // MARK: Confirming
+
+    @Test func askingToUninstallNamesTheAppsAndRemovesNothing() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(zoom)
+        viewModel.toggle(notes)
+
+        viewModel.requestUninstall()
+
+        #expect(viewModel.pendingUninstall == UninstallConfirmation(appNames: ["Notes", "Zoom"], leftoverCount: 1, size: 960))
+        #expect(viewModel.phase == .browsing)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func askingToUninstallOnlyLeftoversNamesNoApp() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(item(zoom, "zoom-cache"))
+
+        viewModel.requestUninstall()
+
+        #expect(viewModel.pendingUninstall == UninstallConfirmation(appNames: [], leftoverCount: 1, size: 50))
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func asksNothingWithoutASelection() async {
+        let viewModel = await loadedViewModel()
+
+        viewModel.requestUninstall()
+
+        #expect(viewModel.pendingUninstall == nil)
+    }
+
+    @Test func askingLeavesOutAppsThatStartedRunning() async {
+        let runningApps = FakeRunningApps()
+        let viewModel = await loadedViewModel(runningApps: runningApps)
+        viewModel.toggle(zoom)
+        viewModel.toggle(notes)
+        runningApps.running = [zoom.info.url]
+
+        viewModel.requestUninstall()
+
+        #expect(viewModel.pendingUninstall == UninstallConfirmation(appNames: ["Notes"], leftoverCount: 0, size: 10))
+    }
+
+    @Test func cancellingTheUninstallRemovesNothing() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(zoom)
+        viewModel.requestUninstall()
+
+        viewModel.cancelUninstall()
+
+        #expect(viewModel.pendingUninstall == nil)
+        #expect(viewModel.phase == .browsing)
+        #expect(viewModel.hasSelection)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func confirmingUninstallsAndStopsAsking() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(zoom)
+        viewModel.requestUninstall()
+
+        await viewModel.uninstall()?.value
+
+        #expect(viewModel.pendingUninstall == nil)
+        #expect(Set(remover.removed) == Set(zoom.allItems.map(\.url)))
+    }
+
     // MARK: Uninstalling
 
     @Test func uninstallsTheSelectedItemsOnce() async {

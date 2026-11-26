@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ added no login or background items that CleanMac can list. Apps can also add them in System Settings." : {
+      "comment" : "Message shown when the app the login items are limited to has none. The argument is the name of the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no ha añadido ítems de inicio o en segundo plano que CleanMac pueda listar. Las apps también pueden añadirlos en Ajustes del Sistema."
+          }
+        }
+      }
+    },
     "%lld items" : {
       "comment" : "Number of login items found.",
       "localizations" : {
@@ -231,6 +242,47 @@
         }
       }
     },
+    "Move %lld login items to the Trash?" : {
+      "comment" : "Title of the dialog that asks before moving login items to the Trash. The argument is how many.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld login item to the Trash?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld login items to the Trash?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld ítem de inicio a la Papelera?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld ítems de inicio a la Papelera?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Move to Trash" : {
       "comment" : "Disabled button shown before any login item is selected.",
       "localizations" : {
@@ -238,6 +290,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
+    "No Login Items for %@" : {
+      "comment" : "Title shown when the app the login items are limited to has none. The argument is the name of the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ no tiene ítems de inicio"
           }
         }
       }
@@ -271,6 +334,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Solo tú"
+          }
+        }
+      }
+    },
+    "Only from: %@" : {
+      "comment" : "Pill shown while the list is limited to the login items of one app. The argument is the name of the app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo de: %@"
           }
         }
       }
@@ -337,6 +411,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compartidos por todos los usuarios. Eliminarlos requiere un administrador, así que aquí solo puedes mostrarlos en Finder."
+          }
+        }
+      }
+    },
+    "Show All Login Items" : {
+      "comment" : "Button, and tooltip of the button on the pill that names an app, that lists every login item again instead of only those of that app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar todos los ítems de inicio"
+          }
+        }
+      }
+    },
+    "Show Login Items" : {
+      "comment" : "Entry of the context menu of an app listed by another feature, such as the uninstaller. It shows only the login items of that app.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar ítems de inicio"
           }
         }
       }
@@ -414,6 +510,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dejarán de ejecutarse en tu próximo inicio de sesión. Recupéralos de la Papelera si vuelves a necesitarlos."
+          }
+        }
+      }
+    },
+    "They stop running at your next login. You can put them back from the Trash." : {
+      "comment" : "Message of the dialog that asks before moving login items to the Trash, which keep running until the next login.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dejarán de ejecutarse en tu próximo inicio de sesión. Puedes recuperarlos desde la Papelera."
           }
         }
       }

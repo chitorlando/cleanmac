@@ -9,6 +9,19 @@ struct StubLoginItemScanner: LoginItemScanning {
     func scan() async -> [LoginItem] { items }
 }
 
+/// `LaunchOverridesReading` with fixed overrides for each kind of item.
+struct FakeLaunchOverrides: LaunchOverridesReading {
+    var agents: [String: Bool] = [:]
+    var daemons: [String: Bool] = [:]
+
+    func overrides(for kind: LaunchItemKind) -> [String: Bool] {
+        switch kind {
+        case .agent: agents
+        case .daemon: daemons
+        }
+    }
+}
+
 /// Records how many times the Login Items settings were opened.
 @MainActor
 final class SpySettingsOpener: LoginItemsSettingsOpening {

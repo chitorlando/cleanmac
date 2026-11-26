@@ -1,7 +1,7 @@
 import CleanMacUI
 import SwiftUI
 
-/// The browsers with caches, where the user decides what to clear.
+/// The browsers with caches, where the user decides what to clear, and confirms it before it's cleared.
 struct PrivacyReviewView: View {
     @ObservedObject var viewModel: PrivacyViewModel
     let theme: FeatureTheme
@@ -18,10 +18,17 @@ struct PrivacyReviewView: View {
                 isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
-                onPrimary: { viewModel.clean() }
+                onPrimary: { viewModel.requestClean() }
             )
         }
         .frame(maxWidth: 760)
+        .trashConfirmation(
+            itemCount: viewModel.selectedCount,
+            size: viewModel.selectedSize,
+            isPresented: viewModel.isConfirmingClean,
+            onConfirm: { viewModel.clean() },
+            onDismiss: { viewModel.cancelClean() }
+        )
         .onAppear { viewModel.refreshRunningBrowsers() }
     }
 

@@ -2,7 +2,7 @@ import CleanMacUI
 import SwiftUI
 
 /// Groups of duplicates on the left and the copies of the focused group on the right,
-/// where the user marks the copies to remove.
+/// where the user marks the copies to remove and confirms it before they're removed.
 struct DuplicatesReviewView: View {
     @ObservedObject var viewModel: DuplicatesViewModel
     let theme: FeatureTheme
@@ -32,10 +32,17 @@ struct DuplicatesReviewView: View {
                 isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
-                onPrimary: { viewModel.remove() }
+                onPrimary: { viewModel.requestRemoval() }
             )
         }
         .frame(maxWidth: 1100)
+        .trashConfirmation(
+            itemCount: viewModel.selectedCount,
+            size: viewModel.selectedSize,
+            isPresented: viewModel.isConfirmingRemoval,
+            onConfirm: { viewModel.remove() },
+            onDismiss: { viewModel.cancelRemoval() }
+        )
     }
 
     private var removeTitle: Text {

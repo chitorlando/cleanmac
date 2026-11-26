@@ -1,8 +1,7 @@
-import CleanMacUI
 import SwiftUI
 
-/// A colored dot, a name and a size, matching a part of a bar.
-struct BytesLegendRow: View {
+/// A colored dot, a name and an amount of memory, matching a part of the memory bar.
+struct MemoryLegendRow: View {
     let color: Color
     let title: Text
     let bytes: UInt64
@@ -15,7 +14,7 @@ struct BytesLegendRow: View {
                 .accessibilityHidden(true)
             title
                 .foregroundStyle(.secondary)
-            Text(Int64(clamping: bytes).formattedByteCount)
+            Text(bytes.formattedMemorySize)
                 .monospacedDigit()
         }
         .lineLimit(1)

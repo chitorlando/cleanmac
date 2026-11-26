@@ -1,7 +1,8 @@
 import CleanMacUI
 import SwiftUI
 
-/// Filters on the left and the list of files on the right, where the user picks what to remove.
+/// Filters on the left and the list of files on the right, where the user picks what to remove
+/// and confirms it before it's removed.
 ///
 /// When the scan was limited to a folder, a pill below the totals names it. It has a line of
 /// its own because the row of the totals has no room left in the smallest window.
@@ -43,10 +44,17 @@ struct LargeFilesReviewView: View {
                 isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
                 onSecondary: { viewModel.startScan() },
-                onPrimary: { viewModel.remove() }
+                onPrimary: { viewModel.requestRemoval() }
             )
         }
         .frame(maxWidth: 1100)
+        .trashConfirmation(
+            itemCount: viewModel.selectedCount,
+            size: viewModel.selectedSize,
+            isPresented: viewModel.isConfirmingRemoval,
+            onConfirm: { viewModel.remove() },
+            onDismiss: { viewModel.cancelRemoval() }
+        )
     }
 
     private var removeTitle: Text {

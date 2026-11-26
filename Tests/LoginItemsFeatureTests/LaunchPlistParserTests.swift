@@ -44,6 +44,15 @@ struct LaunchPlistParserTests {
         #expect(job.programPath == "/bin/real")
     }
 
+    @Test func keepsTheArgumentsAfterTheProgramsName() throws {
+        let fromArguments = try #require(try job(["Label": "a", "ProgramArguments": ["/bin/bash", "/Users/me/backup.sh", "--all"]]))
+        let withProgram = try #require(try job(["Label": "a", "Program": "/bin/bash", "ProgramArguments": ["bash", "/Users/me/backup.sh"]]))
+
+        #expect(fromArguments.arguments == ["/Users/me/backup.sh", "--all"])
+        #expect(withProgram.arguments == ["/Users/me/backup.sh"])
+        #expect(try #require(try job(["Label": "a", "Program": "/bin/tool"])).arguments.isEmpty)
+    }
+
     @Test func keepsAliveUnderConditions() throws {
         let job = try #require(try job(["Label": "a", "KeepAlive": ["SuccessfulExit": false]]))
 

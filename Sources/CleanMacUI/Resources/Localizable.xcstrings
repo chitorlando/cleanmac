@@ -259,6 +259,58 @@
         }
       }
     },
+    "Move %lld items to the Trash?" : {
+      "comment" : "Title of the dialog that asks before moving items to the Trash. The argument is the number of items.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld item to the Trash?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Move %lld items to the Trash?"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld elemento a la Papelera?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "¿Mover %lld elementos a la Papelera?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Move to Trash" : {
+      "comment" : "Button that confirms moving the selected items to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la Papelera"
+          }
+        }
+      }
+    },
     "Moving to the Trash…" : {
       "comment" : "Status shown while items are moved to the Trash.",
       "localizations" : {
@@ -409,6 +461,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detener"
+          }
+        }
+      }
+    },
+    "They take up %@. You can put them back from the Trash." : {
+      "comment" : "Message of the dialog that asks before moving items to the Trash. The argument is a size, such as “1.2 GB”.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocupan %@. Puedes recuperarlos desde la Papelera."
           }
         }
       }

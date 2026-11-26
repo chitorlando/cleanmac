@@ -18,7 +18,7 @@ struct LoginItemBadges: View {
                     comment: "Tooltip of the Orphaned badge."
                 ))
             }
-            if item.job.isDisabled {
+            if item.isDisabled {
                 StatusBadge(
                     Text("Disabled", bundle: .module, comment: "Badge on a login item that launchd ignores."),
                     color: .secondary

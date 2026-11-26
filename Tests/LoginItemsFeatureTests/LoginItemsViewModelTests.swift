@@ -78,6 +78,49 @@ struct LoginItemsViewModelTests {
         #expect(report.removedCount == 1)
     }
 
+    @Test func askingToRemoveRemovesNothing() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(orphan)
+
+        viewModel.requestRemoval()
+
+        #expect(viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .browsing)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func asksNothingWithoutASelection() async {
+        let viewModel = await loadedViewModel()
+
+        viewModel.requestRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+    }
+
+    @Test func cancellingTheRemovalRemovesNothing() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(orphan)
+        viewModel.requestRemoval()
+
+        viewModel.cancelRemoval()
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(viewModel.phase == .browsing)
+        #expect(viewModel.selectedCount == 1)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func confirmingRemovesAndStopsAsking() async {
+        let viewModel = await loadedViewModel()
+        viewModel.toggle(orphan)
+        viewModel.requestRemoval()
+
+        await viewModel.remove()?.value
+
+        #expect(!viewModel.isConfirmingRemoval)
+        #expect(remover.removed == [orphan.plistURL])
+    }
+
     @Test func removesNothingWithoutASelection() async {
         let viewModel = await loadedViewModel()
 

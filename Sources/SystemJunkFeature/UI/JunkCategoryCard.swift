@@ -1,7 +1,8 @@
+import CleanMacCore
 import CleanMacUI
 import SwiftUI
 
-/// Expandable card for one category with its items.
+/// Expandable card for one category with its items. The ones an open browser is using are locked.
 struct JunkCategoryCard: View {
     let result: CategoryScanResult
     @ObservedObject var viewModel: SystemJunkViewModel
@@ -13,6 +14,9 @@ struct JunkCategoryCard: View {
         GlassCard {
             VStack(spacing: 0) {
                 header
+                if !lockingAppNames.isEmpty {
+                    WarningNotice(lockedNotice).padding(.top, 12)
+                }
                 if isExpanded {
                     Divider().padding(.vertical, 12)
                     itemList
@@ -28,6 +32,7 @@ struct JunkCategoryCard: View {
                 tint: theme.primary,
                 label: Text(result.category.title)
             ) { viewModel.toggle(result) }
+            .disabled(!viewModel.canSelectItems(of: result))
 
             Image(systemName: result.category.symbolName)
                 .font(.title2)
@@ -72,12 +77,26 @@ struct JunkCategoryCard: View {
             : Text("Show items", bundle: .module, comment: "Accessibility label of the button that expands a category.")
     }
 
+    /// The open browsers that lock items of the category, such as "Firefox" and "Vivaldi".
+    private var lockingAppNames: [String] {
+        viewModel.openApps(lockingItemsOf: result).map(\.name)
+    }
+
+    private var lockedNotice: Text {
+        Text(
+            "Caches in use by \(lockingAppNames.formatted(.list(type: .and))) stay locked until you quit.",
+            bundle: .module,
+            comment: "Notice on a junk category with caches that can't be cleaned while a browser is open. The argument is the open browsers."
+        )
+    }
+
     private var itemList: some View {
         LazyVStack(spacing: 8) {
             ForEach(result.items) { item in
                 CleanableItemRow(
                     item: item,
                     isSelected: viewModel.isSelected(item),
+                    isToggleEnabled: viewModel.canSelect(item),
                     tint: theme.primary
                 ) { viewModel.toggle(item) }
             }

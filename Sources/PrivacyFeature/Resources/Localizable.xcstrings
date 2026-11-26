@@ -79,7 +79,7 @@
       }
     },
     "Quit %@" : {
-      "comment" : "Button that asks an open browser to quit. The argument is its name.",
+      "comment" : "Button that asks the open apps that lock a browser's caches to quit.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
@@ -89,13 +89,13 @@
         }
       }
     },
-    "Quit %@ to clear its caches." : {
-      "comment" : "Notice shown on an open browser, whose caches can't be cleared. The argument is its name.",
+    "Quit %@ to clear these caches." : {
+      "comment" : "Notice on a browser whose caches are locked while it or another edition of it is open. The argument is the open apps.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sal de %@ para borrar sus cachés."
+            "value" : "Sal de %@ para borrar estas cachés."
           }
         }
       }
@@ -122,6 +122,17 @@
         }
       }
     },
+    "Service worker data that websites and web apps stored to work offline. Not selected by default: clearing it can make them start over." : {
+      "comment" : "Note under a browser's service worker folder, which is listed but not selected by default.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datos de service workers que los sitios y las apps web guardaron para funcionar sin conexión. No se marcan solos: borrarlos puede hacer que empiecen de cero."
+          }
+        }
+      }
+    },
     "Show caches" : {
       "comment" : "Accessibility label of the button that expands a browser.",
       "localizations" : {
@@ -144,13 +155,13 @@
         }
       }
     },
-    "Your browsers have no caches to clear." : {
+    "We didn’t find any browser caches to clear." : {
       "comment" : "Message shown when no browser caches were found.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus navegadores no tienen cachés que borrar."
+            "value" : "No hemos encontrado cachés de navegadores que borrar."
           }
         }
       }
@@ -161,7 +172,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "de cachés de navegadores encontrados. Revisa lo que quieres borrar."
+            "value" : "de cachés de navegadores encontradas. Revisa lo que quieres borrar."
           }
         }
       }

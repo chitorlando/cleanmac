@@ -1,7 +1,7 @@
 import CleanMacUI
 import SwiftUI
 
-/// App list and details side by side, with the uninstall action below.
+/// App list and details side by side, with the uninstall action below, which asks first.
 struct UninstallerBrowsingView: View {
     @ObservedObject var viewModel: UninstallerViewModel
     let theme: FeatureTheme
@@ -19,9 +19,21 @@ struct UninstallerBrowsingView: View {
                 isPrimaryEnabled: viewModel.hasSelection,
                 theme: theme,
                 onSecondary: { viewModel.startLoading() },
-                onPrimary: { viewModel.uninstall() }
+                onPrimary: { viewModel.requestUninstall() }
             )
         }
+        .trashConfirmation(
+            confirmation.title,
+            isPresented: viewModel.pendingUninstall != nil,
+            message: confirmation.message,
+            onConfirm: { viewModel.uninstall() },
+            onDismiss: { viewModel.cancelUninstall() }
+        )
+    }
+
+    /// What the dialog asks about. It only shows while there is something to ask.
+    private var confirmation: UninstallConfirmation {
+        viewModel.pendingUninstall ?? UninstallConfirmation(appNames: [], leftoverCount: 0, size: 0)
     }
 
     private var uninstallTitle: Text {

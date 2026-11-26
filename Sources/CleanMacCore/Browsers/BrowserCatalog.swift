@@ -44,16 +44,23 @@ public enum BrowserCatalog {
                     userData: "Application Support/com.operasoftware.Opera",
                     layout: .rootIsProfile,
                     cacheFolders: CacheLocation.chromiumCacheFolders
+                ),
+                .profileSiteData(
+                    userData: "Application Support/com.operasoftware.Opera",
+                    layout: .rootIsProfile,
+                    folders: CacheLocation.chromiumServiceWorkerFolders
                 )
             ]
         ),
         BrowserDefinition(
             name: "Firefox",
             bundleID: "org.mozilla.firefox",
+            editionBundleIDs: ["org.mozilla.firefoxdeveloperedition", "org.mozilla.nightly"],
             cacheLocations: [
                 .cachesNamed(bundleID: "org.mozilla.firefox"),
                 .profileFolders(userData: "Caches/Firefox/Profiles", layout: .anyFolder, cacheFolders: ["cache2", "startupCache"])
-            ]
+            ],
+            sharedFolders: ["Caches/Mozilla"]
         )
     ]
 }

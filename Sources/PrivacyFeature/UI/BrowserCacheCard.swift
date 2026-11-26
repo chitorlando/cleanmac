@@ -1,3 +1,4 @@
+import CleanMacCore
 import CleanMacUI
 import SwiftUI
 
@@ -14,7 +15,10 @@ struct BrowserCacheCard: View {
             VStack(spacing: 0) {
                 header
                 if viewModel.isRunning(browser) {
-                    OpenBrowserNotice(browserName: browser.name, isQuitting: viewModel.isQuitting(browser)) {
+                    OpenBrowserNotice(
+                        appNames: viewModel.openApps(of: browser).map(\.name),
+                        isQuitting: viewModel.isQuitting(browser)
+                    ) {
                         Task { await viewModel.quit(browser) }
                     }
                     .padding(.top, 12)
@@ -69,15 +73,33 @@ struct BrowserCacheCard: View {
             : Text("Show caches", bundle: .module, comment: "Accessibility label of the button that expands a browser.")
     }
 
+    /// Says what a service worker folder is, under its row, since its name doesn't.
+    private var siteDataNote: some View {
+        Text(
+            "Service worker data that websites and web apps stored to work offline. Not selected by default: clearing it can make them start over.",
+            bundle: .module,
+            comment: "Note under a browser's service worker folder, which is listed but not selected by default."
+        )
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.leading, 40)
+    }
+
     private var itemList: some View {
         LazyVStack(spacing: 8) {
             ForEach(browser.items) { item in
-                CleanableItemRow(
-                    item: item,
-                    isSelected: viewModel.isSelected(item, of: browser),
-                    isToggleEnabled: viewModel.canSelect(browser),
-                    tint: theme.primary
-                ) { viewModel.toggle(item, of: browser) }
+                VStack(alignment: .leading, spacing: 2) {
+                    CleanableItemRow(
+                        item: item,
+                        isSelected: viewModel.isSelected(item, of: browser),
+                        isToggleEnabled: viewModel.canSelect(browser),
+                        tint: theme.primary
+                    ) { viewModel.toggle(item, of: browser) }
+                    if browser.holdsSiteData(item) {
+                        siteDataNote
+                    }
+                }
             }
         }
     }

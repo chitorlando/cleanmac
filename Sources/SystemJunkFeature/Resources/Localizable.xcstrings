@@ -34,6 +34,17 @@
         }
       }
     },
+    "Caches in use by %@ stay locked until you quit." : {
+      "comment" : "Notice on a junk category with caches that can't be cleaned while a browser is open. The argument is the open browsers.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las cachés en uso por %@ quedan bloqueadas hasta que salgas."
+          }
+        }
+      }
+    },
     "Clean %@" : {
       "comment" : "Button that removes the selected junk. The argument is a size, such as “1.2 GB”.",
       "localizations" : {
