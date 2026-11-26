@@ -67,13 +67,20 @@ public final class MonitorModule: FeatureModule {
 public extension MonitorModule {
     /// Module that reads this Mac, only while some part of the app can be seen.
     ///
+    /// Only windows with a title bar count: the icon in the menu bar is always on screen, and
+    /// the menu bar monitor says by itself when it shows readings.
+    ///
     /// - Parameters:
     ///   - preferences: See `init(viewModel:preferences:diskMapFeatureID:)`.
     ///   - diskMapFeatureID: See `init(viewModel:preferences:diskMapFeatureID:)`.
     static func live(preferences: Preferences, diskMapFeatureID: String? = nil) -> MonitorModule {
         let viewModel = MonitorViewModel(
             sampler: SystemSampler.live(),
-            isVisible: { NSApplication.shared.occlusionState.contains(.visible) }
+            isVisible: {
+                NSApplication.shared.windows.contains { window in
+                    window.styleMask.contains(.titled) && window.isVisible && window.occlusionState.contains(.visible)
+                }
+            }
         )
         return MonitorModule(viewModel: viewModel, preferences: preferences, diskMapFeatureID: diskMapFeatureID)
     }
