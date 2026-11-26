@@ -41,7 +41,8 @@ struct PersistenceFindingRow: View {
             ItemContextMenu(
                 url: finding.plistURL,
                 featureTarget: finding.owner.map { FeatureItemTarget(itemAt: $0.appURL, isFolder: false) },
-                selection: .unavailable
+                selection: .unavailable,
+                extra: { EmptyView() }
             )
         }
     }
