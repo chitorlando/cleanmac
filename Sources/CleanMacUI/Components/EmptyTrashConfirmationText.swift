@@ -12,14 +12,21 @@ public struct EmptyTrashConfirmationText: Equatable, Sendable {
     public let confirmTitle: String
 
     /// - Parameters:
-    ///   - trashSize: What the Trash holds, as CleanMac measured it.
+    ///   - trashSize: What the Trash holds, as CleanMac measured it, or `nil` when it couldn't,
+    ///     such as without Full Disk Access.
     ///   - itemsToMove: How many items the cleanup moves to the Trash once it's empty.
     ///   - sizeToMove: What those items take up.
-    public init(trashSize: Int64, itemsToMove: Int = 0, sizeToMove: Int64 = 0) {
-        let erasing = String(
-            localized: "Everything in the Trash, \(trashSize.formattedByteCount), is erased for good. You can’t undo this.",
+    public init(trashSize: Int64?, itemsToMove: Int = 0, sizeToMove: Int64 = 0) {
+        let erasing = trashSize.map { trashSize in
+            String(
+                localized: "Everything in the Trash, \(trashSize.formattedByteCount), is erased for good. You can’t undo this.",
+                bundle: .module,
+                comment: "Message of the dialog that asks before emptying the Trash. The argument is a size, such as “1.2 GB”."
+            )
+        } ?? String(
+            localized: "Everything in the Trash is erased for good. You can’t undo this.",
             bundle: .module,
-            comment: "Message of the dialog that asks before emptying the Trash. The argument is a size, such as “1.2 GB”."
+            comment: "Message of the dialog that asks before emptying the Trash, when CleanMac couldn’t measure it."
         )
         guard itemsToMove > 0 else {
             title = String(

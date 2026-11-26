@@ -28,6 +28,18 @@ struct EmptyTrashConfirmationTextTests {
         #expect(mixed.confirmTitle != erasing.confirmTitle)
     }
 
+    /// Without Full Disk Access the Trash can't be measured, and it's still erased for good.
+    @Test func aTrashOfUnknownSizeIsStillErasedForGood() {
+        let unknown = EmptyTrashConfirmationText(trashSize: nil)
+        let measured = EmptyTrashConfirmationText(trashSize: trashSize)
+
+        #expect(!unknown.message.isEmpty)
+        #expect(unknown.message != measured.message)
+        #expect(!unknown.message.contains(Int64(0).formattedByteCount))
+        #expect(unknown.title == measured.title)
+        #expect(unknown.confirmTitle == measured.confirmTitle)
+    }
+
     @Test func saysNothingAboutMovingWhenNothingMoves() {
         let erasing = EmptyTrashConfirmationText(trashSize: trashSize)
 

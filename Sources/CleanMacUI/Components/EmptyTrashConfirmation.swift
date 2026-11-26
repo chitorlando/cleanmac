@@ -32,15 +32,16 @@ struct EmptyTrashConfirmation: ViewModifier {
 
 public extension View {
     /// Asks before emptying the Trash, which holds `trashSize` bytes, while `isPresented` is true.
-    /// When the cleanup then moves `itemsToMove` items that take up `sizeToMove` bytes to the
-    /// Trash, it asks about both.
+    /// A `nil` size, for a Trash CleanMac couldn't measure, leaves it out of the question. When
+    /// the cleanup then moves `itemsToMove` items that take up `sizeToMove` bytes to the Trash,
+    /// it asks about both.
     ///
     /// - Parameters:
     ///   - onConfirm: Empties the Trash, and then moves the items to it.
     ///   - onDismiss: Stops asking. Called whenever the dialog closes, after `onConfirm` too,
     ///     in an order SwiftUI decides, so `onConfirm` mustn't depend on it.
     func emptyTrashConfirmation(
-        trashSize: Int64,
+        trashSize: Int64?,
         itemsToMove: Int = 0,
         sizeToMove: Int64 = 0,
         isPresented: Bool,

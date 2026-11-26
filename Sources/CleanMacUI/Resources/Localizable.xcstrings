@@ -289,6 +289,17 @@
         }
       }
     },
+    "Everything in the Trash is erased for good. You can’t undo this." : {
+      "comment" : "Message of the dialog that asks before emptying the Trash, when CleanMac couldn’t measure it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo lo que hay en la Papelera se borra para siempre. No se puede deshacer."
+          }
+        }
+      }
+    },
     "Everything in the Trash, %@, is erased for good. You can’t undo this." : {
       "comment" : "Message of the dialog that asks before emptying the Trash. The argument is a size, such as “1.2 GB”.",
       "localizations" : {
