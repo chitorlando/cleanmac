@@ -3,9 +3,13 @@ import CleanMacCore
 import Testing
 
 struct FileSystemWalkerTests {
-    private func walkedNames(in folder: TemporaryFolder, excluding excluded: [URL] = []) -> Set<String> {
+    private func walkedNames(
+        in folder: TemporaryFolder,
+        excluding excluded: [URL] = [],
+        includingHiddenItems includesHiddenItems: Bool = false
+    ) -> Set<String> {
         var names: Set<String> = []
-        FileSystemWalker(excludedDirectories: excluded).walk(folder.root) { record in
+        FileSystemWalker(excludedDirectories: excluded, includesHiddenItems: includesHiddenItems).walk(folder.root) { record in
             names.insert(record.url.lastPathComponent)
             return true
         }
@@ -40,6 +44,37 @@ struct FileSystemWalkerTests {
         try folder.makeFile(".cache/inside.bin")
 
         #expect(walkedNames(in: folder) == ["visible.bin"])
+    }
+
+    @Test func skipsFoldersFinderHides() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("visible.bin")
+        try folder.makeFile("Library/Caches/cache.bin")
+        try folder.hide("Library")
+
+        #expect(walkedNames(in: folder) == ["visible.bin"])
+    }
+
+    @Test func walksHiddenFilesAndFoldersWhenAskedTo() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("visible.bin")
+        try folder.makeFile(".hidden.bin")
+        try folder.makeFile(".cache/inside.bin")
+        try folder.makeFile("Library/Caches/cache.bin")
+        try folder.hide("Library")
+
+        let names = walkedNames(in: folder, includingHiddenItems: true)
+
+        #expect(names == ["visible.bin", ".hidden.bin", "inside.bin", "cache.bin"])
+    }
+
+    @Test func neverEntersPackagesEvenWithHiddenItems() throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Tool.app/Contents/MacOS/Tool")
+        try folder.makeFile(".config/Helper.app/Contents/MacOS/Helper")
+        try folder.makeFile(".config/settings.json")
+
+        #expect(walkedNames(in: folder, includingHiddenItems: true) == ["settings.json"])
     }
 
     @Test func neverEntersNorOffersPackages() throws {

@@ -117,6 +117,21 @@ struct LargeFileScannerTests {
         #expect(found.first?.kind == .video)
     }
 
+    /// Hidden items hold the settings and data of apps and tools, so they're never offered,
+    /// although the disk map measures them.
+    @Test func skipsFilesAndFoldersThatAreHidden() async throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Movies/big.mov", size: 200_000)
+        try folder.makeFile(".cache/big.bin", size: 200_000)
+        try folder.makeFile(".big.zip", size: 200_000)
+        try folder.makeFile("Secret/big.dmg", size: 200_000)
+        try folder.hide("Secret")
+
+        let scanner = LargeFileScanner(scopePolicy: ScanScopePolicy(home: folder.root))
+
+        #expect(foundNames(await events(of: scanner)) == ["big.mov"])
+    }
+
     // MARK: A single folder
 
     @Test func findsOnlyTheLargeFilesOfTheFolderItIsLimitedTo() async throws {

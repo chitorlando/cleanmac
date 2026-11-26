@@ -2,7 +2,9 @@ import Foundation
 
 /// `FileWalking` over the local disk that only offers files the user can safely review.
 ///
-/// - Hidden files and folders are skipped.
+/// - Hidden files and folders, whose names start with a dot or that Finder hides, such as
+///   `~/Library`, are skipped unless `includesHiddenItems` is set. Features that offer files
+///   to remove keep them out: they hold the settings and data of apps and tools.
 /// - Packages such as `.app` or `.photoslibrary` are never entered: removing one of their
 ///   files would break them. They aren't offered either, since removing them whole could
 ///   be catastrophic, unless a `packageSizeCalculator` is given. Then each package is
@@ -22,14 +24,20 @@ public struct FileSystemWalker: FileWalking {
 
     private let excludedPaths: Set<String>
     private let packageSizeCalculator: (any SizeCalculating)?
+    private let includesHiddenItems: Bool
 
-    /// - Parameter packageSizeCalculator: Measures packages so they're reported whole. `nil` skips them.
+    /// - Parameters:
+    ///   - packageSizeCalculator: Measures packages so they're reported whole. `nil` skips them.
+    ///   - includesHiddenItems: Walks hidden files and folders too, for features that only
+    ///     measure space.
     public init(
         excludedDirectories: [URL] = [Self.userLibrary],
-        packageSizeCalculator: (any SizeCalculating)? = nil
+        packageSizeCalculator: (any SizeCalculating)? = nil,
+        includesHiddenItems: Bool = false
     ) {
         excludedPaths = Set(excludedDirectories.map(\.standardizedFileURL.path))
         self.packageSizeCalculator = packageSizeCalculator
+        self.includesHiddenItems = includesHiddenItems
     }
 
     public static var userLibrary: URL {
@@ -46,7 +54,7 @@ public struct FileSystemWalker: FileWalking {
         guard let enumerator = FileManager.default.enumerator(
             at: root,
             includingPropertiesForKeys: Self.resourceKeys,
-            options: [.skipsHiddenFiles, .skipsPackageDescendants],
+            options: enumerationOptions,
             errorHandler: { _, _ in true }
         ) else { return }
 
@@ -59,6 +67,10 @@ public struct FileSystemWalker: FileWalking {
                 return
             }
         }
+    }
+
+    private var enumerationOptions: FileManager.DirectoryEnumerationOptions {
+        includesHiddenItems ? [.skipsPackageDescendants] : [.skipsHiddenFiles, .skipsPackageDescendants]
     }
 
     private func record(for url: URL) -> FileRecord? {
