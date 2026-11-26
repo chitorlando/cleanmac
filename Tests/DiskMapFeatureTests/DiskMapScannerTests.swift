@@ -22,13 +22,10 @@ struct DiskMapScannerTests {
         return try #require(maps.first)
     }
 
-    /// Scans a folder on disk with the walker the disk map uses, packages measured whole.
+    /// Scans a folder on disk with the walker the disk map uses: hidden items included and
+    /// packages measured whole.
     private func map(of folder: TemporaryFolder, grouping: SmallItemGrouping = .off) async throws -> DiskNode {
-        let scanner = DiskMapScanner(
-            root: folder.root,
-            walker: FileSystemWalker(excludedDirectories: [], packageSizeCalculator: AllocatedSizeCalculator()),
-            grouping: grouping
-        )
+        let scanner = DiskMapScanner(root: folder.root, walker: DiskMapScanner.walker(), grouping: grouping)
         return try await map(of: scanner)
     }
 
@@ -101,14 +98,35 @@ struct DiskMapScannerTests {
         #expect(map.fileCount == 2)
     }
 
-    @Test func leavesHiddenItemsOut() async throws {
+    /// Like `~/Library`, which Finder hides, and the folders of tools, such as `~/.npm`.
+    @Test func measuresHiddenItemsToo() async throws {
         let folder = try TemporaryFolder()
-        try folder.makeFile(".cache/big.bin", size: 500_000)
-        try folder.makeFile("visible.txt")
+        try folder.makeFile("Library/Caches/cache.bin", size: 300_000)
+        try folder.hide("Library")
+        try folder.makeFile(".cache/tool/big.bin", size: 200_000)
+        try folder.makeFile(".zshrc", size: 1_000)
+        try folder.makeFile("visible.txt", size: 50_000)
 
         let map = try await map(of: folder)
 
-        #expect(map.children.map(\.name) == ["visible.txt"])
+        #expect(map.children.map(\.name) == ["Library", ".cache", "visible.txt", ".zshrc"])
+        #expect(try child("Library", of: map).size == (try folder.allocatedSize(of: "Library/Caches/cache.bin")))
+        #expect(try child(".cache", of: map).size == (try folder.allocatedSize(of: ".cache/tool/big.bin")))
+        #expect(map.size == (try folder.allocatedSize(of: "Library/Caches/cache.bin", ".cache/tool/big.bin", ".zshrc", "visible.txt")))
+        #expect(map.fileCount == 4)
+    }
+
+    @Test func neverFollowsSymbolicLinks() async throws {
+        let folder = try TemporaryFolder()
+        let elsewhere = try TemporaryFolder()
+        try elsewhere.makeFile("big.bin", size: 500_000)
+        try folder.makeFile("notes.txt")
+        try FileManager.default.createSymbolicLink(at: folder.root.appending(path: "Link"), withDestinationURL: elsewhere.root)
+
+        let map = try await map(of: folder)
+
+        #expect(map.children.map(\.name) == ["notes.txt"])
+        #expect(map.fileCount == 1)
     }
 
     // MARK: Progress
