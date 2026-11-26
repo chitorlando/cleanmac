@@ -11,6 +11,8 @@ final class FolderAccumulator {
     /// Bytes of the files and packages directly inside. The folder ends up at least this
     /// large, so a file that is small next to them stays small until the end.
     private var directSize: Int64 = 0
+    /// The walk couldn't look inside the folder.
+    private var isUnreadable = false
 
     init(url: URL) {
         self.url = url
@@ -25,6 +27,11 @@ final class FolderAccumulator {
         return folder
     }
 
+    /// Marks the folder as one the walk couldn't look into.
+    func markUnreadable() {
+        isUnreadable = true
+    }
+
     /// Adds a file or package directly inside the folder.
     func add(_ leaf: DiskNode, grouping: SmallItemGrouping) {
         directSize += leaf.size
@@ -36,6 +43,9 @@ final class FolderAccumulator {
     }
 
     /// The finished folder: sizes added up, small items counted together and the rest largest first.
+    ///
+    /// An item that is or holds a folder that couldn't be read stays in sight however small it
+    /// is, so the user can find what the map is missing.
     func node(grouping: SmallItemGrouping) -> DiskNode {
         let items = subfolders.values.map { $0.node(grouping: grouping) } + leaves
         let size = items.reduce(smallLeaves.size) { $0 + $1.size }
@@ -44,7 +54,7 @@ final class FolderAccumulator {
         var small = smallLeaves
         var shown: [DiskNode] = []
         for item in items {
-            if grouping.isSmall(item.size, inFolderOf: size) {
+            if item.unreadableFolderCount == 0, grouping.isSmall(item.size, inFolderOf: size) {
                 small.add(item)
             } else {
                 shown.append(item)
@@ -60,7 +70,8 @@ final class FolderAccumulator {
             size: size,
             fileCount: fileCount,
             children: shown.sorted(by: DiskNode.isLarger),
-            otherItems: small.otherItems
+            otherItems: small.otherItems,
+            isUnreadable: isUnreadable
         )
     }
 }

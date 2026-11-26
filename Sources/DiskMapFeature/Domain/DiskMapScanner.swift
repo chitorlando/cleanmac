@@ -2,6 +2,9 @@ import CleanMacCore
 import Foundation
 
 /// Walks a folder in the background, reporting how much it has measured, and ends with the map of its contents.
+///
+/// Folders the walk can't read are in the map too, marked as unreadable, so their space isn't
+/// silently missing.
 public struct DiskMapScanner: DiskMapScanning {
     public static let defaultProgressInterval = 500
 
@@ -38,15 +41,19 @@ public struct DiskMapScanner: DiskMapScanning {
     private func run(reportingTo continuation: AsyncStream<DiskMapScanEvent>.Continuation) {
         let builder = DiskTreeBuilder(root: root, grouping: grouping)
         var progress = DiskMapProgress()
-        walker.walk(root) { record in
-            guard !Task.isCancelled else { return false }
-            builder.add(record)
-            progress.add(record)
-            if progress.fileCount.isMultiple(of: progressInterval) {
-                continuation.yield(.progress(progress))
-            }
-            return true
-        }
+        walker.walk(
+            root,
+            visit: { record in
+                guard !Task.isCancelled else { return false }
+                builder.add(record)
+                progress.add(record)
+                if progress.fileCount.isMultiple(of: progressInterval) {
+                    continuation.yield(.progress(progress))
+                }
+                return true
+            },
+            unreadable: { builder.addUnreadableFolder(at: $0) }
+        )
         guard !Task.isCancelled else { return }
         if progress.fileCount == 0 || !progress.fileCount.isMultiple(of: progressInterval) {
             continuation.yield(.progress(progress))

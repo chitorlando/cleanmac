@@ -13,7 +13,8 @@ public extension DiskNode {
             size: kept.reduce(otherItems?.size ?? 0) { $0 + $1.size },
             fileCount: kept.reduce(otherItems?.fileCount ?? 0) { $0 + $1.fileCount },
             children: kept.sorted(by: DiskNode.isLarger),
-            otherItems: otherItems
+            otherItems: otherItems,
+            isUnreadable: isUnreadable
         )
     }
 }

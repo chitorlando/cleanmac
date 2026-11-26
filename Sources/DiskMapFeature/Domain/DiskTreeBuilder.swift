@@ -21,21 +21,32 @@ public final class DiskTreeBuilder {
 
     /// Adds a file or package found inside the root. Anything outside it is ignored.
     public func add(_ record: FileRecord) {
-        let path = record.url.path(percentEncoded: false)
-        guard let rootPath = rootPaths.first(where: path.hasPrefix) else { return }
-        var relativePath = path.dropFirst(rootPath.count)
-        if relativePath.hasSuffix("/") {
-            relativePath = relativePath.dropLast()
-        }
-        guard !relativePath.isEmpty else { return }
-
+        guard let relativePath = relativePath(of: record.url), !relativePath.isEmpty else { return }
         let folderPath = relativePath.lastIndex(of: "/").map { relativePath[..<$0] } ?? ""
         folder(at: String(folderPath)).add(DiskNode(record: record), grouping: grouping)
+    }
+
+    /// Adds a folder the walk couldn't look into, the root or one inside it, which the map
+    /// then shows as unreadable. Anything outside the root is ignored.
+    public func addUnreadableFolder(at url: URL) {
+        guard let relativePath = relativePath(of: url) else { return }
+        folder(at: String(relativePath)).markUnreadable()
     }
 
     /// The map of everything added so far.
     public func build() -> DiskNode {
         root.node(grouping: grouping)
+    }
+
+    /// The path of `url` relative to the root, without a final slash: empty for the root
+    /// itself, and `nil` for anything outside it.
+    private func relativePath(of url: URL) -> Substring? {
+        var path = url.path(percentEncoded: false)
+        if !path.hasSuffix("/") {
+            path += "/"
+        }
+        guard let rootPath = rootPaths.first(where: path.hasPrefix) else { return nil }
+        return path.dropFirst(rootPath.count).dropLast()
     }
 
     /// The folder at `path`, relative to the root, created as needed.

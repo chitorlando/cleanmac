@@ -129,6 +129,28 @@ struct DiskMapScannerTests {
         #expect(map.fileCount == 1)
     }
 
+    // MARK: Folders that couldn't be read
+
+    /// Its permissions keep everyone out of the folder but root, as macOS keeps apps without
+    /// Full Disk Access out of private folders such as Mail.
+    @Test(.enabled(if: getuid() != 0, "Root reads every folder."))
+    func marksTheFoldersItCannotRead() async throws {
+        let folder = try TemporaryFolder()
+        try folder.makeFile("Documents/report.pdf", size: 50_000)
+        try folder.makeFile("Private/secret.bin", size: 500_000)
+        try folder.setPermissions("Private", to: 0)
+        defer { _ = try? folder.setPermissions("Private", to: 0o755) }
+
+        let map = try await map(of: folder, grouping: SmallItemGrouping())
+        let locked = try child("Private", of: map)
+
+        #expect(locked.isUnreadable)
+        #expect(locked.size == 0)
+        #expect(map.unreadableFolderCount == 1)
+        #expect(map.size == (try folder.allocatedSize(of: "Documents/report.pdf")))
+        #expect(map.fileCount == 1)
+    }
+
     // MARK: Progress
 
     @Test func reportsFilesAndBytesEveryIntervalAndAtTheEnd() async {

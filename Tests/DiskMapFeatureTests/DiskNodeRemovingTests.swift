@@ -25,6 +25,21 @@ struct DiskNodeRemovingTests {
         #expect(map.otherItems == Fixtures.map.otherItems)
     }
 
+    @Test func keepsTheFoldersThatCouldNotBeRead() throws {
+        let home = Fixtures.home
+        let mail = DiskNode(url: home.appending(path: "Library/Mail"), kind: .folder, size: 0, fileCount: 0, isUnreadable: true)
+        let cache = Fixtures.file("Library/cache.bin", 50)
+        let library = DiskNode(url: home.appending(path: "Library"), kind: .folder, size: 50, fileCount: 1, children: [cache, mail])
+        let map = DiskNode(url: home, kind: .folder, size: 50, fileCount: 1, children: [library])
+
+        let shrunk = map.removing([cache.url])
+        let keptLibrary = try #require(shrunk.children.first)
+
+        #expect(keptLibrary.children == [mail])
+        #expect(keptLibrary.unreadableFolderCount == 1)
+        #expect(shrunk.unreadableFolderCount == 1)
+    }
+
     @Test func leavesTheMapAsItIsWithoutMatches() {
         #expect(Fixtures.map.removing([URL(filePath: "/elsewhere")]) == Fixtures.map)
         #expect(Fixtures.map.removing([]) == Fixtures.map)

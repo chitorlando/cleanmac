@@ -171,6 +171,60 @@ struct DiskTreeBuilderTests {
         #expect(map(records.sorted { $0.size < $1.size }, grouping: SmallItemGrouping(minimumShare: 0.01)) == inOrder)
     }
 
+    // MARK: Folders that couldn't be read
+
+    @Test func showsAFolderThatCouldNotBeReadAsUnreadable() throws {
+        let builder = DiskTreeBuilder(root: root, grouping: .off)
+        builder.add(record("Library/Caches/cache.bin", 300))
+        builder.addUnreadableFolder(at: root.appending(path: "Library/Mail"))
+
+        let map = builder.build()
+        let library = try child("Library", of: map)
+        let mail = try child("Mail", of: library)
+
+        #expect(mail.isUnreadable)
+        #expect(mail.kind == .folder)
+        #expect(mail.size == 0)
+        #expect(mail.children.isEmpty)
+        #expect(mail.unreadableFolderCount == 1)
+        #expect(!library.isUnreadable)
+        #expect(library.unreadableFolderCount == 1)
+        #expect(library.children.map(\.name) == ["Caches", "Mail"])
+        #expect(map.unreadableFolderCount == 1)
+        #expect(map.size == 300)
+    }
+
+    /// The user must be able to find each folder the map is missing, however small it looks.
+    @Test func neverCountsTogetherWhatHoldsAFolderThatCouldNotBeRead() {
+        let builder = DiskTreeBuilder(root: root)
+        builder.add(record("Movies/big.mov", 100_000_000))
+        builder.add(record("a.txt", 10))
+        builder.add(record("b.txt", 10))
+        builder.addUnreadableFolder(at: root.appending(path: "Library/Mail"))
+        builder.addUnreadableFolder(at: root.appending(path: "Private"))
+
+        let map = builder.build()
+
+        #expect(map.children.map(\.name) == ["Movies", "Library", "Private"])
+        #expect(map.otherItems?.itemCount == 2)
+        #expect(map.unreadableFolderCount == 2)
+    }
+
+    @Test func marksTheRootWhenItCouldNotBeRead() {
+        let builder = DiskTreeBuilder(root: root)
+        builder.addUnreadableFolder(at: root)
+
+        #expect(builder.build() == DiskNode(url: root, kind: .folder, size: 0, fileCount: 0, isUnreadable: true))
+    }
+
+    @Test func ignoresUnreadableFoldersOutsideTheRoot() {
+        let builder = DiskTreeBuilder(root: root)
+        builder.addUnreadableFolder(at: URL(filePath: "/Users/other/Private"))
+        builder.addUnreadableFolder(at: URL(filePath: "/Users/tester"))
+
+        #expect(builder.build() == DiskNode(url: root, kind: .folder, size: 0, fileCount: 0))
+    }
+
     // MARK: Edge cases
 
     @Test func mapsAnEmptyFolder() {

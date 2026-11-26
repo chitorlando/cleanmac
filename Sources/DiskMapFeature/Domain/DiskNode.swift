@@ -13,6 +13,12 @@ public struct DiskNode: Identifiable, Equatable, Sendable {
     public let children: [DiskNode]
     /// Items of a folder too small to show one by one, counted together.
     public let otherItems: OtherItems?
+    /// The folder couldn't be read, such as one macOS keeps private, so what it holds isn't
+    /// known: it counts as empty here, though it probably isn't.
+    public let isUnreadable: Bool
+    /// Folders that couldn't be read inside the item, itself included. When there are any,
+    /// the item takes up more space than its size says.
+    public let unreadableFolderCount: Int
 
     public var id: URL { url }
     public var name: String { url.lastPathComponent }
@@ -23,7 +29,8 @@ public struct DiskNode: Identifiable, Equatable, Sendable {
         size: Int64,
         fileCount: Int,
         children: [DiskNode] = [],
-        otherItems: OtherItems? = nil
+        otherItems: OtherItems? = nil,
+        isUnreadable: Bool = false
     ) {
         self.url = url
         self.kind = kind
@@ -31,6 +38,8 @@ public struct DiskNode: Identifiable, Equatable, Sendable {
         self.fileCount = fileCount
         self.children = children
         self.otherItems = otherItems
+        self.isUnreadable = isUnreadable
+        unreadableFolderCount = children.reduce(isUnreadable ? 1 : 0) { $0 + $1.unreadableFolderCount }
     }
 
     /// A file or package found while walking a folder.
