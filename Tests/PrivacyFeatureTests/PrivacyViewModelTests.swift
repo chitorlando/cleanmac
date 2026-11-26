@@ -85,6 +85,60 @@ struct PrivacyViewModelTests {
         #expect(remover.removed == safari.items.map(\.url))
     }
 
+    @Test func askingToCleanRemovesNothing() async {
+        let viewModel = await scannedViewModel()
+
+        viewModel.requestClean()
+
+        #expect(viewModel.isConfirmingClean)
+        #expect(viewModel.selectedCount == 3)
+        #expect(viewModel.phase == .review)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func askingLeavesOutABrowserOpenedBeforeAsking() async {
+        let viewModel = await scannedViewModel()
+        runningApps.running = [openChrome]
+
+        viewModel.requestClean()
+
+        #expect(viewModel.isConfirmingClean)
+        #expect(viewModel.selectedCount == 1)
+        #expect(viewModel.selectedSize == 100)
+    }
+
+    @Test func asksNothingWithoutASelection() async {
+        let viewModel = await scannedViewModel()
+        viewModel.toggle(chrome)
+        viewModel.toggle(safari)
+
+        viewModel.requestClean()
+
+        #expect(!viewModel.isConfirmingClean)
+    }
+
+    @Test func cancellingTheCleanupRemovesNothing() async {
+        let viewModel = await scannedViewModel()
+        viewModel.requestClean()
+
+        viewModel.cancelClean()
+
+        #expect(!viewModel.isConfirmingClean)
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.hasSelection)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func confirmingCleansAndStopsAsking() async {
+        let viewModel = await scannedViewModel()
+        viewModel.requestClean()
+
+        await viewModel.clean()?.value
+
+        #expect(!viewModel.isConfirmingClean)
+        #expect(remover.removed.count == 3)
+    }
+
     @Test func movesTheSelectionToTheTrash() async throws {
         let viewModel = await scannedViewModel()
         viewModel.toggle(chrome)

@@ -13,6 +13,9 @@ public final class PrivacyViewModel: ObservableObject {
     @Published public private(set) var selection = ItemSelection()
     @Published public private(set) var runningBrowserIDs: Set<BrowserCaches.ID> = []
     @Published public private(set) var quittingBrowserIDs: Set<BrowserCaches.ID> = []
+    /// Whether the user is asked to confirm moving the selected caches to the Trash, which
+    /// `clean()` does.
+    @Published public private(set) var isConfirmingClean = false
 
     private let scanner: any BrowserCacheScanning
     private let runningApps: any RunningAppsProviding
@@ -35,6 +38,7 @@ public final class PrivacyViewModel: ObservableObject {
     }
 
     public var selectedSize: Int64 { selectedItems.totalSize }
+    public var selectedCount: Int { selectedItems.count }
     public var hasSelection: Bool { !selectedItems.isEmpty }
 
     // MARK: Actions
@@ -63,9 +67,27 @@ public final class PrivacyViewModel: ObservableObject {
         phase = .intro
     }
 
-    /// Moves the selected caches of browsers that are not open to the Trash.
+    /// Asks the user to confirm moving the selected caches to the Trash, and removes nothing.
+    /// Caches of a browser opened since the scan are left out first, as `clean()` does.
+    ///
+    /// The clear button calls it, also when Return presses that button.
+    public func requestClean() {
+        guard phase == .review else { return }
+        refreshRunningBrowsers()
+        guard hasSelection else { return }
+        isConfirmingClean = true
+    }
+
+    /// Stops asking for confirmation, without removing anything.
+    public func cancelClean() {
+        isConfirmingClean = false
+    }
+
+    /// Moves the selected caches of browsers that are not open to the Trash, once the user
+    /// confirmed it (see `requestClean()`).
     @discardableResult
     public func clean() -> Task<Void, Never>? {
+        isConfirmingClean = false
         guard phase == .review else { return nil }
         refreshRunningBrowsers()
         let items = selectedItems
