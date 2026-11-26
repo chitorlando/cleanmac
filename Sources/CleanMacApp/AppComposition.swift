@@ -47,4 +47,13 @@ enum AppComposition {
         }
         return SettingsSections(items: [language] + modules.flatMap { $0.settings } + [excludedFolders])
     }
+
+    /// The monitor in the menu bar, which shares the readings of the monitor feature among
+    /// `modules`, always one of them.
+    static func makeMenuBarMonitor(modules: [any FeatureModule]) -> MenuBarMonitor {
+        guard let monitor = modules.lazy.compactMap({ $0 as? MonitorModule }).first else {
+            preconditionFailure("makeModules always includes the monitor, whose readings the menu bar monitor shares.")
+        }
+        return monitor.menuBarMonitor
+    }
 }
