@@ -108,6 +108,17 @@
         }
       }
     },
+    "CleanMac keeps running when you close its window, so the menu can bring it back." : {
+      "comment" : "Note under the setting that shows the monitor in the menu bar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac sigue abierto al cerrar su ventana, para que el menú pueda volver a mostrarla."
+          }
+        }
+      }
+    },
     "Compressed" : {
       "comment" : "Memory held compressed.",
       "localizations" : {
@@ -293,6 +304,17 @@
         }
       }
     },
+    "Show CPU use in the menu bar" : {
+      "comment" : "Setting of the app: whether the menu bar shows the processor use next to the icon of the monitor.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el uso de CPU en la barra de menús"
+          }
+        }
+      }
+    },
     "Show in Finder" : {
       "comment" : "Context menu item that reveals the app of a process in Finder.",
       "localizations" : {
@@ -300,6 +322,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostrar en Finder"
+          }
+        }
+      }
+    },
+    "Show the monitor in the menu bar" : {
+      "comment" : "Setting of the app: whether the monitor has an icon and a menu in the menu bar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar el monitor en la barra de menús"
           }
         }
       }
@@ -333,6 +366,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Actualizar cada"
+          }
+        }
+      }
+    },
+    "Updates at the pace of the monitor, also while its menu is closed." : {
+      "comment" : "Note under the setting that shows the processor use in the menu bar.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se actualiza al ritmo del monitor, también con su menú cerrado."
           }
         }
       }

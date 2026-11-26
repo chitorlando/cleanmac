@@ -40,8 +40,13 @@ public final class MonitorModule: FeatureModule {
         AnyView(MonitorView(viewModel: viewModel, theme: theme, diskMapFeatureID: diskMapFeatureID))
     }
 
+    /// Whether the monitor is in the menu bar goes with the settings of the whole app, since
+    /// it also keeps the app running without windows.
     public var settings: [SettingsItem] {
         [
+            SettingsItem(id: MonitorSettings.showsMenuBarExtra.key, section: .general) { [preferences] in
+                MenuBarSettings(preferences: preferences)
+            },
             SettingsItem(id: MonitorSettings.refreshInterval.key, section: .monitor) { [preferences] in
                 RefreshIntervalPicker(preferences: preferences)
             }
