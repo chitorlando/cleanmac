@@ -36,7 +36,7 @@ public extension PrivacyModule {
         let viewModel = PrivacyViewModel(
             scanner: scanner,
             runningApps: WorkspaceRunningApps(),
-            cleanupService: CleanupService(remover: MissingItemTolerantRemover(TrashItemRemover()))
+            cleanupService: CleanupService(remover: TrashItemRemover(), skipsMissingItems: true)
         )
         return PrivacyModule(viewModel: viewModel)
     }

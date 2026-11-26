@@ -1,7 +1,11 @@
+import AppKit
 import CleanMacUI
 import SwiftUI
 
 /// List of findings where the user decides what to remove, and confirms it before it's removed.
+///
+/// The caches an open browser is using are locked. Which browsers are open is checked again
+/// whenever an app opens or quits, since the user quits them outside CleanMac.
 struct JunkReviewView: View {
     @ObservedObject var viewModel: SystemJunkViewModel
     let theme: FeatureTheme
@@ -29,6 +33,13 @@ struct JunkReviewView: View {
             onConfirm: { viewModel.clean() },
             onDismiss: { viewModel.cancelClean() }
         )
+        .onAppear { viewModel.refreshOpenApps() }
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didLaunchApplicationNotification)) { _ in
+            viewModel.refreshOpenApps()
+        }
+        .onReceive(NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didTerminateApplicationNotification)) { _ in
+            viewModel.refreshOpenApps()
+        }
     }
 
     private var cleanTitle: Text {

@@ -1,8 +1,10 @@
 import SwiftUI
 
-/// Warns that a browser is open, so its caches are locked, and offers to quit it.
+/// Warns that a browser or another edition of it is open, so its caches are locked, and
+/// offers to quit them.
 struct OpenBrowserNotice: View {
-    let browserName: String
+    /// The open apps that lock the caches, such as "Firefox" and "Firefox Nightly".
+    let appNames: [String]
     let isQuitting: Bool
     let onQuit: () -> Void
 
@@ -13,9 +15,9 @@ struct OpenBrowserNotice: View {
                 .accessibilityHidden(true)
 
             Text(
-                "Quit \(browserName) to clear its caches.",
+                "Quit \(names) to clear these caches.",
                 bundle: .module,
-                comment: "Notice shown on an open browser, whose caches can't be cleared. The argument is its name."
+                comment: "Notice on a browser whose caches are locked while it or another edition of it is open. The argument is the open apps."
             )
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -24,12 +26,17 @@ struct OpenBrowserNotice: View {
                     .controlSize(.small)
             } else {
                 Button(action: onQuit) {
-                    Text("Quit \(browserName)", bundle: .module, comment: "Button that asks an open browser to quit. The argument is its name.")
+                    Text("Quit \(names)", bundle: .module, comment: "Button that asks the open apps that lock a browser's caches to quit.")
                 }
             }
         }
         .padding(12)
         .background(Color.yellow.opacity(0.10), in: .rect(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.yellow.opacity(0.3), lineWidth: 1))
+    }
+
+    /// The names as a list in the user's language, such as "Firefox and Firefox Nightly".
+    private var names: String {
+        appNames.formatted(.list(type: .and))
     }
 }

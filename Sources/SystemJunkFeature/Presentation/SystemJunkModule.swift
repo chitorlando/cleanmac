@@ -24,16 +24,19 @@ public final class SystemJunkModule: FeatureModule {
 }
 
 public extension SystemJunkModule {
-    /// Module wired to the real file system of the current user.
+    /// Module wired to the real file system of the current user and the apps that are open.
     static func live() -> SystemJunkModule {
+        let home = FileManager.default.homeDirectoryForCurrentUser
         let scanners = JunkCatalog.scanners(
-            home: FileManager.default.homeDirectoryForCurrentUser,
+            home: home,
             reader: LocalDirectoryReader(),
             sizer: AllocatedSizeCalculator()
         )
         let viewModel = SystemJunkViewModel(
             scanService: JunkScanService(scanners: scanners),
-            cleanupService: CleanupService(remover: MissingItemTolerantRemover(TrashItemRemover()))
+            cleanupService: CleanupService(remover: TrashItemRemover(), skipsMissingItems: true),
+            runningApps: WorkspaceRunningApps(),
+            cacheUsage: BrowserCacheUsage(library: home.appending(path: "Library"))
         )
         return SystemJunkModule(viewModel: viewModel)
     }

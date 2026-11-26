@@ -34,6 +34,32 @@ struct PrivacyViewModelTests {
         #expect(viewModel.foundSize == 600)
     }
 
+    /// What service workers stored is listed, but only the user selects it, item by item.
+    @Test func leavesSiteDataUnselectedUntilTheUserSelectsIt() async throws {
+        let edge = browserCaches("Microsoft Edge", bundleID: "com.microsoft.edgemac", items: ["Cache": 50], siteData: ["ScriptCache": 900])
+        let viewModel = PrivacyViewModel(
+            scanner: StubBrowserCacheScanner(results: [edge]),
+            runningApps: runningApps,
+            cleanupService: CleanupService(remover: remover)
+        )
+        await viewModel.startScan().value
+        let siteData = try #require(edge.items.first(where: { edge.holdsSiteData($0) }))
+
+        #expect(viewModel.foundSize == 950)
+        #expect(viewModel.selectedItems == edge.cacheItems)
+        #expect(viewModel.selectionState(of: edge) == .some)
+
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems.isEmpty)
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems == edge.cacheItems)
+
+        viewModel.toggle(siteData, of: edge)
+        #expect(viewModel.selectedSize == 950)
+        viewModel.toggle(edge)
+        #expect(viewModel.selectedItems.isEmpty)
+    }
+
     @Test func locksTheCachesOfAnOpenBrowser() async throws {
         runningApps.running = [openChrome]
         let viewModel = await scannedViewModel()
@@ -64,6 +90,38 @@ struct PrivacyViewModelTests {
         #expect(runningApps.quitRequests == [openChrome.url])
         #expect(!viewModel.isRunning(chrome))
         #expect(viewModel.selectionState(of: chrome) == .all)
+    }
+
+    @Test func locksTheCachesWhileAnotherEditionIsOpenAndQuitsIt() async {
+        let canary = RunningApp(url: URL(filePath: "/Applications/Google Chrome Canary.app"), bundleID: "com.google.Chrome.canary")
+        runningApps.running = [canary]
+        let viewModel = await scannedViewModel()
+
+        #expect(viewModel.isRunning(chrome))
+        #expect(viewModel.openApps(of: chrome).map(\.name) == ["Google Chrome Canary"])
+        #expect(viewModel.selectedItems == safari.items)
+
+        #expect(await viewModel.quit(chrome))
+        #expect(runningApps.quitRequests == [canary.url])
+        #expect(viewModel.selectionState(of: chrome) == .all)
+    }
+
+    /// A helper runs inside the browser's bundle and closes with it, so it's never asked to quit.
+    @Test func leavesTheHelpersOfABrowserAlone() async {
+        let helper = RunningApp(
+            url: URL(filePath: "/Applications/Google Chrome.app/Contents/Frameworks/Helpers/Google Chrome Helper.app"),
+            bundleID: "com.google.Chrome.helper"
+        )
+        runningApps.running = [helper]
+        let viewModel = await scannedViewModel()
+
+        #expect(!viewModel.isRunning(chrome))
+
+        runningApps.running = [openChrome, helper]
+        viewModel.refreshRunningBrowsers()
+        await viewModel.quit(chrome)
+
+        #expect(runningApps.quitRequests == [openChrome.url])
     }
 
     @Test func keepsTheCachesLockedWhenTheBrowserDoesNotQuit() async {

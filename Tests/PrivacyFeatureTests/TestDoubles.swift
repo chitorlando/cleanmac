@@ -43,10 +43,14 @@ final class FakeRunningApps: RunningAppsProviding {
 }
 
 /// The caches of a browser of the catalog, with one item per name.
-func browserCaches(_ name: String, bundleID: String, items: [String: Int64]) -> BrowserCaches {
-    BrowserCaches(
+func browserCaches(_ name: String, bundleID: String, items: [String: Int64], siteData: [String: Int64] = [:]) -> BrowserCaches {
+    func cleanableItems(_ sizes: [String: Int64]) -> [CleanableItem] {
+        sizes.map { CleanableItem(url: URL(filePath: "/home/Library/Caches/\(bundleID)/\($0.key)"), size: $0.value) }
+    }
+    return BrowserCaches(
         browser: BrowserDefinition(name: name, bundleID: bundleID, cacheLocations: []),
         appURL: URL(filePath: "/Applications/\(name).app"),
-        items: items.map { CleanableItem(url: URL(filePath: "/home/Library/Caches/\(bundleID)/\($0.key)"), size: $0.value) }
+        items: cleanableItems(items),
+        siteData: cleanableItems(siteData)
     )
 }
