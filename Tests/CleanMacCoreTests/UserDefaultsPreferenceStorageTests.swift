@@ -71,6 +71,17 @@ struct UserDefaultsPreferenceStorageTests {
         #expect(suite.defaults.object(forKey: "size") as? Int64 == 5_000_000_000)
     }
 
+    /// The defaults give back a number for a Boolean, which still reads as the choice kept.
+    @Test func servesSettingsThatAreOnOrOff() throws {
+        let suite = try TemporaryDefaultsSuite()
+        let sounds = Setting(key: "sounds", defaultValue: true)
+
+        Preferences(storage: suite.storage).set(false, for: sounds)
+
+        #expect(Preferences(storage: suite.storage).value(of: sounds) == false)
+        #expect(suite.defaults.object(forKey: "sounds") as? Bool == false)
+    }
+
     @Test func servesListsOfStrings() throws {
         let suite = try TemporaryDefaultsSuite()
         let folders = Setting<[String]>(key: "folders", defaultValue: [])

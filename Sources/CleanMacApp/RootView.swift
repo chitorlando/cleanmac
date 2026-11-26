@@ -6,18 +6,21 @@ import SwiftUI
 /// Opens on the available feature at the top of the sidebar, whatever the order
 /// in which the features were registered. Features can open each other through
 /// the `openFeature` environment value, and find what the others offer to do with
-/// their items in `featureItemActions`.
+/// their items in `featureItemActions`. The window adds itself to `mainWindows`, so the
+/// menu bar can bring it back and open features in it too.
 struct RootView: View {
     let sections: SidebarSections
     /// Shown under the sidebar's list, such as a reminder about a missing permission.
     let sidebarNotice: AnyView?
+    let mainWindows: MainWindows
 
     @StateObject private var navigator: FeatureNavigator
 
-    init(modules: [any FeatureModule], upcoming: [UpcomingFeature], sidebarNotice: AnyView? = nil) {
+    init(modules: [any FeatureModule], upcoming: [UpcomingFeature], mainWindows: MainWindows, sidebarNotice: AnyView? = nil) {
         let sections = SidebarSections(modules: modules, upcoming: upcoming)
         self.sections = sections
         self.sidebarNotice = sidebarNotice
+        self.mainWindows = mainWindows
         _navigator = StateObject(wrappedValue: FeatureNavigator(modules: modules, selectedID: sections.firstModule?.id))
     }
 
@@ -30,6 +33,11 @@ struct RootView: View {
             detail
                 .environment(\.openFeature, navigator.openFeatureAction)
                 .environment(\.featureItemActions, navigator.featureItemActions)
+        }
+        .onHostingWindowChange { window in
+            if let window {
+                mainWindows.add(window, navigator: navigator)
+            }
         }
     }
 

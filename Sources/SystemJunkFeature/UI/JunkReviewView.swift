@@ -3,6 +3,8 @@ import CleanMacUI
 import SwiftUI
 
 /// List of findings where the user decides what to remove, and confirms it before it's removed.
+/// Emptying the Trash can't be undone, so it has its own question, which also tells what else
+/// goes to the Trash afterwards.
 ///
 /// The caches an open browser is using are locked. Which browsers are open is checked again
 /// whenever an app opens or quits, since the user quits them outside CleanMac.
@@ -24,12 +26,20 @@ struct JunkReviewView: View {
                 onSecondary: { viewModel.startScan() },
                 onPrimary: { viewModel.requestClean() }
             )
+            .emptyTrashConfirmation(
+                trashSize: viewModel.binsToEmpty.totalSize,
+                itemsToMove: viewModel.itemsToMove.count,
+                sizeToMove: viewModel.itemsToMove.totalSize,
+                isPresented: viewModel.isConfirmingClean && viewModel.emptiesTrash,
+                onConfirm: { viewModel.clean() },
+                onDismiss: { viewModel.cancelClean() }
+            )
         }
         .frame(maxWidth: 760)
         .trashConfirmation(
             itemCount: viewModel.selectedCount,
             size: viewModel.selectedSize,
-            isPresented: viewModel.isConfirmingClean,
+            isPresented: viewModel.isConfirmingClean && !viewModel.emptiesTrash,
             onConfirm: { viewModel.clean() },
             onDismiss: { viewModel.cancelClean() }
         )

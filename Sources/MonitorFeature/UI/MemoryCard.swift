@@ -18,19 +18,11 @@ struct MemoryCard: View {
             }
         } content: {
             if let usage {
-                Text(
-                    "\(usage.used.formattedMemorySize) of \(usage.physical.formattedMemorySize) used",
-                    bundle: .module,
-                    comment: "Memory in use out of the installed memory. The arguments are sizes, such as “9 GB” and “16 GB”."
-                )
-                .font(.title3.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                UsageBar(parts: [
-                    .init(id: 0, fraction: share(usage.app, of: usage), color: theme.primary),
-                    .init(id: 1, fraction: share(usage.wired, of: usage), color: theme.secondary),
-                    .init(id: 2, fraction: share(usage.compressed, of: usage), color: .purple)
-                ])
+                MemoryUsedText(usage: usage)
+                    .font(.title3.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                MemoryUsageBar(usage: usage, theme: theme)
                 legend(usage)
             } else {
                 Text(verbatim: "—").foregroundStyle(.secondary)
@@ -50,9 +42,5 @@ struct MemoryCard: View {
             }
         }
         .font(.caption)
-    }
-
-    private func share(_ part: UInt64, of usage: MemoryUsage) -> Double {
-        usage.physical > 0 ? Double(part) / Double(usage.physical) : 0
     }
 }

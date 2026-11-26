@@ -38,15 +38,7 @@ public struct SettingPicker<Value: PreferenceValue & Hashable>: View {
                 valueTitle(value).tag(value)
             }
         } label: {
-            VStack(alignment: .leading, spacing: 2) {
-                title
-                if let note {
-                    note
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
+            SettingLabel(title: title, note: note)
         }
     }
 

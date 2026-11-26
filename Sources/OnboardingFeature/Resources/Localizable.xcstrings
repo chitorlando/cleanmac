@@ -78,13 +78,13 @@
         }
       }
     },
-    "Lets CleanMac ask Finder to move protected apps to the Trash, so you can still put them back." : {
+    "Lets CleanMac ask Finder to move protected apps to the Trash, so you can still put them back, and to empty the Trash when you ask." : {
       "comment" : "Why CleanMac asks to control Finder.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permite a CleanMac pedir a Finder que mueva las apps protegidas a la Papelera, para que puedas devolverlas."
+            "value" : "Permite a CleanMac pedir a Finder que mueva las apps protegidas a la Papelera, para que puedas devolverlas, y que vacíe la Papelera cuando se lo pidas."
           }
         }
       }

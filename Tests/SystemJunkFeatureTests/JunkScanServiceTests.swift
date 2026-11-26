@@ -8,7 +8,7 @@ struct JunkScanServiceTests {
         let category: JunkCategory
         let items: [CleanableItem]
 
-        func scan() async -> [CleanableItem] { items }
+        func scan() async -> CategoryScanResult { CategoryScanResult(category: category, items: items) }
     }
 
     @Test func emitsOneResultPerScanner() async {

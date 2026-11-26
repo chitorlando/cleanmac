@@ -33,12 +33,23 @@ public final class MonitorModule: FeatureModule {
             .sink { [viewModel] seconds in viewModel.interval = .seconds(seconds) }
     }
 
+    /// The monitor in the menu bar, which shares the readings of the monitor's screens, with
+    /// `trash` in its menu. The app makes one.
+    public func makeMenuBarMonitor(trash: MenuBarTrash) -> MenuBarMonitor {
+        MenuBarMonitor(monitor: viewModel, preferences: preferences, featureID: id, trash: trash)
+    }
+
     public func makeView() -> AnyView {
         AnyView(MonitorView(viewModel: viewModel, theme: theme, diskMapFeatureID: diskMapFeatureID))
     }
 
+    /// Whether the monitor is in the menu bar goes with the settings of the whole app, since
+    /// it also keeps the app running without windows.
     public var settings: [SettingsItem] {
         [
+            SettingsItem(id: MonitorSettings.showsMenuBarExtra.key, section: .general) { [preferences] in
+                MenuBarSettings(preferences: preferences)
+            },
             SettingsItem(id: MonitorSettings.refreshInterval.key, section: .monitor) { [preferences] in
                 RefreshIntervalPicker(preferences: preferences)
             }
@@ -59,13 +70,20 @@ public final class MonitorModule: FeatureModule {
 public extension MonitorModule {
     /// Module that reads this Mac, only while some part of the app can be seen.
     ///
+    /// Only windows with a title bar count: the icon in the menu bar is always on screen, and
+    /// the menu bar monitor says by itself when it shows readings.
+    ///
     /// - Parameters:
     ///   - preferences: See `init(viewModel:preferences:diskMapFeatureID:)`.
     ///   - diskMapFeatureID: See `init(viewModel:preferences:diskMapFeatureID:)`.
     static func live(preferences: Preferences, diskMapFeatureID: String? = nil) -> MonitorModule {
         let viewModel = MonitorViewModel(
             sampler: SystemSampler.live(),
-            isVisible: { NSApplication.shared.occlusionState.contains(.visible) }
+            isVisible: {
+                NSApplication.shared.windows.contains { window in
+                    window.styleMask.contains(.titled) && window.isVisible && window.occlusionState.contains(.visible)
+                }
+            }
         )
         return MonitorModule(viewModel: viewModel, preferences: preferences, diskMapFeatureID: diskMapFeatureID)
     }

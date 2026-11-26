@@ -10,16 +10,24 @@ struct SystemJunkViewModelTests {
     private let vivaldiNamedCache = CleanableItem(url: URL(filePath: "/home/Library/Caches/com.vivaldi.Vivaldi"), size: 300)
     private let log = CleanableItem(url: URL(filePath: "/home/Library/Logs/Vivaldi"), size: 7)
     private let openVivaldi = RunningApp(url: URL(filePath: "/Applications/Vivaldi.app"), bundleID: "com.vivaldi.Vivaldi")
+    private let homeBin = CleanableItem(url: URL(filePath: "/home/.Trash", directoryHint: .isDirectory), size: 3_000)
+    private let diskBin = CleanableItem(url: URL(filePath: "/Volumes/Disk/.Trashes/501", directoryHint: .isDirectory), size: 500)
     private let runningApps = FakeRunningApps()
     private let remover = RecordingRemover()
+    private let emptier: RecordingTrashEmptier
 
-    private func makeViewModel(remover: any ItemRemoving) -> SystemJunkViewModel {
+    init() {
+        emptier = RecordingTrashEmptier(remover: remover)
+    }
+
+    private func makeViewModel(remover: any ItemRemoving, scanners: [any JunkScanner]? = nil) -> SystemJunkViewModel {
         SystemJunkViewModel(
-            scanService: JunkScanService(scanners: [
+            scanService: JunkScanService(scanners: scanners ?? [
                 StubJunkScanner(category: .userCaches, items: [vivaldiCache, vivaldiNamedCache, item]),
                 StubJunkScanner(category: .userLogs, items: [log])
             ]),
             cleanupService: CleanupService(remover: remover),
+            trashEmptying: TrashEmptyingService(emptier: emptier),
             runningApps: runningApps,
             cacheUsage: BrowserCacheUsage(library: URL(filePath: "/home/Library"))
         )
@@ -97,6 +105,21 @@ struct SystemJunkViewModelTests {
         #expect(viewModel.selectedItems.count == 4)
     }
 
+    @Test func showsACategoryMacOSKeepsCleanMacOutOfWithNothingToSelect() async {
+        let viewModel = makeViewModel(remover: remover, scanners: [
+            StubJunkScanner(result: .unreadable(.userLogs)),
+            StubJunkScanner(category: .userCaches, items: [])
+        ])
+
+        await viewModel.startScan().value
+
+        #expect(viewModel.phase == .review)
+        #expect(viewModel.results.map(\.category) == [.userLogs])
+        #expect(viewModel.results.allSatisfy { $0.needsFullDiskAccess })
+        #expect(viewModel.foundSize == 0)
+        #expect(!viewModel.hasSelection)
+    }
+
     @Test func locksTheCachesOfAnOpenBrowser() async throws {
         runningApps.running = [openVivaldi]
         let viewModel = await scannedViewModel()
@@ -150,6 +173,110 @@ struct SystemJunkViewModelTests {
         #expect(!viewModel.hasSelection)
         #expect(viewModel.clean() == nil)
         #expect(remover.removed.isEmpty)
+    }
+
+    // MARK: Trash
+
+    private func trashViewModel() async -> SystemJunkViewModel {
+        let viewModel = makeViewModel(remover: remover, scanners: [
+            StubJunkScanner(category: .trashBins, items: [homeBin, diskBin]),
+            StubJunkScanner(category: .userLogs, items: [log])
+        ])
+        await viewModel.startScan().value
+        return viewModel
+    }
+
+    @Test func leavesTheTrashUnselected() async {
+        let viewModel = await trashViewModel()
+
+        #expect(viewModel.foundSize == 3_507)
+        #expect(viewModel.selectedItems == [log])
+        #expect(!viewModel.emptiesTrash)
+    }
+
+    /// Finder empties every bin at once.
+    @Test func selectsEveryTrashBinTogether() async {
+        let viewModel = await trashViewModel()
+
+        viewModel.toggle(diskBin)
+
+        #expect(viewModel.binsToEmpty == [homeBin, diskBin])
+
+        viewModel.toggle(homeBin)
+
+        #expect(viewModel.binsToEmpty.isEmpty)
+    }
+
+    @Test func askingToEmptyTheTrashErasesNothing() async {
+        let viewModel = await trashViewModel()
+        viewModel.toggle(homeBin)
+
+        viewModel.requestClean()
+        viewModel.cancelClean()
+
+        #expect(!viewModel.isConfirmingClean)
+        #expect(emptier.emptyings.isEmpty)
+        #expect(remover.removed.isEmpty)
+    }
+
+    @Test func aMixedSelectionAsksAboutBothAndEmptiesTheTrashBeforeMovingTheRest() async {
+        let viewModel = await trashViewModel()
+        viewModel.toggle(homeBin)
+
+        viewModel.requestClean()
+
+        #expect(viewModel.isConfirmingClean)
+        #expect(viewModel.emptiesTrash)
+        #expect(viewModel.binsToEmpty == [homeBin, diskBin])
+        #expect(viewModel.itemsToMove == [log])
+        #expect(emptier.emptyings.isEmpty)
+
+        await viewModel.clean()?.value
+
+        #expect(emptier.emptyings == [[]])
+        #expect(remover.removed == [log.url])
+        guard case .finished(let report) = viewModel.phase else {
+            Issue.record("The cleanup didn't finish")
+            return
+        }
+        #expect(report.emptiedTrash)
+        #expect(report.removedCount == 1)
+        #expect(report.freedBytes == 3_507)
+    }
+
+    @Test func cleaningWithoutTheTrashLeavesItAlone() async {
+        let viewModel = await trashViewModel()
+        viewModel.requestClean()
+
+        await viewModel.clean()?.value
+
+        #expect(emptier.emptyings.isEmpty)
+        #expect(remover.removed == [log.url])
+    }
+
+    // MARK: Device backups
+
+    @Test func leavesBackupsUnselectedAndMovesTheOnesPickedToTheTrash() async {
+        let older = CleanableItem(url: URL(filePath: "/home/Library/Application Support/MobileSync/Backup/0001-20260105"), size: 40_000)
+        let newer = CleanableItem(url: URL(filePath: "/home/Library/Application Support/MobileSync/Backup/0001"), size: 48_000)
+        let viewModel = makeViewModel(remover: remover, scanners: [
+            StubJunkScanner(category: .deviceBackups, items: [newer, older]),
+            StubJunkScanner(category: .userLogs, items: [log])
+        ])
+        await viewModel.startScan().value
+
+        #expect(viewModel.selectedItems == [log])
+
+        viewModel.toggle(older)
+        viewModel.requestClean()
+
+        #expect(!viewModel.emptiesTrash)
+        #expect(Set(viewModel.itemsToMove) == [older, log])
+
+        await viewModel.clean()?.value
+
+        #expect(Set(remover.removed) == [older.url, log.url])
+        #expect(emptier.emptyings.isEmpty)
     }
 
     @Test func restartingDuringACleanupIgnoresItsResult() async {

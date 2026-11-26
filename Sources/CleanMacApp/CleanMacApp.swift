@@ -1,4 +1,5 @@
 import CleanMacUI
+import MonitorFeature
 import OnboardingFeature
 import SwiftUI
 
@@ -11,19 +12,22 @@ struct CleanMacApp: App {
         permissions.prepareForLaunch()
         return permissions
     }()
+    @StateObject private var menuBarMonitor: MenuBarMonitor
     private let modules: [any FeatureModule]
     private let settings: SettingsSections
+    private let mainWindows = MainWindows()
 
     init() {
         let preferences = AppComposition.makePreferences()
         let modules = AppComposition.makeModules(preferences: preferences)
         self.modules = modules
         settings = AppComposition.makeSettings(modules: modules, preferences: preferences)
+        _menuBarMonitor = StateObject(wrappedValue: AppComposition.makeMenuBarMonitor(modules: modules))
     }
 
     var body: some Scene {
-        WindowGroup {
-            AppRootView(modules: modules, upcoming: UpcomingFeature.roadmap, permissions: permissions)
+        WindowGroup(id: MainWindows.sceneID) {
+            AppRootView(modules: modules, upcoming: UpcomingFeature.roadmap, permissions: permissions, mainWindows: mainWindows)
                 .frame(minWidth: 900, minHeight: 600)
         }
         .windowStyle(.hiddenTitleBar)
@@ -38,5 +42,13 @@ struct CleanMacApp: App {
         Settings {
             SettingsView(sections: settings)
         }
+
+        // Taking the icon out of the menu bar with the Command key held turns the setting off.
+        MenuBarExtra(isInserted: $menuBarMonitor.isShown) {
+            MenuBarMonitorContent(menuBarMonitor: menuBarMonitor, mainWindows: mainWindows)
+        } label: {
+            menuBarMonitor.makeLabel()
+        }
+        .menuBarExtraStyle(.window)
     }
 }
