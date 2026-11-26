@@ -151,6 +151,95 @@ struct DiskMapScannerTests {
         #expect(map.fileCount == 1)
     }
 
+    // MARK: Protected folders
+
+    /// Scans `home` as the map scans the home folder, with Full Disk Access as `fullDiskAccess` says.
+    private func mapOfHome(_ home: TemporaryFolder, fullDiskAccess: FakeFullDiskAccess) async throws -> DiskNode {
+        let scanner = DiskMapScanner(
+            root: home.root,
+            protectedFolders: .appContainers(in: home.root, fullDiskAccess: fullDiskAccess),
+            makeWalker: { DiskMapScanner.walker(leavingOut: $0) },
+            grouping: .off
+        )
+        return try await map(of: scanner)
+    }
+
+    /// Looking inside them would make macOS ask the user about data from other apps.
+    @Test func leavesAppContainersOutWithoutFullDiskAccess() async throws {
+        let home = try TemporaryFolder()
+        try home.makeFile("Library/Caches/cache.bin", size: 50_000)
+        try home.makeFile("Library/Containers/com.example.app/Data/big.bin", size: 500_000)
+        try home.makeFile("Library/Group Containers/group.com.example/shared.bin", size: 300_000)
+
+        let map = try await mapOfHome(home, fullDiskAccess: FakeFullDiskAccess(granted: false))
+        let library = try child("Library", of: map)
+
+        #expect(library.children.map(\.name) == ["Caches", "Containers", "Group Containers"])
+        #expect(try child("Containers", of: library).isUnreadable)
+        #expect(try child("Group Containers", of: library).isUnreadable)
+        #expect(map.unreadableFolderCount == 2)
+        #expect(map.size == (try home.allocatedSize(of: "Library/Caches/cache.bin")))
+        #expect(map.fileCount == 1)
+    }
+
+    @Test func measuresAppContainersWithFullDiskAccess() async throws {
+        let home = try TemporaryFolder()
+        try home.makeFile("Library/Containers/com.example.app/Data/big.bin", size: 500_000)
+        try home.makeFile("Library/Group Containers/group.com.example/shared.bin", size: 300_000)
+
+        let map = try await mapOfHome(home, fullDiskAccess: FakeFullDiskAccess(granted: true))
+        let containers = try child("Containers", of: child("Library", of: map))
+
+        #expect(!containers.isUnreadable)
+        #expect(containers.size == (try home.allocatedSize(of: "Library/Containers/com.example.app/Data/big.bin")))
+        #expect(map.unreadableFolderCount == 0)
+        #expect(map.fileCount == 2)
+    }
+
+    @Test func leavesOutOnlyTheAppContainersThatExist() async throws {
+        let home = try TemporaryFolder()
+        try home.makeFile("Library/Containers/com.example.app/Data/big.bin", size: 500_000)
+
+        let map = try await mapOfHome(home, fullDiskAccess: FakeFullDiskAccess(granted: false))
+
+        #expect(try child("Library", of: map).children.map(\.name) == ["Containers"])
+        #expect(map.unreadableFolderCount == 1)
+    }
+
+    /// Access can be granted while the app runs, so it's checked again on each scan.
+    @Test func checksFullDiskAccessWhenEachScanStarts() async throws {
+        let home = try TemporaryFolder()
+        try home.makeFile("Library/Containers/com.example.app/Data/big.bin", size: 500_000)
+        let fullDiskAccess = FakeFullDiskAccess(granted: false)
+        let scanner = DiskMapScanner(
+            root: home.root,
+            protectedFolders: .appContainers(in: home.root, fullDiskAccess: fullDiskAccess),
+            makeWalker: { DiskMapScanner.walker(leavingOut: $0) }
+        )
+
+        let before = try await map(of: scanner)
+        fullDiskAccess.grant()
+        let after = try await map(of: scanner)
+
+        #expect(before.unreadableFolderCount == 1)
+        #expect(after.unreadableFolderCount == 0)
+        #expect(fullDiskAccess.checks == 2)
+    }
+
+    @Test func neverAsksForFullDiskAccessWithoutProtectedFolders() async throws {
+        let fullDiskAccess = FakeFullDiskAccess(granted: false)
+        let walker = StubWalker(root: root, sizes: [10])
+        let scanner = DiskMapScanner(
+            root: root,
+            protectedFolders: ProtectedFolders([], fullDiskAccess: fullDiskAccess),
+            makeWalker: { _ in walker }
+        )
+
+        _ = try await map(of: scanner)
+
+        #expect(fullDiskAccess.checks == 0)
+    }
+
     // MARK: Progress
 
     @Test func reportsFilesAndBytesEveryIntervalAndAtTheEnd() async {

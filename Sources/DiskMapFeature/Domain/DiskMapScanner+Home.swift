@@ -11,8 +11,19 @@ public extension DiskMapScanner {
     /// Leaving them out would hide where much of the space goes and make the total disagree
     /// with the disk. Measuring them is harmless; removing things from them is not, so that's
     /// for the screens to guard.
-    static func home() -> DiskMapScanner {
-        DiskMapScanner(root: FileManager.default.homeDirectoryForCurrentUser, walker: walker())
+    ///
+    /// Without Full Disk Access, the containers of `~/Library` are left out, as macOS would ask
+    /// the user about them (see `ProtectedFolders`), and so is whatever macOS keeps private,
+    /// such as Mail or Messages. The map shows those folders as unreadable.
+    static func home(
+        fullDiskAccess: any FullDiskAccessChecking = ProtectedFileFullDiskAccessChecker()
+    ) -> DiskMapScanner {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        return DiskMapScanner(
+            root: home,
+            protectedFolders: .appContainers(in: home, fullDiskAccess: fullDiskAccess),
+            makeWalker: { DiskMapScanner.walker(leavingOut: $0) }
+        )
     }
 
     /// The walker of the map: hidden items included, packages measured whole as single items,
