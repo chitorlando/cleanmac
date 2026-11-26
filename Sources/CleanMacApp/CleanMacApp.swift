@@ -13,6 +13,7 @@ struct CleanMacApp: App {
     }()
     private let modules: [any FeatureModule]
     private let settings: SettingsSections
+    private let mainWindows = MainWindows()
 
     init() {
         let preferences = AppComposition.makePreferences()
@@ -22,8 +23,8 @@ struct CleanMacApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
-            AppRootView(modules: modules, upcoming: UpcomingFeature.roadmap, permissions: permissions)
+        WindowGroup(id: MainWindows.sceneID) {
+            AppRootView(modules: modules, upcoming: UpcomingFeature.roadmap, permissions: permissions, mainWindows: mainWindows)
                 .frame(minWidth: 900, minHeight: 600)
         }
         .windowStyle(.hiddenTitleBar)
