@@ -78,7 +78,7 @@ public struct FileSystemWalker: FileWalking {
                 let next = enumerator.nextObject() as? URL
                 unreadableFolders.flush(into: unreadable)
                 guard let url = next else { return false }
-                if excludedPaths.contains(url.standardizedFileURL.path) {
+                if isExcluded(url) {
                     enumerator.skipDescendants()
                     return true
                 }
@@ -86,6 +86,12 @@ public struct FileSystemWalker: FileWalking {
                 return visit(record)
             }
         }
+    }
+
+    /// Whether the item is one of the excluded directories. Spelling its path the standard way
+    /// takes a good part of a walk's time, so it's only done when there's something to exclude.
+    private func isExcluded(_ url: URL) -> Bool {
+        !excludedPaths.isEmpty && excludedPaths.contains(url.standardizedFileURL.path)
     }
 
     private var enumerationOptions: FileManager.DirectoryEnumerationOptions {
