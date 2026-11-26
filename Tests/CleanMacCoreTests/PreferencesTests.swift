@@ -91,6 +91,23 @@ struct PreferencesTests {
         #expect(preferences.value(of: folders).isEmpty)
     }
 
+    @Test func keepsSettingsThatAreOnOrOff() {
+        let sounds = Setting(key: "sounds", defaultValue: true)
+        let storage = InMemoryPreferenceStorage()
+
+        Preferences(storage: storage).set(false, for: sounds)
+
+        #expect(Preferences(storage: storage).value(of: sounds) == false)
+        #expect(storage.value(forKey: "sounds") as? Bool == false)
+    }
+
+    @Test func aSettingThatIsOnOrOffHasTheDefaultWhenSomethingElseWasKept() {
+        let sounds = Setting(key: "sounds", defaultValue: true)
+        let preferences = Preferences(storage: InMemoryPreferenceStorage(["sounds": "off"]))
+
+        #expect(preferences.value(of: sounds) == true)
+    }
+
     @Test func ignoresAValueTheSettingDoesNotTake() {
         let storage = InMemoryPreferenceStorage(["interval": 5])
         let preferences = Preferences(storage: storage)
