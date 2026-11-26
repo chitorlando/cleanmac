@@ -223,14 +223,14 @@ public final class UninstallerViewModel: ObservableObject {
 
     /// Stops asking for confirmation, without removing anything.
     public func cancelUninstall() {
-        pendingUninstall = nil
+        if pendingUninstall != nil { pendingUninstall = nil }
     }
 
     /// Moves the selected items of apps that are not running to the Trash, once the user
     /// confirmed it (see `requestUninstall()`).
     @discardableResult
     public func uninstall() -> Task<Void, Never>? {
-        pendingUninstall = nil
+        if pendingUninstall != nil { pendingUninstall = nil }
         guard phase == .browsing else { return nil }
         refreshRunningApps()
         let items = selectedItems

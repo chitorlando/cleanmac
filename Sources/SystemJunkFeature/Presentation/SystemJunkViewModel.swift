@@ -88,14 +88,14 @@ public final class SystemJunkViewModel: ObservableObject {
 
     /// Stops asking for confirmation, without removing anything.
     public func cancelClean() {
-        isConfirmingClean = false
+        if isConfirmingClean { isConfirmingClean = false }
     }
 
     /// Moves the selected items that no open browser is using to the Trash, once the user
     /// confirmed it (see `requestClean()`).
     @discardableResult
     public func clean() -> Task<Void, Never>? {
-        isConfirmingClean = false
+        if isConfirmingClean { isConfirmingClean = false }
         refreshOpenApps()
         let items = selectedItems
         guard !items.isEmpty else { return nil }

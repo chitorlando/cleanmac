@@ -162,13 +162,13 @@ public final class DuplicatesViewModel: ObservableObject {
 
     /// Stops asking for confirmation, without removing anything.
     public func cancelRemoval() {
-        isConfirmingRemoval = false
+        if isConfirmingRemoval { isConfirmingRemoval = false }
     }
 
     /// Moves the selected copies to the Trash, once the user confirmed it (see `requestRemoval()`).
     @discardableResult
     public func remove() -> Task<Void, Never>? {
-        isConfirmingRemoval = false
+        if isConfirmingRemoval { isConfirmingRemoval = false }
         guard phase == .review else { return nil }
         let items = selectedItems
         guard !items.isEmpty else { return nil }

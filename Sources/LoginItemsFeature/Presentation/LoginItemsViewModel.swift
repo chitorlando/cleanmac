@@ -86,14 +86,14 @@ public final class LoginItemsViewModel: ObservableObject {
 
     /// Stops asking for confirmation, without removing anything.
     public func cancelRemoval() {
-        isConfirmingRemoval = false
+        if isConfirmingRemoval { isConfirmingRemoval = false }
     }
 
     /// Moves the selected agents to the Trash, once the user confirmed it (see
     /// `requestRemoval()`). They keep running until the next login.
     @discardableResult
     public func remove() -> Task<Void, Never>? {
-        isConfirmingRemoval = false
+        if isConfirmingRemoval { isConfirmingRemoval = false }
         guard phase == .browsing else { return nil }
         let items = selectedItems
         guard !items.isEmpty else { return nil }
