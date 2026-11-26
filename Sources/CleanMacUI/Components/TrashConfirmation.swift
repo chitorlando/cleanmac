@@ -14,7 +14,7 @@ struct TrashConfirmation: ViewModifier {
     let onDismiss: () -> Void
 
     func body(content: Content) -> some View {
-        content.confirmationDialog(title, isPresented: presentation) {
+        content.confirmationDialog(title, isPresented: .dialog(isPresented: isPresented, onDismiss: onDismiss)) {
             Button(role: .destructive, action: onConfirm) {
                 Text("Move to Trash", bundle: .module, comment: "Button that confirms moving the selected items to the Trash.")
             }
@@ -22,9 +22,12 @@ struct TrashConfirmation: ViewModifier {
             message
         }
     }
+}
 
-    /// The dialog closes itself, after either button or Escape, and only reports it.
-    private var presentation: Binding<Bool> {
+extension Binding where Value == Bool {
+    /// Presents a dialog while `isPresented` is true. The dialog closes itself, after any of its
+    /// buttons or Escape, and only reports it to `onDismiss`.
+    static func dialog(isPresented: Bool, onDismiss: @escaping () -> Void) -> Binding<Bool> {
         Binding(
             get: { isPresented },
             set: { isPresented in
