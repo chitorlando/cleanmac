@@ -115,7 +115,7 @@ struct SystemJunkViewModelTests {
 
         #expect(viewModel.phase == .review)
         #expect(viewModel.results.map(\.category) == [.userLogs])
-        #expect(viewModel.results.allSatisfy(\.needsFullDiskAccess))
+        #expect(viewModel.results.allSatisfy { $0.needsFullDiskAccess })
         #expect(viewModel.foundSize == 0)
         #expect(!viewModel.hasSelection)
     }
