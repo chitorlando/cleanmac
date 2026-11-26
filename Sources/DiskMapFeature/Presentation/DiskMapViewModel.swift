@@ -74,9 +74,10 @@ public final class DiskMapViewModel: ObservableObject {
 
     public var canGoUp: Bool { !focusPath.isEmpty }
 
-    /// A folder can be opened when it has something inside to show.
+    /// A folder can be opened when it has something inside to show: space it takes up, or
+    /// folders that couldn't be read. One that couldn't be read itself has nothing to show.
     public func canOpen(_ node: DiskNode) -> Bool {
-        node.kind == .folder && node.size > 0
+        node.kind == .folder && !node.isUnreadable && (node.size > 0 || node.unreadableFolderCount > 0)
     }
 
     /// Focuses an item of the focused folder.

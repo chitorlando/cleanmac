@@ -16,7 +16,13 @@ struct SmallItemPile {
     var otherItems: OtherItems? { total.itemCount > 1 ? total : nil }
 
     mutating func add(_ node: DiskNode) {
-        onlyItem = total.itemCount == 0 ? node : nil
-        total.add(node)
+        add(size: node.size, fileCount: node.fileCount) { node }
+    }
+
+    /// Counts an item of `size` bytes and `fileCount` files. The item is only made, by `node`,
+    /// when it's the first, since it's only kept while it's alone.
+    mutating func add(size: Int64, fileCount: Int, node: () -> DiskNode) {
+        onlyItem = total.itemCount == 0 ? node() : nil
+        total.add(size: size, fileCount: fileCount)
     }
 }

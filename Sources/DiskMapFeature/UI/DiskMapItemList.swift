@@ -18,7 +18,7 @@ struct DiskMapItemList: View {
 
     var body: some View {
         GlassCard {
-            if let folder = viewModel.focusedFolder, folder.size > 0 {
+            if let folder = viewModel.focusedFolder, folder.size > 0 || folder.unreadableFolderCount > 0 {
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 2) {

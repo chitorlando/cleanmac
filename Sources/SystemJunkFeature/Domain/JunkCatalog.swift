@@ -18,6 +18,11 @@ public enum JunkCatalog {
         }
     }
 
+    /// Every folder whose items are offered as junk, for the home folder `home`.
+    public static func locations(home: URL) -> [URL] {
+        entries(home: home).flatMap { $0.1 }
+    }
+
     private static func entries(home: URL) -> [(JunkCategory, [URL])] {
         let library = home.appending(path: "Library")
         let developer = library.appending(path: "Developer")

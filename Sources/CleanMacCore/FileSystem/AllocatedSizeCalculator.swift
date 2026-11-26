@@ -28,10 +28,16 @@ public struct AllocatedSizeCalculator: SizeCalculating {
             errorHandler: { _, _ in true }
         ) else { return 0 }
 
+        // Each item gets its own autorelease pool, as the enumerator's URLs would otherwise
+        // pile up until the whole folder is measured.
         var total: Int64 = 0
-        for case let fileURL as URL in enumerator {
-            guard !Task.isCancelled else { break }
-            total += regularFileSize(of: fileURL) ?? 0
+        var isMeasuring = true
+        while isMeasuring, !Task.isCancelled {
+            isMeasuring = autoreleasepool {
+                guard let fileURL = enumerator.nextObject() as? URL else { return false }
+                total += regularFileSize(of: fileURL) ?? 0
+                return true
+            }
         }
         return total
     }

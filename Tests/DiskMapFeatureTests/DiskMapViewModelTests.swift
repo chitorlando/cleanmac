@@ -131,6 +131,24 @@ struct DiskMapViewModelTests {
         #expect(viewModel.focusPath.isEmpty)
     }
 
+    /// A folder that holds nothing measured but a folder that couldn't be read still opens, so
+    /// the user can find that folder. The folder that couldn't be read has nothing to show.
+    @Test func opensFoldersThatHoldAFolderThatCouldNotBeRead() async throws {
+        let restricted = DiskNode(url: url("Library/Biome/Private"), kind: .folder, size: 0, fileCount: 0, isUnreadable: true)
+        let biome = DiskNode(url: url("Library/Biome"), kind: .folder, size: 0, fileCount: 0, children: [restricted])
+        let map = DiskNode(url: Fixtures.home, kind: .folder, size: 0, fileCount: 0, children: [biome])
+        let viewModel = makeViewModel(events: [.finished(map)])
+        await viewModel.startScan().value
+
+        #expect(viewModel.canOpen(biome))
+        #expect(!viewModel.canOpen(restricted))
+        viewModel.open(biome)
+        #expect(viewModel.items == [restricted])
+        #expect(viewModel.advice(for: restricted) == .unreadable)
+        viewModel.toggle(restricted)
+        #expect(!viewModel.isSelected(restricted))
+    }
+
     // MARK: Highlight
 
     @Test func movesTheHighlightWithoutAnnouncingItself() async {

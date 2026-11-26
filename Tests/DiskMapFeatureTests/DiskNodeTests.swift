@@ -13,6 +13,21 @@ struct DiskNodeTests {
         #expect(node.id == url)
     }
 
+    @Test func countsTheFoldersInsideThatCouldNotBeRead() {
+        let home = URL(filePath: "/Users/test")
+        let mail = DiskNode(url: home.appending(path: "Library/Mail"), kind: .folder, size: 0, fileCount: 0, isUnreadable: true)
+        let library = DiskNode(url: home.appending(path: "Library"), kind: .folder, size: 0, fileCount: 0, children: [mail])
+        let movie = DiskNode(url: url, kind: .file, size: 10, fileCount: 1)
+
+        let map = DiskNode(url: home, kind: .folder, size: 10, fileCount: 1, children: [movie, library])
+
+        #expect(mail.unreadableFolderCount == 1)
+        #expect(library.unreadableFolderCount == 1)
+        #expect(!library.isUnreadable)
+        #expect(map.unreadableFolderCount == 1)
+        #expect(movie.unreadableFolderCount == 0)
+    }
+
     @Test func describesAWalkedFile() {
         let node = DiskNode(record: FileRecord(url: url, size: 4_096, accessDate: nil, modificationDate: nil))
 

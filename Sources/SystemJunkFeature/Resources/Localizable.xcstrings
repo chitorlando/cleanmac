@@ -111,6 +111,17 @@
         }
       }
     },
+    "Review in System Junk" : {
+      "comment" : "Entry of the context menu of a folder whose junk System Junk cleans, such as the caches folder, shown by another feature such as the disk map. It opens System Junk.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisar en Basura del sistema"
+          }
+        }
+      }
+    },
     "Scan" : {
       "comment" : "Button that starts looking for junk.",
       "localizations" : {
