@@ -462,6 +462,17 @@
         }
       }
     },
+    "Open Automation Settings" : {
+      "comment" : "Button that opens the Automation pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de Automatización"
+          }
+        }
+      }
+    },
     "Open Full Disk Access Settings" : {
       "comment" : "Button that opens the Full Disk Access pane of System Settings.",
       "localizations" : {
