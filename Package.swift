@@ -81,6 +81,10 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "MalwareFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"]
+        ),
+        .target(
             name: "OnboardingFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
