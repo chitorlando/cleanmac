@@ -13,8 +13,6 @@ struct NextStepButtons: View {
     let appURL: URL?
 
     @Environment(\.fileActions) private var files
-    @Environment(\.openFeature) private var openFeature
-    @Environment(\.featureItemActions) private var featureItemActions
 
     var body: some View {
         HStack(spacing: 16) {
@@ -24,13 +22,7 @@ struct NextStepButtons: View {
                 Text("Show in Finder", bundle: .module, comment: "Button that reveals an item found by the security review in Finder.")
             }
             if let appURL {
-                ForEach(featureItemActions.offered(for: .app, at: appURL)) { action in
-                    Button {
-                        openFeature(action.featureID, showing: appURL)
-                    } label: {
-                        Text(verbatim: action.title)
-                    }
-                }
+                AppFeatureButtons(appURL: appURL)
             }
         }
         .buttonStyle(.link)
