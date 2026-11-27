@@ -69,9 +69,10 @@ public struct CleanupFailure: Equatable, Sendable {
 }
 
 public extension Sequence where Element == CleanupFailure {
-    /// Whether any item failed because macOS protects it, so Full Disk Access may help.
+    /// Whether any item failed because macOS protects it, so Full Disk Access may help. It
+    /// doesn't for a Trash bin, which Finder empties, not CleanMac.
     var includesProtectedItems: Bool {
-        contains { $0.kind == .protectedByMacOS }
+        contains { $0.kind == .protectedByMacOS && !$0.isTrashBin }
     }
 
     /// Whether anything failed because CleanMac isn't allowed to control Finder, so allowing it

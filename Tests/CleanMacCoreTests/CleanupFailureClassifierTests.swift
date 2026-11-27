@@ -130,6 +130,13 @@ struct CleanupFailureReportTests {
         #expect([busy, CleanupFailure(item: container, kind: .protectedByMacOS, reason: "")].includesProtectedItems)
     }
 
+    /// Finder empties the Trash, so Full Disk Access for CleanMac wouldn't help.
+    @Test func aProtectedTrashBinDoesNotCallForFullDiskAccess() {
+        let bin = CleanupFailure(item: homeBin, kind: .protectedByMacOS, reason: "", isTrashBin: true)
+
+        #expect(![bin].includesProtectedItems)
+    }
+
     @Test func onlyFinderAutomationDenialsCallForTheAutomationSettings() {
         let protected = CleanupFailure(item: container, kind: .protectedByMacOS, reason: "")
         let denied = CleanupFailure(item: container, kind: .finderAutomationDenied, reason: "")
