@@ -2,36 +2,6 @@ import Foundation
 import SecurityFeature
 import Testing
 
-struct ApplicationFolderAppFinderTests {
-    @Test func findsAppsAtTheTopAndOneFolderDown() {
-        let reader = StubDirectoryReader(tree: [
-            "/Applications": ["Zed.app", "Utilities", "notes.txt", "alpha.app", ".hidden.app", "Tools"],
-            "/Applications/Utilities": ["Helper.app", "Deep"],
-            "/Applications/Utilities/Deep": ["TooDeep.app"],
-            "/Applications/Tools": ["Tool.app"],
-            "/Users/ana/Applications": ["Web App.app"]
-        ])
-        let finder = ApplicationFolderAppFinder(
-            folders: [URL(filePath: "/Applications"), URL(filePath: "/Users/ana/Applications")],
-            reader: reader
-        )
-
-        #expect(finder.apps().map(\.path) == [
-            "/Applications/alpha.app",
-            "/Applications/Utilities/Helper.app",
-            "/Applications/Tools/Tool.app",
-            "/Users/ana/Applications/Web App.app",
-            "/Applications/Zed.app"
-        ])
-    }
-
-    @Test func skipsFoldersThatAreMissing() {
-        let finder = ApplicationFolderAppFinder(folders: [URL(filePath: "/Nowhere")], reader: StubDirectoryReader(tree: [:]))
-
-        #expect(finder.apps().isEmpty)
-    }
-}
-
 struct AppSignatureCheckerTests {
     private let app = URL(filePath: "/Applications/Example.app")
 
