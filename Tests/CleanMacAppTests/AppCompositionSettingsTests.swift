@@ -10,8 +10,10 @@ struct AppCompositionSettingsTests {
         AppComposition.makeSettings(modules: modules, preferences: Preferences(storage: InMemoryPreferenceStorage()))
     }
 
-    @Test func listsTheLanguageInTheGeneralSection() {
-        #expect(settings(of: []).items(in: .general).map(\.id) == ["AppleLanguages"])
+    @Test func listsTheLanguageAndTheSoundEffectsInTheGeneralSection() {
+        let general = settings(of: []).items(in: .general).map { $0.id }
+
+        #expect(general == ["AppleLanguages", "soundEffects.isEnabled"])
     }
 
     /// The folders left out are shared by the large files and the duplicates features, so the

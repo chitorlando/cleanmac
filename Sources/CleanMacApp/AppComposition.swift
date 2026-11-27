@@ -44,11 +44,14 @@ enum AppComposition {
         let language = SettingsItem(id: AppSettings.language.key, section: .general) {
             LanguagePicker(preferences: preferences)
         }
+        let soundEffects = SettingsItem(id: SoundEffectSettings.isEnabled.key, section: .general) {
+            SoundEffectsToggle(preferences: preferences)
+        }
         // Followed by the large files and the duplicates features, neither of which owns it.
         let excludedFolders = SettingsItem(id: ScanSettings.excludedFolders.key, section: .analysis) {
             ExcludedFolderList(preferences: preferences)
         }
-        return SettingsSections(items: [language] + modules.flatMap { $0.settings } + [excludedFolders])
+        return SettingsSections(items: [language, soundEffects] + modules.flatMap { $0.settings } + [excludedFolders])
     }
 
     /// The monitor in the menu bar, which shares the readings of the monitor feature among
