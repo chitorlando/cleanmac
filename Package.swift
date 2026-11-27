@@ -95,8 +95,8 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "SecurityFeature", "OnboardingFeature",
-                "Sparkle"
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "SecurityFeature", "MalwareFeature",
+                "OnboardingFeature", "Sparkle"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
