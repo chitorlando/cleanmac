@@ -286,47 +286,6 @@
         }
       }
     },
-    "Move %lld items to the Trash?" : {
-      "comment" : "Title when confirming a removal from the disk map. The argument is the number of items.",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Move %lld item to the Trash?"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Move %lld items to the Trash?"
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "¿Mover %lld elemento a la Papelera?"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "¿Mover %lld elementos a la Papelera?"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "Move to Trash" : {
       "comment" : "Button that confirms moving the selected items to the Trash.",
       "localizations" : {
@@ -466,17 +425,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Carpeta del sistema"
-          }
-        }
-      }
-    },
-    "They take up %@. You can put them back from the Trash." : {
-      "comment" : "Message when confirming a removal from the disk map. The argument is a size, such as “1.2 GB”.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ocupan %@. Puedes recuperarlos desde la Papelera."
           }
         }
       }

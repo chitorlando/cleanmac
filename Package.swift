@@ -160,7 +160,7 @@ let package = Package(
             dependencies: ["OnboardingFeature", "CleanMacCore"]
         ),
         .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacCore", "CleanMacUI"]),
-        .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI"]),
+        .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI", "CleanMacCore"]),
         .testTarget(name: "LocalizationTests")
     ]
 )

@@ -103,7 +103,7 @@ struct MenuBarTrashTests {
         #expect(!trash.canEmpty)
         #expect(!trash.isConfirmingEmpty)
         #expect(!trash.isEmptying)
-        #expect(!trash.emptyingFailed)
+        #expect(trash.emptyingFailure == nil)
     }
 
     @Test func emptiesATrashItCouldNotMeasure() async {
@@ -118,16 +118,28 @@ struct MenuBarTrashTests {
     }
 
     @Test func tellsWhenTheTrashCouldNotBeEmptied() async {
-        let emptier = FakeTrashEmptier(fails: true)
+        let emptier = FakeTrashEmptier(error: FakeTrashEmptier.Failure())
         let (trash, _) = makeTrash([MenuBarTrashFixtures.full], emptier: emptier)
         await trash.read()
         trash.requestEmpty()
 
         await trash.empty()
 
-        #expect(trash.emptyingFailed)
+        #expect(trash.emptyingFailure == .unknown)
         #expect(trash.canEmpty)
         trash.requestEmpty()
-        #expect(!trash.emptyingFailed)
+        #expect(trash.emptyingFailure == nil)
+    }
+
+    /// The menu then offers the Automation settings, not Full Disk Access, which wouldn't help.
+    @Test func tellsWhenCleanMacMayNotAskFinderToEmptyTheTrash() async {
+        let denied = CommandFailure(status: 1, message: "execution error: Not authorized to send Apple events to Finder. (-1743)")
+        let (trash, _) = makeTrash([MenuBarTrashFixtures.full], emptier: FakeTrashEmptier(error: denied))
+        await trash.read()
+        trash.requestEmpty()
+
+        await trash.empty()
+
+        #expect(trash.emptyingFailure == .finderAutomationDenied)
     }
 }

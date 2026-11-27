@@ -6,9 +6,10 @@ import Foundation
 /// system, OSStatus codes, and the code Finder reports at the end of an AppleScript error,
 /// such as `… execution error: Finder got an error: … (-5000)`.
 public enum CleanupFailureClassifier {
-    /// Codes that mean access was denied: `afpAccessDenied`, `errAEPrivilegeError`,
-    /// `errAEEventNotPermitted` (CleanMac may not control Finder) and `permErr`.
-    static let protectedStatusCodes: Set<Int> = [-5000, -10004, -1743, -54]
+    /// Codes that mean access was denied: `afpAccessDenied`, `errAEPrivilegeError` and `permErr`.
+    static let protectedStatusCodes: Set<Int> = [-5000, -10004, -54]
+    /// Codes that mean CleanMac may not control Finder: `errAEEventNotPermitted`.
+    static let finderAutomationDeniedStatusCodes: Set<Int> = [-1743]
     /// Codes that mean the file is busy: `fBsyErr` and `afpObjectLocked`.
     static let inUseStatusCodes: Set<Int> = [-47, -5034]
     static let missingStatusCodes: Set<Int> = [-43]
@@ -60,6 +61,7 @@ public enum CleanupFailureClassifier {
 
     private static func kind(ofStatus code: Int) -> CleanupFailureKind? {
         if protectedStatusCodes.contains(code) { return .protectedByMacOS }
+        if finderAutomationDeniedStatusCodes.contains(code) { return .finderAutomationDenied }
         if inUseStatusCodes.contains(code) { return .inUse }
         if missingStatusCodes.contains(code) { return .missing }
         return nil

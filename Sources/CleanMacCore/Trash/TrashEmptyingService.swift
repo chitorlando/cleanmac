@@ -20,9 +20,7 @@ public struct TrashEmptyingService: Sendable {
             try await emptier.emptyTrash()
             report.recordEmptiedTrash(bins)
         } catch {
-            for bin in bins {
-                report.recordFailure(bin, error: error)
-            }
+            report.recordTrashNotEmptied(bins, error: error)
         }
         return report
     }

@@ -18,7 +18,7 @@ public struct CleanupCompletionView: View {
             HeroHeader(
                 symbolName: "checkmark.seal.fill",
                 title: title,
-                subtitle: summary,
+                subtitle: report.summary,
                 theme: theme
             )
             if !report.failures.isEmpty {
@@ -34,28 +34,6 @@ public struct CleanupCompletionView: View {
             localized: "\(report.freedBytes.formattedByteCount) freed",
             bundle: .module,
             comment: "Title after a cleanup. The argument is a size, such as “1.2 GB”."
-        )
-    }
-
-    private var summary: String {
-        guard report.emptiedTrash else {
-            return String(
-                localized: "\(report.removedCount) items moved to the Trash. Empty it to reclaim the disk space.",
-                bundle: .module,
-                comment: "Summary after a cleanup. The argument is the number of items removed."
-            )
-        }
-        guard report.removedCount > 0 else {
-            return String(
-                localized: "The Trash was emptied for good.",
-                bundle: .module,
-                comment: "Summary after a cleanup that emptied the Trash."
-            )
-        }
-        return String(
-            localized: "The Trash was emptied for good, then \(report.removedCount) items moved to it. Empty it again to reclaim their space.",
-            bundle: .module,
-            comment: "Summary after a cleanup that emptied the Trash and then moved other items to it. The argument is the number of items moved."
         )
     }
 }

@@ -12,7 +12,7 @@ struct JunkIdleView: View {
                 symbolName: "trash.fill",
                 title: String(localized: "System Junk", bundle: .module, comment: "Feature name in the sidebar."),
                 subtitle: String(
-                    localized: "Free up space by removing caches, logs and development leftovers you no longer need.",
+                    localized: "Free up space by removing caches, logs, development leftovers and iPhone and iPad backups you no longer need, and by emptying the Trash.",
                     bundle: .module,
                     comment: "Introduction of the system junk feature."
                 ),
