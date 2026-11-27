@@ -40,11 +40,13 @@ final class FakeTrashEmptier: TrashEmptying, @unchecked Sendable {
     struct Failure: Error {}
 
     private let lock = NSLock()
-    private let fails: Bool
+    private let error: (any Error)?
     private var count = 0
 
-    init(fails: Bool = false) {
-        self.fails = fails
+    /// - Parameter error: What it throws each time it's asked to empty the Trash, or `nil` to
+    ///   succeed.
+    init(error: (any Error)? = nil) {
+        self.error = error
     }
 
     /// How many times it was asked to empty the Trash.
@@ -56,8 +58,8 @@ final class FakeTrashEmptier: TrashEmptying, @unchecked Sendable {
 
     func emptyTrash() async throws {
         noteCall()
-        if fails {
-            throw Failure()
+        if let error {
+            throw error
         }
     }
 

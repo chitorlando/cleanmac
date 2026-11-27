@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -20,6 +21,11 @@ public final class PrivacyModule: FeatureModule {
 
     public func makeView() -> AnyView {
         AnyView(PrivacyView(viewModel: viewModel, theme: theme))
+    }
+
+    /// The end of each scan, whatever it found, and of each cleanup that moved caches to the Trash.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
     }
 }
 

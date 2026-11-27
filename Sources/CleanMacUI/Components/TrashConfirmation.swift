@@ -4,8 +4,8 @@ import SwiftUI
 ///
 /// The button that removes them presents it instead of removing anything, so neither a
 /// click nor Return, which presses that button, moves a file at once. In the dialog, Move to
-/// Trash keeps the place of the default button, as in the disk map: what goes to the Trash
-/// can be put back. Cancel and Escape close it without removing anything.
+/// Trash keeps the place of the default button: what goes to the Trash can be put back.
+/// Cancel and Escape close it without removing anything.
 struct TrashConfirmation: ViewModifier {
     let title: Text
     let isPresented: Bool

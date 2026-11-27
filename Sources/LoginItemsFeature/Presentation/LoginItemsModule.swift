@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -20,6 +21,11 @@ public final class LoginItemsModule: FeatureModule {
 
     public func makeView() -> AnyView {
         AnyView(LoginItemsView(viewModel: viewModel, theme: theme))
+    }
+
+    /// The end of each removal that moved agents to the Trash.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
     }
 
     /// Offers to list the login items of an app that another feature shows, such as one of

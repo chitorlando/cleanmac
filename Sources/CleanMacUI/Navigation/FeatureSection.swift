@@ -3,6 +3,7 @@ import Foundation
 /// Group of related features in the sidebar, listed in this order.
 public enum FeatureSection: CaseIterable, Identifiable, Sendable {
     case cleanup
+    case protection
     case applications
     case files
     case performance
@@ -14,6 +15,8 @@ public enum FeatureSection: CaseIterable, Identifiable, Sendable {
         switch self {
         case .cleanup:
             String(localized: "Cleanup", bundle: .module, comment: "Sidebar section with features that remove junk.")
+        case .protection:
+            String(localized: "Protection", bundle: .module, comment: "Sidebar section with features that review how safe the Mac is and look for malware.")
         case .applications:
             String(localized: "Applications", bundle: .module, comment: "Sidebar section with features that manage apps.")
         case .files:
