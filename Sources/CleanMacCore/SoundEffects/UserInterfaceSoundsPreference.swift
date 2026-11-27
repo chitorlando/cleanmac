@@ -1,19 +1,19 @@
-import CoreFoundation
 import Foundation
 
-/// `UserInterfaceSoundsReading` in the global preferences, where macOS keeps the choice the
-/// user made in the Sound settings for every app.
+/// `UserInterfaceSoundsReading` in the global domain of the user defaults, where macOS keeps
+/// the choice the user made in the Sound settings for every app, as `defaults read -g` shows.
 ///
 /// It's read each time it's asked, since the user may change it while the app runs. macOS keeps
 /// nothing until the user turns the sound effects off, so nothing kept means they play.
 public struct UserInterfaceSoundsPreference: UserInterfaceSoundsReading {
-    /// Name the choice is kept under, in the preferences of every app.
+    /// Name the choice is kept under, in the global domain.
     static let key = "com.apple.sound.uiaudio.enabled"
 
     public init() {}
 
     public var playsUserInterfaceSounds: Bool {
-        Self.playsSounds(kept: CFPreferencesCopyAppValue(Self.key as CFString, kCFPreferencesAnyApplication))
+        let globalDomain = UserDefaults.standard.persistentDomain(forName: UserDefaults.globalDomain)
+        return Self.playsSounds(kept: globalDomain?[Self.key])
     }
 
     /// Whether `value`, what was kept under `key`, means that the sound effects play: anything
