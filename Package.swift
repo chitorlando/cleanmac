@@ -152,7 +152,7 @@ let package = Package(
         ),
         .testTarget(
             name: "MalwareFeatureTests",
-            dependencies: ["MalwareFeature", "CleanMacCore"]
+            dependencies: ["MalwareFeature", "CleanMacCore", "CleanMacUI"]
         ),
         .testTarget(
             name: "OnboardingFeatureTests",
