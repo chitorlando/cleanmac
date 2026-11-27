@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import DiskMapFeature
 import DuplicatesFeature
 import LargeFilesFeature
@@ -63,5 +64,30 @@ enum AppComposition {
     /// the menu bar, whose menu brings a window back. Quitting would take the menu away too.
     static func keepsRunningWithoutWindows(preferences: Preferences) -> Bool {
         preferences.value(of: MonitorSettings.showsMenuBarExtra)
+    }
+
+    /// Plays the sound effects of `modules` and of `menuBarMonitor` as they happen, with the
+    /// sounds of macOS, for as long as the result is kept. They're quiet while the user turned
+    /// them off in the Settings window, or macOS plays no sound effects of its own interface.
+    static func playSoundEffects(
+        of modules: [any FeatureModule],
+        menuBarMonitor: MenuBarMonitor,
+        preferences: Preferences
+    ) -> AnyCancellable {
+        let player = GatedSoundEffectPlayer(
+            player: SystemSoundEffectPlayer(),
+            preferences: preferences,
+            userInterfaceSounds: UserInterfaceSoundsPreference()
+        )
+        return playSoundEffects(modules.map { $0.soundEffects } + [menuBarMonitor.soundEffects], through: player)
+    }
+
+    /// Plays through `player` each sound effect that `soundEffects` send, for as long as the
+    /// result is kept.
+    static func playSoundEffects(
+        _ soundEffects: [AnyPublisher<SoundEffect, Never>],
+        through player: any SoundEffectPlaying
+    ) -> AnyCancellable {
+        Publishers.MergeMany(soundEffects).sink { player.play($0) }
     }
 }
