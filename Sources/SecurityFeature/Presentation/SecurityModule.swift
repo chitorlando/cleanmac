@@ -10,7 +10,7 @@ public final class SecurityModule: FeatureModule {
     public let title = String(localized: "Security", bundle: .module, comment: "Feature name in the sidebar.")
     public let symbolName = "checkmark.shield.fill"
     public let theme = FeatureTheme.security
-    public let section = FeatureSection.applications
+    public let section = FeatureSection.protection
 
     private let viewModel: SecurityViewModel
 
