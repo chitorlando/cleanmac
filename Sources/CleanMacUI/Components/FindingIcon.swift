@@ -4,16 +4,23 @@ import SwiftUI
 public enum FindingLevel: Hashable, Sendable {
     /// Nothing to do.
     case fine
+    /// Worth knowing, but not a problem by itself.
+    case information
     /// Worth a look, with a next step.
     case attention
+    /// Known to be harmful, such as malware Apple has blocked.
+    case threat
     /// The review couldn't tell.
     case unknown
 
-    /// Orange rather than red: a finding is something to look at, not an alarm.
+    /// Orange rather than red for what needs attention: a finding is something to look at,
+    /// not an alarm. Only a threat is red.
     public var color: Color {
         switch self {
         case .fine: .green
+        case .information: .blue
         case .attention: .orange
+        case .threat: .red
         case .unknown: .secondary
         }
     }
@@ -39,7 +46,9 @@ public struct FindingIcon: View {
     private var symbolName: String {
         switch level {
         case .fine: "checkmark.circle.fill"
+        case .information: "info.circle.fill"
         case .attention: "exclamationmark.triangle.fill"
+        case .threat: "xmark.octagon.fill"
         case .unknown: "questionmark.circle"
         }
     }
