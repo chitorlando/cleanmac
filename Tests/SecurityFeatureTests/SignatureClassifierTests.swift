@@ -1,3 +1,4 @@
+import CleanMacCore
 import SecurityFeature
 import Testing
 

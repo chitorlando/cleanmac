@@ -1,3 +1,5 @@
+import CleanMacCore
+
 /// Turns the facts of a signature and Gatekeeper's verdict into how far it can be trusted.
 public enum SignatureClassifier {
     /// Prefixes Apple puts before the developer's name in the subject of its certificates.

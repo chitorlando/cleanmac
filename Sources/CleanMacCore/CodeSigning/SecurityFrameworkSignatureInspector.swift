@@ -2,11 +2,12 @@ import Foundation
 import Security
 
 /// `CodeSignatureInspecting` backed by the Security framework, checking a signature the way
-/// `codesign --verify` does: the code and its sealed resources must match it.
+/// `codesign --verify` does: the code and its sealed resources must match it. As
+/// `CodeIdentityReading`, it only reads what the signature declares, as `codesign --display` does.
 ///
 /// It never goes online: revocations and notarization tickets are only looked up in what this
 /// Mac already knows, such as a ticket stapled to the app.
-public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting {
+public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting, CodeIdentityReading {
     /// What each kind of signer must satisfy, in Apple's code requirement language.
     private enum Requirement {
         static let issuedByApple = "anchor apple generic"
@@ -18,11 +19,14 @@ public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting {
     }
 
     /// Keys of the signing information, the values of `kSecCodeInfoFlags`,
-    /// `kSecCodeInfoCertificates` and `kSecCodeInfoTeamIdentifier`.
+    /// `kSecCodeInfoCertificates`, `kSecCodeInfoTeamIdentifier`, `kSecCodeInfoUnique` and
+    /// `kSecCodeInfoCdHashes`.
     private enum InfoKey {
         static let flags = "flags"
         static let certificates = "certificates"
         static let teamID = "teamid"
+        static let cdHash = "unique"
+        static let cdHashes = "cdhashes"
     }
 
     private static var validation: SecCSFlags { .noNetworkAccess }
@@ -34,10 +38,7 @@ public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting {
     public init() {}
 
     public func facts(forCodeAt url: URL) -> SignatureFacts {
-        var staticCode: SecStaticCode?
-        guard SecStaticCodeCreateWithPath(url as CFURL, [], &staticCode) == errSecSuccess, let code = staticCode else {
-            return SignatureFacts(validity: .unreadable)
-        }
+        guard let code = staticCode(at: url) else { return SignatureFacts(validity: .unreadable) }
         var facts = SignatureFacts(validity: validity(of: code))
         switch facts.validity {
         case .unsigned, .unreadable:
@@ -56,6 +57,17 @@ public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting {
         return facts
     }
 
+    /// Who signed the code and its cdhashes, `kSecCodeInfoUnique` first, or `nil` when it isn't
+    /// signed: only signed code has a code directory to hash.
+    public func identity(ofCodeAt url: URL) -> CodeIdentity? {
+        guard let code = staticCode(at: url), let info = signingInformation(of: code) else { return nil }
+        let unique = info[InfoKey.cdHash] as? Data
+        let others = ((info[InfoKey.cdHashes] as? [Data]) ?? []).filter { $0 != unique }
+        let cdHashes = [unique].compactMap { $0 } + others
+        guard !cdHashes.isEmpty else { return nil }
+        return CodeIdentity(teamID: info[InfoKey.teamID] as? String, cdHashes: cdHashes)
+    }
+
     private func validity(of code: SecStaticCode) -> SignatureFacts.Validity {
         let status = SecStaticCodeCheckValidity(code, Self.validation, nil)
         switch status {
@@ -71,12 +83,22 @@ public struct SecurityFrameworkSignatureInspector: CodeSignatureInspecting {
         }
     }
 
-    private func readSigningInformation(of code: SecStaticCode, into facts: inout SignatureFacts) {
+    private func staticCode(at url: URL) -> SecStaticCode? {
+        var staticCode: SecStaticCode?
+        guard SecStaticCodeCreateWithPath(url as CFURL, [], &staticCode) == errSecSuccess else { return nil }
+        return staticCode
+    }
+
+    /// What the signature declares, without checking that the code matches it.
+    private func signingInformation(of code: SecStaticCode) -> [String: Any]? {
         var information: CFDictionary?
         let flags = SecCSFlags(rawValue: UInt32(kSecCSSigningInformation))
-        guard SecCodeCopySigningInformation(code, flags, &information) == errSecSuccess,
-              let info = information as? [String: Any]
-        else { return }
+        guard SecCodeCopySigningInformation(code, flags, &information) == errSecSuccess else { return nil }
+        return information as? [String: Any]
+    }
+
+    private func readSigningInformation(of code: SecStaticCode, into facts: inout SignatureFacts) {
+        guard let info = signingInformation(of: code) else { return }
 
         let signatureFlags = (info[InfoKey.flags] as? NSNumber)?.uint32Value ?? 0
         facts.isAdHoc = signatureFlags & SecCodeSignatureFlags.adhoc.rawValue != 0

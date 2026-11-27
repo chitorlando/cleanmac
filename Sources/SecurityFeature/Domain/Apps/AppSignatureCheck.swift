@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// How far the signature of one app can be trusted.

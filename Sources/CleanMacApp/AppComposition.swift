@@ -6,6 +6,7 @@ import DuplicatesFeature
 import LargeFilesFeature
 import LoginItemsFeature
 import MaintenanceFeature
+import MalwareFeature
 import MonitorFeature
 import PrivacyFeature
 import SecurityFeature
@@ -28,6 +29,7 @@ enum AppComposition {
             PrivacyModule.live(),
             uninstaller,
             SecurityModule.live(),
+            MalwareModule.live(),
             LargeFilesModule.live(preferences: preferences),
             diskMap,
             DuplicatesModule.live(preferences: preferences),
