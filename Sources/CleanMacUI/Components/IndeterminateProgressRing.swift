@@ -34,14 +34,14 @@ public struct IndeterminateProgressRing: View {
     private var stillRing: some View {
         Circle()
             .stroke(theme.gradient, lineWidth: lineWidth)
-            .shadow(color: theme.primary.opacity(0.5), radius: 12)
+            .glow(theme.primary.opacity(0.5), radius: 12)
     }
 
     private var arc: some View {
         Circle()
             .trim(from: 0, to: Self.arcLength)
             .stroke(tail, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-            .shadow(color: theme.primary.opacity(0.5), radius: 12)
+            .glow(theme.primary.opacity(0.5), radius: 12)
     }
 
     /// Fades from transparent at the end of the arc to the theme's colors at its head.

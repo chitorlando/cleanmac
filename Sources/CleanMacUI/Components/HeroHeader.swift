@@ -25,7 +25,7 @@ public struct HeroHeader: View {
             Image(systemName: symbolName)
                 .font(.system(size: 72, weight: .semibold))
                 .foregroundStyle(theme.gradient)
-                .shadow(color: theme.primary.opacity(0.6), radius: 24)
+                .glow(theme.primary.opacity(0.6), radius: 24)
                 .accessibilityHidden(true)
 
             Text(title)
