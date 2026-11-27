@@ -10,20 +10,23 @@ struct LoginItemsFinishedView: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            HeroHeader(
-                symbolName: "checkmark.seal.fill",
-                title: String(
-                    localized: "\(report.removedCount) items moved to the Trash",
-                    bundle: .module,
-                    comment: "Title after removing login items. The argument is how many."
-                ),
+            SuccessHeader(
                 subtitle: String(
                     localized: "They stop running at your next login. Put them back from the Trash if you need them again.",
                     bundle: .module,
                     comment: "Shown after removing login items, which keep running until the next login."
                 ),
-                theme: theme
-            )
+                theme: theme,
+                celebrates: report.isCompleteSuccess
+            ) {
+                CountUpText(Int64(report.removedCount)) { removedCount in
+                    String(
+                        localized: "\(Int(removedCount)) items moved to the Trash",
+                        bundle: .module,
+                        comment: "Title after removing login items. The argument is how many."
+                    )
+                }
+            }
             if !report.failures.isEmpty {
                 CleanupFailureList(failures: report.failures)
             }

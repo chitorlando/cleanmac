@@ -20,7 +20,8 @@ public struct SelectionHighlight: View {
             .fill(fill)
             .overlay(shape.strokeBorder(isSelected ? theme.primary.opacity(0.55) : .clear, lineWidth: 1))
             .onHover { isHovered = $0 }
-            .animation(.snappy(duration: 0.15), value: isSelected)
+            .animation(Motion.feedback, value: isSelected)
+            .animation(Motion.feedback, value: isHovered)
     }
 
     private var shape: RoundedRectangle {

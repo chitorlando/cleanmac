@@ -43,10 +43,12 @@ struct PrivacyReviewView: View {
     private var browserList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.results) { browser in
+                ForEach(Array(viewModel.results.enumerated()), id: \.element.id) { order, browser in
                     BrowserCacheCard(browser: browser, viewModel: viewModel, theme: theme, isExpanded: binding(for: browser.id))
+                        .staggeredEntrance(order: order)
                 }
             }
+            .revealsRowsInTurn()
         }
         .scrollIndicators(.never)
     }

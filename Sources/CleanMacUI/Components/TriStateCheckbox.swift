@@ -1,6 +1,9 @@
 import SwiftUI
 
 /// Checkbox that can also show a mixed state for partially selected groups.
+///
+/// Its action runs within an animation, so what the selection changes, such as the size of
+/// what is selected in the action bar, moves to its new value instead of jumping.
 public struct TriStateCheckbox: View {
     private let state: CheckState
     private let tint: Color
@@ -17,7 +20,9 @@ public struct TriStateCheckbox: View {
     }
 
     public var body: some View {
-        Button(action: action) {
+        Button {
+            withAnimation(Motion.totals) { action() }
+        } label: {
             Image(systemName: symbolName)
                 .font(.title3)
                 .foregroundStyle(symbolColor)

@@ -9,6 +9,7 @@ public struct ActionBar: View {
     private let theme: FeatureTheme
     private let onSecondary: (() -> Void)?
     private let onPrimary: () -> Void
+    @Environment(\.motionPolicy) private var motion
 
     /// - Parameters:
     ///   - secondaryTitle: Title of the quiet action on the left, such as “Scan Again”.
@@ -44,10 +45,14 @@ public struct ActionBar: View {
 
             Button(action: onPrimary) {
                 primaryTitle
+                    .contentTransition(motion.allowsTravel ? .numericText() : .opacity)
             }
             .buttonStyle(GlowButtonStyle(theme: theme, shape: .capsule))
             .disabled(!isPrimaryEnabled)
             .keyboardShortcut(isPrimaryDefaultAction ? .defaultAction : nil)
+            // The title often tells what the action takes, such as the size of what is
+            // selected: its digits roll to each new value and the button resizes smoothly.
+            .animation(Motion.totals, value: primaryTitle)
         }
     }
 
