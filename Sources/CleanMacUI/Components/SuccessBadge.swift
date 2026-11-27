@@ -3,20 +3,29 @@ import SwiftUI
 /// Round badge in the feature's colors whose checkmark draws itself once the badge pops in.
 /// When it `celebrates`, a soft burst spreads around it, once.
 ///
-/// It's the circle the screen of a finished task centers on, so it grows out of the ring of the
-/// task (see `phaseFocus()`). With Reduce Motion on, the badge and its checkmark appear without
-/// popping, drawing or bursting. With Reduce Transparency on, it has no glow. VoiceOver skips
-/// it: the title next to it says what happened.
-struct SuccessBadge: View {
-    let theme: FeatureTheme
-    let diameter: CGFloat
-    let celebrates: Bool
+/// On a screen of a finished task, it's the circle the screen centers on, so it grows out of
+/// the ring of the task (see `phaseFocus()`). With Reduce Motion on, the badge and its
+/// checkmark appear without popping, drawing or bursting. With Reduce Transparency on, it has
+/// no glow. VoiceOver skips it: the text next to it says what happened.
+public struct SuccessBadge: View {
+    private let theme: FeatureTheme
+    private let diameter: CGFloat
+    private let celebrates: Bool
 
     @Environment(\.motionPolicy) private var motion
     @State private var hasAppeared = false
     @State private var isChecked = false
 
-    var body: some View {
+    /// - Parameters:
+    ///   - diameter: The size of the badge, which its checkmark and glow follow.
+    ///   - celebrates: Whether a burst spreads around the badge when it appears.
+    public init(theme: FeatureTheme, diameter: CGFloat, celebrates: Bool = false) {
+        self.theme = theme
+        self.diameter = diameter
+        self.celebrates = celebrates
+    }
+
+    public var body: some View {
         ZStack {
             if celebrates && motion.animatesDecorations {
                 SuccessBurst(theme: theme, isPlaying: hasAppeared)
