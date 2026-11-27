@@ -82,7 +82,8 @@ let package = Package(
         ),
         .target(
             name: "MalwareFeature",
-            dependencies: ["CleanMacCore", "CleanMacUI"]
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "OnboardingFeature",
