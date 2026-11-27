@@ -28,6 +28,12 @@ modular y fácil de auditar. No hay suscripciones, telemetría ni anuncios.
 | ✅ | **Ítems de inicio** | Lista lo que arranca al iniciar sesión o funciona en segundo plano: los agentes de `~/Library/LaunchAgents` («Solo tú») y los agentes y daemons de `/Library` («Todos los usuarios»), con la app a la que pertenecen. Marca como huérfanos los que apuntan a un programa que ya no existe. Tus agentes se pueden mover a la Papelera; los de `/Library` solo se muestran en Finder. Abre también los ajustes de ítems de inicio de macOS. |
 | ✅ | **Monitor** | Muestra en directo el uso de la CPU con su historial, la memoria y su presión, el espacio del disco de arranque y del de tu carpeta de inicio, y tus procesos que más CPU o memoria usan. Solo lee: no cierra ni cambia nada, y deja de medir cuando no está a la vista. En CleanMac > Ajustes… (⌘,) eliges si se actualiza cada 1, 2 o 5 segundos; la preferencia se guarda solo en tu Mac. También está en la barra de menús: su icono abre un resumen con la CPU, la memoria y su presión, el espacio libre del disco de arranque y los tres procesos que más CPU usan, que solo se mide mientras está abierto, y botones para abrir CleanMac o el Monitor. También muestra lo que ocupa la Papelera, que mide cada vez que se abre (sin Acceso total al disco no puede medirla), y la vacía con «Vaciar Papelera…» a través de Finder, solo después de que confirmes que lo que contiene se borra para siempre. Mientras el icono está en la barra de menús, CleanMac sigue abierto al cerrar su ventana. En los ajustes generales lo quitas de la barra de menús o eliges ver allí el uso de la CPU, que entonces se mide sin pausa al ritmo del Monitor. |
 
+Al terminar un análisis, una limpieza o el mantenimiento, CleanMac reproduce un sonido breve de los
+que ya trae macOS, como el de Finder al mover a la Papelera o al vaciarla, y uno más grave si Malware
+encuentra una amenaza. Estos efectos de sonido se desactivan en CleanMac > Ajustes… > General, y
+tampoco suenan si en Ajustes del Sistema > Sonido está desactivado «Reproducir efectos de sonido
+de la interfaz de usuario».
+
 ## Seguridad primero
 
 - **Todo va a la Papelera.** Nada se borra directamente, así que cualquier limpieza se puede deshacer.
@@ -206,7 +212,7 @@ Cada función es un módulo con su dominio, su presentación y su interfaz, y de
 `CleanMacCore` y `CleanMacUI`:
 
 - **`FeatureModule`** es el contrato que implementa cada función: identificador, título, icono, tema,
-  sección y la vista que muestra.
+  sección, la vista que muestra y los sonidos de sus momentos clave, que la app reproduce.
 - **`FeatureSection`** agrupa las funciones en la barra lateral: Limpieza, Protección, Aplicaciones, Archivos y Rendimiento.
 - **`AppComposition`** es el único sitio que conoce todas las funciones y crea sus dependencias reales.
 

@@ -160,6 +160,17 @@
         }
       }
     },
+    "CleanMac isn’t allowed to control Finder. Allow it in the Automation settings and try again." : {
+      "comment" : "Why an item couldn't be moved to the Trash, or the Trash couldn't be emptied: the user didn't let CleanMac control Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac no tiene permiso para controlar Finder. Permíteselo en los ajustes de Automatización y vuelve a intentarlo."
+          }
+        }
+      }
+    },
     "Cleanup" : {
       "comment" : "Sidebar section with features that remove junk.",
       "localizations" : {
@@ -333,6 +344,17 @@
         }
       }
     },
+    "It couldn’t be emptied." : {
+      "comment" : "Why a Trash bin couldn't be emptied, when the reason isn't known.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar."
+          }
+        }
+      }
+    },
     "It couldn’t be moved to the Trash." : {
       "comment" : "Why an item couldn't be moved to the Trash, when the reason isn't known.",
       "localizations" : {
@@ -440,6 +462,17 @@
         }
       }
     },
+    "Nothing was moved to the Trash." : {
+      "comment" : "Summary after a cleanup that couldn’t move any item to the Trash.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se movió nada a la Papelera."
+          }
+        }
+      }
+    },
     "Only in: %@" : {
       "comment" : "Pill shown while a scan is limited to one folder. The argument is the name of the folder.",
       "localizations" : {
@@ -458,6 +491,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abrir"
+          }
+        }
+      }
+    },
+    "Open Automation Settings" : {
+      "comment" : "Button that opens the Automation pane of System Settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir los ajustes de Automatización"
           }
         }
       }
@@ -583,6 +627,69 @@
         }
       }
     },
+    "The Trash couldn’t be emptied" : {
+      "comment" : "Title of the list of failures when the Trash couldn’t be emptied.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar la Papelera"
+          }
+        }
+      }
+    },
+    "The Trash couldn’t be emptied, and %lld items couldn’t be moved" : {
+      "comment" : "Title of the list of failures when the Trash couldn’t be emptied and other items failed to move to it. The argument is the number of items.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash couldn’t be emptied, and %lld item couldn’t be moved"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash couldn’t be emptied, and %lld items couldn’t be moved"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "No se pudo vaciar la Papelera y %lld elemento no se pudo mover"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "No se pudo vaciar la Papelera y %lld elementos no se pudieron mover"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "The Trash couldn’t be emptied, so nothing was erased." : {
+      "comment" : "Summary after a cleanup that couldn’t empty the Trash and moved nothing to it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar la Papelera, así que no se borró nada."
+          }
+        }
+      }
+    },
     "The Trash was emptied for good, then %lld items moved to it. Empty it again to reclaim their space." : {
       "comment" : "Summary after a cleanup that emptied the Trash and then moved other items to it. The argument is the number of items moved.",
       "localizations" : {
@@ -653,6 +760,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocupan %@. Puedes recuperarlos desde la Papelera."
+          }
+        }
+      }
+    },
+    "macOS protects something in it. Empty the Trash yourself in Finder." : {
+      "comment" : "Why a Trash bin couldn't be emptied: macOS protects something in it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS protege algo de lo que contiene. Vacía tú la Papelera desde Finder."
           }
         }
       }

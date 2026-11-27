@@ -119,6 +119,17 @@
         }
       }
     },
+    "CleanMac isn’t allowed to ask Finder to empty the Trash." : {
+      "comment" : "Shown in the menu bar monitor when the Trash couldn’t be emptied because the user didn’t let CleanMac control Finder, above the button that opens the Automation settings.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac no tiene permiso para pedir a Finder que vacíe la Papelera."
+          }
+        }
+      }
+    },
     "CleanMac keeps running when you close its window, so the menu can bring it back." : {
       "comment" : "Note under the setting that shows the monitor in the menu bar.",
       "localizations" : {

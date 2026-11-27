@@ -1,8 +1,11 @@
+import CleanMacCore
 import CleanMacUI
 import SwiftUI
 
 /// The Trash in the menu of the menu bar monitor: what it holds, and a button that empties it
 /// once the user confirms it in the dialog that asks before erasing anything for good.
+/// When CleanMac wasn't allowed to ask Finder to empty it, another button opens the
+/// Automation settings, where the user allows it.
 struct MenuBarTrashCard: View {
     @ObservedObject var trash: MenuBarTrash
     let theme: FeatureTheme
@@ -26,6 +29,10 @@ struct MenuBarTrashCard: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
+            if trash.emptyingFailure == .finderAutomationDenied {
+                AutomationSettingsButton()
+                    .font(.subheadline)
+            }
         }
         .emptyTrashConfirmation(
             trashSize: trash.size,
@@ -39,7 +46,13 @@ struct MenuBarTrashCard: View {
     private var status: some View {
         if trash.isEmptying {
             Text("Emptying the Trash…", bundle: .module, comment: "Shown in the menu bar monitor while Finder empties the Trash.")
-        } else if trash.emptyingFailed {
+        } else if trash.emptyingFailure == .finderAutomationDenied {
+            Text(
+                "CleanMac isn’t allowed to ask Finder to empty the Trash.",
+                bundle: .module,
+                comment: "Shown in the menu bar monitor when the Trash couldn’t be emptied because the user didn’t let CleanMac control Finder, above the button that opens the Automation settings."
+            )
+        } else if trash.emptyingFailure != nil {
             Text("The Trash couldn’t be emptied.", bundle: .module, comment: "Shown in the menu bar monitor when Finder couldn’t empty the Trash.")
         } else if trash.usage == .unreadable {
             Text(

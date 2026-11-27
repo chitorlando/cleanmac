@@ -1,8 +1,9 @@
 import CleanMacCore
 import SwiftUI
 
-/// One item that couldn't be moved: its name, what happened in plain words and a button that
-/// shows it in Finder, where it can be moved by hand. The system's own text is the tooltip.
+/// One item that couldn't be moved, or Trash bin that couldn't be emptied: its name, what
+/// happened in plain words and a button that shows it in Finder, where it can be dealt with
+/// by hand. The system's own text is the tooltip.
 struct CleanupFailureRow: View {
     let failure: CleanupFailure
     @Environment(\.fileActions) private var files
@@ -14,7 +15,7 @@ struct CleanupFailureRow: View {
                     .font(.callout.weight(.medium))
                     .lineLimit(1)
                     .truncationMode(.middle)
-                failure.kind.message
+                failure.message
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)

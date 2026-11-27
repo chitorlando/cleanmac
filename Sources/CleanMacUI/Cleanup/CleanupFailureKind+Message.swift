@@ -11,6 +11,12 @@ extension CleanupFailureKind {
                 bundle: .module,
                 comment: "Why an item couldn't be moved to the Trash: macOS protects it, such as another app's container."
             )
+        case .finderAutomationDenied:
+            Text(
+                "CleanMac isn’t allowed to control Finder. Allow it in the Automation settings and try again.",
+                bundle: .module,
+                comment: "Why an item couldn't be moved to the Trash, or the Trash couldn't be emptied: the user didn't let CleanMac control Finder."
+            )
         case .inUse:
             Text(
                 "Another app is using it. Quit that app and try again.",
