@@ -4,9 +4,13 @@
 <p>The first stable release of CleanMac.</p>
 <h2>What's new</h2>
 <ul>
+  <li>Malware: looks, read-only, for known signs of malware and adware. It checks your apps, launch items and Safari extensions against the blocklists Apple keeps on your Mac, shows what XProtect found in its background scans (with an administrator account, without asking for its password), and warns about browsers with forced extensions, home page or search engine, configuration profiles, and proxies, DNS servers or <code>/etc/hosts</code> redirects that divert your traffic. It isn't a full antivirus: it doesn't scan the contents of your files or run in the background.</li>
+  <li>A new Protection section in the sidebar, with Security and Malware.</li>
   <li>Security: checks, without changing anything, whether FileVault, the firewall, Gatekeeper, System Integrity Protection and automatic security updates are on, and whether XProtect is up to date. It warns about apps that are unsigned or have a broken signature and about suspicious launch agents, and lists the apps with sensitive permissions, such as Full Disk Access or Screen Recording. It isn't an antivirus.</li>
   <li>CleanMac in the menu bar: CPU, memory, free space and the processes using the most CPU, one click away. It also shows how much the Trash holds and empties it with “Empty Trash…”. In Settings you can remove it or show CPU usage there.</li>
   <li>With Full Disk Access, System Junk also finds your Trash and the Trash on external drives, and your iPhone and iPad backups. None of them is selected for you, and the most recent backup of each device is marked so you keep it.</li>
+  <li>Animations throughout the app: the scan button turns into a breathing ring, the space freed counts up when a cleanup finishes, and screens and lists come in smoothly. With Reduce Motion on, they become simple fades.</li>
+  <li>Short macOS sounds when a scan, cleanup, uninstall or maintenance finishes, and when the Trash is emptied. Turn them off in Settings › General; they also follow macOS's setting for interface sound effects.</li>
   <li>A Settings window (CleanMac › Settings…, ⌘,): the app's language, the Monitor's refresh rate, the minimum size for Large Files and Duplicates, and excluded folders those two features never look in.</li>
   <li>The Disk Map shows all your space: your Library and hidden items too. Folders macOS protects are marked, with a shortcut to the Full Disk Access settings, and iCloud files are never downloaded.</li>
   <li>A welcome screen on first launch to grant Full Disk Access and Finder automation. You can return to it from CleanMac › Permissions….</li>
@@ -26,6 +30,8 @@
   <li>Monitor: memory is shown in the same units as Activity Monitor, the first reading after coming back no longer averages the time away, and several windows no longer shorten the history.</li>
   <li>Login Items: the “Disabled” badge reflects the system's real state, and an agent is only marked orphaned when its program is gone, also when an interpreter launches it.</li>
   <li>Space freed is no longer counted twice when Privacy and System Junk share a cache.</li>
+  <li>When macOS doesn't let CleanMac control Finder, the error offers the Automation settings instead of Full Disk Access.</li>
+  <li>When the Trash can't be emptied, the messages say so, instead of talking about items that couldn't be moved.</li>
 </ul>
 <p>Free and open source. Distributed without Apple notarization.</p>
 </body></html>

@@ -4,9 +4,13 @@
 <p>La primera versión estable de CleanMac.</p>
 <h2>Novedades</h2>
 <ul>
+  <li>Malware: busca, solo leyendo, señales conocidas de malware y adware. Compara tus apps, los programas de inicio y las extensiones de Safari con las listas de bloqueo que Apple guarda en tu Mac, muestra lo que XProtect encontró en sus análisis en segundo plano (con una cuenta de administrador, sin pedir su contraseña) y avisa de navegadores con extensiones, página de inicio o buscador impuestos, de perfiles de configuración y de proxies, DNS o redirecciones de <code>/etc/hosts</code> que desvían tu tráfico. No es un antivirus completo: no analiza el contenido de los archivos ni funciona en segundo plano.</li>
+  <li>Nueva sección Protección en la barra lateral, con Seguridad y Malware.</li>
   <li>Seguridad: revisa, sin cambiar nada, si están activados FileVault, el firewall, Gatekeeper, la Protección de la integridad del sistema y las actualizaciones de seguridad automáticas, y si XProtect está al día. Avisa de las apps sin firma o con la firma dañada y de los agentes de inicio sospechosos, y lista las apps con permisos delicados, como el acceso total al disco o la grabación de pantalla. No es un antivirus.</li>
   <li>CleanMac en la barra de menús: la CPU, la memoria, el espacio libre y los procesos que más CPU usan, a un clic. También muestra lo que ocupa la Papelera y la vacía con «Vaciar Papelera…». En Ajustes puedes quitarlo o ver allí el uso de la CPU.</li>
   <li>Con acceso total al disco, Basura del sistema encuentra también tu Papelera y la de los discos externos, y las copias de seguridad del iPhone y el iPad. Nada de eso se marca solo, y la copia más reciente de cada dispositivo aparece señalada para que la conserves.</li>
+  <li>Animaciones en toda la app: el botón de análisis se convierte en un anillo que respira, el espacio liberado sube como un contador al terminar y las pantallas y listas entran con suavidad. Con «Reducir movimiento» activado, todo queda en fundidos.</li>
+  <li>Sonidos breves de macOS al terminar un análisis, una limpieza, una desinstalación o el mantenimiento, y al vaciar la Papelera. Se desactivan en Ajustes › General y respetan la opción de macOS que silencia los efectos de sonido.</li>
   <li>Ventana de Ajustes (CleanMac › Ajustes…, ⌘,): idioma de la app, frecuencia del Monitor, tamaño mínimo de Archivos grandes y de Duplicados, y carpetas excluidas que esas dos funciones nunca revisan.</li>
   <li>El Mapa del disco muestra todo tu espacio: también la Biblioteca y los elementos ocultos. Las carpetas que macOS protege aparecen marcadas, con un acceso a los ajustes de acceso total al disco, y los archivos de iCloud nunca se descargan.</li>
   <li>Bienvenida en la primera apertura para conceder el acceso total al disco y la automatización de Finder. Puedes volver a ella desde CleanMac › Permisos….</li>
@@ -26,6 +30,8 @@
   <li>Monitor: la memoria se muestra en las mismas unidades que el Monitor de Actividad, la primera lectura al volver ya no promedia el tiempo fuera y con varias ventanas el historial ya no se acorta.</li>
   <li>Ítems de inicio: la etiqueta «Desactivado» refleja el estado real del sistema, y un agente solo se marca como huérfano cuando su programa ya no existe, también si lo lanza un intérprete.</li>
   <li>El espacio liberado ya no se cuenta dos veces cuando Privacidad y Basura del sistema comparten una caché.</li>
+  <li>Si macOS no deja que CleanMac controle Finder, el error ofrece abrir los ajustes de Automatización en lugar de los de acceso total al disco.</li>
+  <li>Cuando no se puede vaciar la Papelera, los mensajes lo dicen así, en vez de hablar de elementos que no se pudieron mover.</li>
 </ul>
 <p>Gratis y de código abierto. Se distribuye sin notarización de Apple.</p>
 </body></html>
