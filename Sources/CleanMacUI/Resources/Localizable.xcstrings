@@ -344,6 +344,17 @@
         }
       }
     },
+    "It couldn’t be emptied." : {
+      "comment" : "Why a Trash bin couldn't be emptied, when the reason isn't known.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar."
+          }
+        }
+      }
+    },
     "It couldn’t be moved to the Trash." : {
       "comment" : "Why an item couldn't be moved to the Trash, when the reason isn't known.",
       "localizations" : {
@@ -716,6 +727,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ocupan %@. Puedes recuperarlos desde la Papelera."
+          }
+        }
+      }
+    },
+    "macOS protects something in it. Empty the Trash yourself in Finder." : {
+      "comment" : "Why a Trash bin couldn't be emptied: macOS protects something in it.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS protege algo de lo que contiene. Vacía tú la Papelera desde Finder."
           }
         }
       }
