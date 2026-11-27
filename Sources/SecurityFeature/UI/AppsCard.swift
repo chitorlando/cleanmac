@@ -1,3 +1,4 @@
+import CleanMacUI
 import SwiftUI
 
 /// The apps whose signature needs a look, or a line saying every app is signed as it should be.
