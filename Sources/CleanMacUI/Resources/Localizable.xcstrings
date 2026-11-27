@@ -160,6 +160,17 @@
         }
       }
     },
+    "CleanMac isn’t allowed to control Finder. Allow it in the Automation settings and try again." : {
+      "comment" : "Why an item couldn't be moved to the Trash, or the Trash couldn't be emptied: the user didn't let CleanMac control Finder.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CleanMac no tiene permiso para controlar Finder. Permíteselo en los ajustes de Automatización y vuelve a intentarlo."
+          }
+        }
+      }
+    },
     "Cleanup" : {
       "comment" : "Sidebar section with features that remove junk.",
       "localizations" : {

@@ -16,7 +16,12 @@ struct CleanupFailureClassifierTests {
     @Test func finderDenyingAccessMeansProtected() {
         #expect(kind(Self.finderDenied) == .protectedByMacOS)
         #expect(kind(CommandFailure(status: 1, message: "12:40: execution error: Finder got an error: A privilege violation occurred. (-10004)")) == .protectedByMacOS)
-        #expect(kind(CommandFailure(status: 1, message: "execution error: Not authorized to send Apple events to Finder. (-1743)")) == .protectedByMacOS)
+    }
+
+    /// Full Disk Access doesn't let CleanMac control Finder: only the Automation settings do.
+    @Test func notBeingAllowedToControlFinderIsNotProtection() {
+        #expect(kind(CommandFailure(status: 1, message: "execution error: Not authorized to send Apple events to Finder. (-1743)")) == .finderAutomationDenied)
+        #expect(kind(NSError(domain: NSOSStatusErrorDomain, code: -1743)) == .finderAutomationDenied)
     }
 
     @Test func fileSystemPermissionErrorsMeanProtected() {
@@ -93,5 +98,14 @@ struct CleanupFailureReportTests {
 
         #expect(![busy, odd].includesProtectedItems)
         #expect([busy, CleanupFailure(item: container, kind: .protectedByMacOS, reason: "")].includesProtectedItems)
+    }
+
+    @Test func onlyFinderAutomationDenialsCallForTheAutomationSettings() {
+        let protected = CleanupFailure(item: container, kind: .protectedByMacOS, reason: "")
+        let denied = CleanupFailure(item: container, kind: .finderAutomationDenied, reason: "")
+
+        #expect(![protected].includesFinderAutomationDenials)
+        #expect(![denied].includesProtectedItems)
+        #expect([protected, denied].includesFinderAutomationDenials)
     }
 }

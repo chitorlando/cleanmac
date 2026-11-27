@@ -63,7 +63,7 @@ struct TrashEmptyingServiceTests {
         #expect(!report.emptiedTrash)
         #expect(report.freedBytes == 0)
         #expect(report.failures.map(\.item) == [homeBin, diskBin])
-        #expect(report.failures.allSatisfy { $0.kind == .protectedByMacOS })
+        #expect(report.failures.allSatisfy { $0.kind == .finderAutomationDenied })
     }
 
     @Test func mergingAddsUpBothCleanups() async {

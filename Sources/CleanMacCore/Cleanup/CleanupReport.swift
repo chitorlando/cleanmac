@@ -61,4 +61,10 @@ public extension Sequence where Element == CleanupFailure {
     var includesProtectedItems: Bool {
         contains { $0.kind == .protectedByMacOS }
     }
+
+    /// Whether anything failed because CleanMac isn't allowed to control Finder, so allowing it
+    /// in the Automation settings may help.
+    var includesFinderAutomationDenials: Bool {
+        contains { $0.kind == .finderAutomationDenied }
+    }
 }

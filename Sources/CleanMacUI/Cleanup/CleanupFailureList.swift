@@ -4,7 +4,8 @@ import SwiftUI
 /// Items that could not be removed, why in plain words, and where to go from there.
 ///
 /// When macOS protected any of them, a button opens the Full Disk Access settings, which
-/// lets CleanMac move such items on the next try.
+/// lets CleanMac move such items on the next try. When CleanMac wasn't allowed to control
+/// Finder, another one opens the Automation settings, where the user allows it.
 public struct CleanupFailureList: View {
     private static let maxListHeight: CGFloat = 160
     /// Height the list keeps in a short window, where it scrolls instead of pushing the rest off screen.
@@ -42,6 +43,10 @@ public struct CleanupFailureList: View {
 
                 if failures.includesProtectedItems {
                     FullDiskAccessSettingsButton()
+                        .foregroundStyle(.tint)
+                }
+                if failures.includesFinderAutomationDenials {
+                    AutomationSettingsButton()
                         .foregroundStyle(.tint)
                 }
             }
