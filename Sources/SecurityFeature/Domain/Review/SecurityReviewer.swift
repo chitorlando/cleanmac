@@ -1,3 +1,4 @@
+import CleanMacCore
 import Foundation
 
 /// Goes through each part of the review in turn and gathers what they found.

@@ -36,6 +36,11 @@ public final class DuplicatesModule: FeatureModule {
         AnyView(DuplicatesView(viewModel: viewModel, theme: theme))
     }
 
+    /// The end of each scan, whatever it found, and of each removal that moved copies to the Trash.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
+    }
+
     public var settings: [SettingsItem] {
         [
             SettingsItem(id: DuplicatesSettings.minimumSize.key, section: .analysis) { [preferences] in

@@ -1,7 +1,6 @@
-import CleanMacCore
 import Foundation
 
-/// Finds the apps the review checks.
+/// Finds the installed apps a review checks.
 public protocol AppFinding: Sendable {
     /// Each app once, sorted by name.
     func apps() -> [URL]

@@ -1,3 +1,5 @@
+import CleanMacCore
+import Combine
 import Foundation
 import SwiftUI
 
@@ -33,6 +35,11 @@ public protocol FeatureModule: AnyObject {
 
     /// What the feature adds to the Settings window. Features with no settings add nothing.
     var settings: [SettingsItem] { get }
+
+    /// The sound effects of the feature's key moments, as they happen, such as the end of a
+    /// scan the user started. The app plays them, also while another feature is on screen.
+    /// Features with none keep the default, which sends nothing.
+    var soundEffects: AnyPublisher<SoundEffect, Never> { get }
 }
 
 public extension FeatureModule {
@@ -43,4 +50,8 @@ public extension FeatureModule {
     var itemActions: [FeatureItemAction] { [] }
 
     var settings: [SettingsItem] { [] }
+
+    var soundEffects: AnyPublisher<SoundEffect, Never> {
+        Empty().eraseToAnyPublisher()
+    }
 }

@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -20,6 +21,11 @@ public final class UninstallerModule: FeatureModule {
 
     public func makeView() -> AnyView {
         AnyView(UninstallerView(viewModel: viewModel, theme: theme))
+    }
+
+    /// The end of each uninstall that moved something to the Trash.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
     }
 
     /// Focuses the app at `url`, loading the app list first if needed.

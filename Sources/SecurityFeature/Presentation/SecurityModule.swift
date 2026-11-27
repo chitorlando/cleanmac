@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -20,6 +21,11 @@ public final class SecurityModule: FeatureModule {
 
     public func makeView() -> AnyView {
         AnyView(SecurityView(viewModel: viewModel, theme: theme))
+    }
+
+    /// The end of each review, whatever it found.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
     }
 }
 
