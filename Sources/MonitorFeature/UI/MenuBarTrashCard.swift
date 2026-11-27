@@ -6,7 +6,13 @@ import SwiftUI
 /// once the user confirms it in the dialog that asks before erasing anything for good.
 /// When CleanMac wasn't allowed to ask Finder to empty it, another button opens the
 /// Automation settings, where the user allows it.
+///
+/// Its status fades from one to the next. Once the Trash is empty, a small badge pops in and
+/// draws its checkmark.
 struct MenuBarTrashCard: View {
+    /// As tall as a line of the status.
+    private static let emptyBadgeDiameter: CGFloat = 14
+
     @ObservedObject var trash: MenuBarTrash
     let theme: FeatureTheme
 
@@ -24,11 +30,16 @@ struct MenuBarTrashCard: View {
             .buttonStyle(.borderless)
             .disabled(!trash.canEmpty)
         } content: {
-            status
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+            // Each status fades into the next in the same place, such as when the Trash empties.
+            ZStack(alignment: .topLeading) {
+                status
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .animation(Motion.phaseChange, value: trash.isEmptying)
+            .animation(Motion.phaseChange, value: trash.usage)
             if trash.emptyingFailure == .finderAutomationDenied {
                 AutomationSettingsButton()
                     .font(.subheadline)
@@ -62,7 +73,11 @@ struct MenuBarTrashCard: View {
             )
         } else if let size = trash.size {
             if size == 0 {
-                Text("The Trash is empty.", bundle: .module, comment: "Shown in the menu bar monitor when the Trash holds nothing.")
+                Label {
+                    Text("The Trash is empty.", bundle: .module, comment: "Shown in the menu bar monitor when the Trash holds nothing.")
+                } icon: {
+                    SuccessBadge(theme: theme, diameter: Self.emptyBadgeDiameter)
+                }
             } else {
                 Text(
                     "\(size.formattedByteCount) in the Trash",
