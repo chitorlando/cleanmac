@@ -7,7 +7,7 @@ struct AppsCard: View {
     let apps: [AppSignatureCheck]
 
     var body: some View {
-        SecurityCard(
+        ReviewCard(
             title: Text("Apps", bundle: .module, comment: "Title of the part of the security review about the signatures of the installed apps."),
             summary: Text(
                 "\(checkedCount) apps checked in your Applications folders.",

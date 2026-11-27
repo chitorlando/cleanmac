@@ -6,7 +6,7 @@ struct PersistenceCard: View {
     let findings: [PersistenceFinding]
 
     var body: some View {
-        SecurityCard(
+        ReviewCard(
             title: Text("Login & Background Items", bundle: .module, comment: "Title of the part of the security review about what launchd starts on its own."),
             summary: Text(
                 "What starts on its own at login or in the background, from your Library and the Mac’s.",
