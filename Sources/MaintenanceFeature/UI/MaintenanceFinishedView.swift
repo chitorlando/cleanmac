@@ -14,7 +14,7 @@ struct MaintenanceFinishedView: View {
 
     var body: some View {
         VStack(spacing: 32) {
-            HeroHeader(symbolName: symbolName, title: title, subtitle: subtitle, theme: theme)
+            header
             GlassCard {
                 // Hugs short reports, and scrolls once they outgrow the maximum height or the window.
                 ScrollView {
@@ -39,8 +39,16 @@ struct MaintenanceFinishedView: View {
 
     private var isClean: Bool { report.failures.isEmpty }
 
-    private var symbolName: String {
-        isClean ? "checkmark.seal.fill" : "exclamationmark.triangle.fill"
+    /// A badge that celebrates when every task succeeded, and a warning when some didn't.
+    @ViewBuilder
+    private var header: some View {
+        if isClean {
+            SuccessHeader(subtitle: subtitle, theme: theme) {
+                Text(title)
+            }
+        } else {
+            HeroHeader(symbolName: "exclamationmark.triangle.fill", title: title, subtitle: subtitle, theme: theme)
+        }
     }
 
     private var title: String {

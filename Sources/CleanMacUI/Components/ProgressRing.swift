@@ -20,7 +20,7 @@ public struct ProgressRing: View {
                 .trim(from: 0, to: max(0.02, min(progress, 1)))
                 .stroke(theme.gradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .shadow(color: theme.primary.opacity(0.5), radius: 12)
+                .glow(theme.primary.opacity(0.5), radius: 12)
                 .animation(.smooth, value: progress)
         }
         .accessibilityElement(children: .ignore)

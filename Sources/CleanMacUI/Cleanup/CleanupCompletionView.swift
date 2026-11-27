@@ -2,6 +2,9 @@ import CleanMacCore
 import SwiftUI
 
 /// Result of a cleanup: space freed, items moved or the Trash emptied, and anything that failed.
+///
+/// The space freed counts up below a badge whose checkmark draws itself, with a burst around
+/// it when everything went.
 public struct CleanupCompletionView: View {
     private let report: CleanupReport
     private let theme: FeatureTheme
@@ -15,25 +18,20 @@ public struct CleanupCompletionView: View {
 
     public var body: some View {
         VStack(spacing: 40) {
-            HeroHeader(
-                symbolName: "checkmark.seal.fill",
-                title: title,
-                subtitle: report.summary,
-                theme: theme
-            )
+            SuccessHeader(subtitle: report.summary, theme: theme, celebrates: report.isCompleteSuccess) {
+                CountUpText(report.freedBytes) { freedBytes in
+                    String(
+                        localized: "\(freedBytes.formattedByteCount) freed",
+                        bundle: .module,
+                        comment: "Title after a cleanup. The argument is a size, such as “1.2 GB”."
+                    )
+                }
+            }
             if !report.failures.isEmpty {
                 CleanupFailureList(failures: report.failures)
             }
             DoneButton(theme: theme, action: onDone)
         }
         .frame(maxWidth: 560)
-    }
-
-    private var title: String {
-        String(
-            localized: "\(report.freedBytes.formattedByteCount) freed",
-            bundle: .module,
-            comment: "Title after a cleanup. The argument is a size, such as “1.2 GB”."
-        )
     }
 }

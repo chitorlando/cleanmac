@@ -24,10 +24,12 @@ struct AppListPane: View {
         } else {
             ScrollView {
                 LazyVStack(spacing: 2) {
-                    ForEach(apps) { app in
+                    ForEach(Array(apps.enumerated()), id: \.element.id) { order, app in
                         AppListRow(app: app, viewModel: viewModel, theme: theme)
+                            .staggeredEntrance(order: order)
                     }
                 }
+                .revealsRowsInTurn()
             }
             .scrollIndicators(.never)
         }

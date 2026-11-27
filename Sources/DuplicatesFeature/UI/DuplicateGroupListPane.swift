@@ -24,7 +24,7 @@ struct DuplicateGroupListPane: View {
         } else {
             ScrollView {
                 LazyVStack(spacing: 2) {
-                    ForEach(groups) { group in
+                    ForEach(Array(groups.enumerated()), id: \.element.id) { order, group in
                         DuplicateGroupRow(
                             group: group,
                             isFocused: viewModel.focusedGroupID == group.id,
@@ -34,8 +34,10 @@ struct DuplicateGroupListPane: View {
                             onFocus: { viewModel.focusedGroupID = group.id }
                         )
                         .equatable()
+                        .staggeredEntrance(order: order)
                     }
                 }
+                .revealsRowsInTurn()
             }
             .scrollIndicators(.never)
         }

@@ -12,9 +12,13 @@ import SwiftUI
 /// Contrast accessibility setting: secondary and tertiary text get brighter while keeping their
 /// order, and native buttons keep their labels readable under the glows. Text that must reach
 /// 4.5:1 everywhere, such as paths and versions, uses `.supportingText`.
+///
+/// When the screen changes phase, the circle the old phase centers on, such as the scan button,
+/// grows into the one of the new phase, such as the ring of the scan. See `phaseFocus()`.
 public struct FeatureScreen<Content: View>: View {
     private let theme: FeatureTheme
     private let content: Content
+    @Namespace private var phaseNamespace
 
     public init(theme: FeatureTheme, @ViewBuilder content: () -> Content) {
         self.theme = theme
@@ -26,6 +30,7 @@ public struct FeatureScreen<Content: View>: View {
             FeatureBackground(theme: theme)
             content
                 .foregroundStyle(Color.primary)
+                .environment(\.phaseNamespace, phaseNamespace)
         }
         .environment(\.colorScheme, .dark)
         .environment(\._colorSchemeContrast, .increased)

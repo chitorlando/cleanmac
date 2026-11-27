@@ -63,15 +63,17 @@ struct JunkReviewView: View {
     private var categoryList: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                ForEach(viewModel.results) { result in
+                ForEach(Array(viewModel.results.enumerated()), id: \.element.id) { order, result in
                     JunkCategoryCard(
                         result: result,
                         viewModel: viewModel,
                         theme: theme,
                         isExpanded: binding(for: result.id)
                     )
+                    .staggeredEntrance(order: order)
                 }
             }
+            .revealsRowsInTurn()
         }
         .scrollIndicators(.never)
     }
