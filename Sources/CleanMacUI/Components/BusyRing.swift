@@ -18,6 +18,7 @@ public struct BusyRing: View {
     public var body: some View {
         IndeterminateProgressRing(theme: theme, lineWidth: 9)
             .scanningOrb(theme: theme, reach: Self.orbReach)
+            .phaseFocus()
             .frame(width: Self.diameter, height: Self.diameter)
     }
 }

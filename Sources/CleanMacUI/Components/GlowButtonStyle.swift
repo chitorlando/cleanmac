@@ -37,6 +37,8 @@ public struct GlowButtonStyle: ButtonStyle {
                 .frame(width: diameter, height: diameter)
                 .background(theme.gradient, in: .circle)
                 .overlay(Circle().strokeBorder(.white.opacity(0.25), lineWidth: 1))
+                // The round button that starts a feature grows into the ring of what it starts.
+                .phaseFocus()
         case .capsule:
             label
                 .padding(.horizontal, 32)

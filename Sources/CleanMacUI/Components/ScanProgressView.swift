@@ -53,6 +53,7 @@ public struct ScanProgressView: View {
                 .accessibilityElement(children: .combine)
             }
             .scanningOrb(theme: theme, reach: Self.orbReach)
+            .phaseFocus()
             .frame(width: Self.ringDiameter, height: Self.ringDiameter)
 
             status
