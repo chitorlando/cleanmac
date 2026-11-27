@@ -84,6 +84,14 @@ public extension FeatureTheme {
         secondary: Color(red: 0.28, green: 0.84, blue: 0.40)
     )
 
+    /// Peach to coral, a hue no other feature uses: redder than the orange of large files and
+    /// maintenance, and warmer than the rose of privacy. Dark button labels keep at least 8.6:1
+    /// across it.
+    static let malware = FeatureTheme(
+        primary: Color(red: 1.00, green: 0.76, blue: 0.68),
+        secondary: Color(red: 1.00, green: 0.57, blue: 0.54)
+    )
+
     /// The background of planned features and of the empty detail pane. No button uses it.
     static let neutral = FeatureTheme(
         primary: Color(white: 0.62),
@@ -104,6 +112,7 @@ extension FeatureTheme {
         "loginItems": .loginItems,
         "monitor": .monitor,
         "privacy": .privacy,
-        "security": .security
+        "security": .security,
+        "malware": .malware
     ]
 }
