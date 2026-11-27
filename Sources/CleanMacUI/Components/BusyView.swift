@@ -4,8 +4,6 @@ import SwiftUI
 ///
 /// With Reduce Motion on, the ring stands still.
 public struct BusyView: View {
-    private static let ringDiameter: CGFloat = 88
-
     private let message: Text
     private let theme: FeatureTheme
 
@@ -24,8 +22,7 @@ public struct BusyView: View {
 
     public var body: some View {
         VStack(spacing: 28) {
-            IndeterminateProgressRing(theme: theme, lineWidth: 9)
-                .frame(width: Self.ringDiameter, height: Self.ringDiameter)
+            BusyRing(theme: theme)
             message
                 .font(.title3.weight(.medium))
         }

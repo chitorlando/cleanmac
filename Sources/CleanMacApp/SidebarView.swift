@@ -11,8 +11,13 @@ struct SidebarView: View {
             ForEach(sections.visibleSections) { section in
                 Section {
                     ForEach(sections.modules(in: section), id: \.id) { module in
-                        SidebarRow(title: module.title, symbolName: module.symbolName, theme: module.theme)
-                            .tag(Optional(module.id))
+                        SidebarRow(
+                            title: module.title,
+                            symbolName: module.symbolName,
+                            theme: module.theme,
+                            isSelected: selection == module.id
+                        )
+                        .tag(Optional(module.id))
                     }
                     ForEach(sections.upcoming(in: section)) { feature in
                         UpcomingSidebarRow(feature: feature)

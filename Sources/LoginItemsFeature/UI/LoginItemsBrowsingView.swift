@@ -15,10 +15,12 @@ struct LoginItemsBrowsingView: View {
             ) { viewModel.openLoginItemsSettings() }
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(viewModel.sections) { section in
+                    ForEach(Array(viewModel.sections.enumerated()), id: \.element.id) { order, section in
                         LoginItemSectionCard(section: section, viewModel: viewModel, theme: theme)
+                            .staggeredEntrance(order: order)
                     }
                 }
+                .revealsRowsInTurn()
             }
             .scrollIndicators(.never)
             ActionBar(

@@ -34,7 +34,7 @@ public struct SearchField: View {
         .background(Palette.cardFill, in: .pill)
         .overlay(Capsule.pill.strokeBorder(borderStyle, lineWidth: 1))
         .tint(theme.primary)
-        .animation(.snappy(duration: 0.15), value: isFocused)
+        .animation(Motion.feedback, value: isFocused)
     }
 
     private var clearButton: some View {

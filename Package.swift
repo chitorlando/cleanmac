@@ -81,6 +81,11 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .target(
+            name: "MalwareFeature",
+            dependencies: ["CleanMacCore", "CleanMacUI"],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "OnboardingFeature",
             dependencies: ["CleanMacCore", "CleanMacUI"],
             resources: [.process("Resources")]
@@ -90,8 +95,8 @@ let package = Package(
             dependencies: [
                 "CleanMacCore", "CleanMacUI", "SystemJunkFeature", "UninstallerFeature",
                 "LargeFilesFeature", "DiskMapFeature", "DuplicatesFeature", "MaintenanceFeature",
-                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "SecurityFeature", "OnboardingFeature",
-                "Sparkle"
+                "LoginItemsFeature", "PrivacyFeature", "MonitorFeature", "SecurityFeature", "MalwareFeature",
+                "OnboardingFeature", "Sparkle"
             ],
             resources: [.process("Resources")],
             linkerSettings: [
@@ -147,11 +152,15 @@ let package = Package(
             dependencies: ["SecurityFeature", "CleanMacCore"]
         ),
         .testTarget(
+            name: "MalwareFeatureTests",
+            dependencies: ["MalwareFeature", "CleanMacCore", "CleanMacUI"]
+        ),
+        .testTarget(
             name: "OnboardingFeatureTests",
             dependencies: ["OnboardingFeature", "CleanMacCore"]
         ),
         .testTarget(name: "CleanMacAppTests", dependencies: ["CleanMacApp", "CleanMacCore", "CleanMacUI"]),
-        .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI"]),
+        .testTarget(name: "CleanMacUITests", dependencies: ["CleanMacUI", "CleanMacCore"]),
         .testTarget(name: "LocalizationTests")
     ]
 )

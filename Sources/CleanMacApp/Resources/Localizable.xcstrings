@@ -1,6 +1,17 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A short sound when a scan, a cleanup or maintenance ends, unless “Play user interface sound effects” is off in the Sound settings of macOS." : {
+      "comment" : "Note under the sound effects setting. “Play user interface sound effects” is the name of a setting in the Sound settings of macOS.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un sonido breve al terminar un análisis, una limpieza o el mantenimiento, salvo que «Reproducir efectos de sonido de la interfaz de usuario» esté desactivado en los ajustes de Sonido de macOS."
+          }
+        }
+      }
+    },
     "Check for Updates…" : {
       "comment" : "Application menu command to check for a new version.",
       "localizations" : {
@@ -85,6 +96,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronto"
+          }
+        }
+      }
+    },
+    "Sound effects" : {
+      "comment" : "Setting of the app: whether it plays a short sound when a scan, a cleanup or maintenance ends.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efectos de sonido"
           }
         }
       }

@@ -80,6 +80,11 @@ public final class MenuBarMonitor: ObservableObject {
         AnyView(MenuBarMonitorLabel(menuBar: self, monitor: monitor))
     }
 
+    /// The sound effects of the menu as they happen: the Trash emptied from it.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        trash.soundEffects
+    }
+
     /// What the menu bar shows next to the icon: the processor use, as a whole percentage,
     /// when the user chose to see it, and `nil` otherwise. A dash stands for a use not known yet.
     func menuBarText(locale: Locale = .autoupdatingCurrent) -> String? {

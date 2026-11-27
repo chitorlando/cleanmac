@@ -100,13 +100,13 @@
         }
       }
     },
-    "Free up space by removing caches, logs and development leftovers you no longer need." : {
+    "Free up space by removing caches, logs, development leftovers and iPhone and iPad backups you no longer need, and by emptying the Trash." : {
       "comment" : "Introduction of the system junk feature.",
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Libera espacio eliminando cachés, registros y restos de desarrollo que ya no necesitas."
+            "value" : "Libera espacio eliminando cachés, registros, restos de desarrollo y copias de seguridad de iPhone y iPad que ya no necesitas, y vaciando la Papelera."
           }
         }
       }

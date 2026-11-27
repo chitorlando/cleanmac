@@ -1,4 +1,5 @@
 import CleanMacCore
+import Combine
 import Foundation
 
 /// The Trash in the menu of the menu bar monitor: how much it holds, read each time the menu
@@ -13,12 +14,19 @@ public final class MenuBarTrash: ObservableObject {
     /// Whether the dialog that asks before emptying the Trash is up.
     @Published public private(set) var isConfirmingEmpty = false
     @Published public private(set) var isEmptying = false
-    /// Whether the last time the Trash was emptied, it couldn't be.
-    @Published public private(set) var emptyingFailed = false
+    /// Why the Trash couldn't be emptied the last time, or `nil` when it could.
+    @Published public private(set) var emptyingFailure: CleanupFailureKind?
+
+    /// The sound effect of each time the Trash is emptied, the sound Finder plays for it, as it
+    /// happens. Nothing when it couldn't be emptied.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        emptyings.eraseToAnyPublisher()
+    }
 
     private let reader: any TrashUsageReading
     private let service: TrashEmptyingService
     private let homeBin: URL
+    private let emptyings = PassthroughSubject<SoundEffect, Never>()
     private var reading: Task<Void, Never>?
 
     /// - Parameters:
@@ -62,7 +70,7 @@ public final class MenuBarTrash: ObservableObject {
     /// Asks the user whether to empty the Trash. Nothing is erased until they confirm it.
     func requestEmpty() {
         guard canEmpty else { return }
-        emptyingFailed = false
+        emptyingFailure = nil
         isConfirmingEmpty = true
     }
 
@@ -79,8 +87,12 @@ public final class MenuBarTrash: ObservableObject {
         guard canEmpty else { return }
         isEmptying = true
         let report = await service.empty(bins)
-        emptyingFailed = !report.failures.isEmpty
+        // Finder empties every bin at once, so they all fail for the same reason.
+        emptyingFailure = report.failures.first?.kind
         isEmptying = false
+        if let soundEffect = report.soundEffect {
+            emptyings.send(soundEffect)
+        }
         await read()
     }
 

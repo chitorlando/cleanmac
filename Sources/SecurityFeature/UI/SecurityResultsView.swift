@@ -14,10 +14,15 @@ struct SecurityResultsView: View {
             ScrollView {
                 LazyVStack(spacing: 12) {
                     ProtectionsCard(checks: report.protections)
+                        .staggeredEntrance(order: 0)
                     AppsCard(checkedCount: report.apps.count, apps: report.appsNeedingAttention)
+                        .staggeredEntrance(order: 1)
                     PersistenceCard(findings: report.persistence)
+                        .staggeredEntrance(order: 2)
                     PermissionsCard(review: report.permissions)
+                        .staggeredEntrance(order: 3)
                 }
+                .revealsRowsInTurn()
             }
             .scrollIndicators(.never)
             ActionBar(

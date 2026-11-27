@@ -1,5 +1,6 @@
 import CleanMacCore
 import CleanMacUI
+import Combine
 import Foundation
 import SwiftUI
 
@@ -27,6 +28,11 @@ public final class DiskMapModule: FeatureModule {
             DiskMapView(viewModel: viewModel, theme: theme)
                 .environment(\.uninstallerFeatureID, uninstallerFeatureID)
         )
+    }
+
+    /// The end of each scan, when the map shows, and of each removal that moved items to the Trash.
+    public var soundEffects: AnyPublisher<SoundEffect, Never> {
+        viewModel.$phase.soundEffects { $0.soundEffect(movingTo: $1) }
     }
 }
 

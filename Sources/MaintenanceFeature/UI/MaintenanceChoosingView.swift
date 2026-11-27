@@ -45,14 +45,16 @@ struct MaintenanceChoosingView: View {
     private var taskList: some View {
         ScrollView {
             VStack(spacing: 12) {
-                ForEach(viewModel.tasks) { task in
+                ForEach(Array(viewModel.tasks.enumerated()), id: \.element.id) { order, task in
                     MaintenanceTaskCard(
                         task: task,
                         isSelected: viewModel.isSelected(task),
                         theme: theme
                     ) { viewModel.toggle(task) }
+                    .staggeredEntrance(order: order)
                 }
             }
+            .revealsRowsInTurn()
         }
         .scrollIndicators(.never)
     }

@@ -9,7 +9,7 @@ struct PermissionsCard: View {
     @Environment(\.permissionSettings) private var permissionSettings
 
     var body: some View {
-        SecurityCard(
+        ReviewCard(
             title: Text("Sensitive Permissions", bundle: .module, comment: "Title of the part of the security review about the apps allowed permissions such as Full Disk Access."),
             summary: Text(
                 "Apps you allowed to see or control more than usual. There’s nothing to fix unless you don’t recognize one.",

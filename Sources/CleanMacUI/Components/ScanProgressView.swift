@@ -2,8 +2,13 @@ import SwiftUI
 
 /// Progress ring with a live value in the center, a status line and an optional stop button.
 ///
-/// When the total amount of work is unknown, the ring spins instead of filling up.
+/// When the total amount of work is unknown, the ring spins instead of filling up. Behind it,
+/// the glow of a scan breathes in the feature's colors.
 public struct ScanProgressView: View {
+    private static let ringDiameter: CGFloat = 220
+    /// How far beyond the ring the particles of its glow set off from.
+    private static let orbReach: CGFloat = 96
+
     private let progress: Double?
     private let value: String
     private let caption: Text
@@ -47,7 +52,9 @@ public struct ScanProgressView: View {
                 }
                 .accessibilityElement(children: .combine)
             }
-            .frame(width: 220, height: 220)
+            .scanningOrb(theme: theme, reach: Self.orbReach)
+            .phaseFocus()
+            .frame(width: Self.ringDiameter, height: Self.ringDiameter)
 
             status
                 .font(.title3.weight(.medium))
