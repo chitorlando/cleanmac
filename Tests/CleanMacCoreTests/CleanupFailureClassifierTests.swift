@@ -79,7 +79,16 @@ struct CleanupFailureReportTests {
         }
     }
 
+    /// Fails like Finder does when CleanMac may not control it.
+    private struct DeniedEmptier: TrashEmptying {
+        func emptyTrash() async throws {
+            throw CommandFailure(status: 1, message: "execution error: Not authorized to send Apple events to Finder. (-1743)")
+        }
+    }
+
     private let container = CleanableItem(url: URL(filePath: "/Users/test/Library/Containers/com.sega.soccer.manager.23"), size: 10)
+    private let homeBin = CleanableItem(url: URL(filePath: "/Users/test/.Trash", directoryHint: .isDirectory), size: 300)
+    private let diskBin = CleanableItem(url: URL(filePath: "/Volumes/Disk/.Trashes/501", directoryHint: .isDirectory), size: 50)
 
     @Test func theReportTellsWhyAndKeepsTheDetail() async throws {
         let remover = FallbackItemRemover(primary: DeniedByFileSystem(), fallback: DeniedEverywhere())
@@ -89,7 +98,28 @@ struct CleanupFailureReportTests {
         let failure = try #require(report.failures.first)
         #expect(failure.kind == .protectedByMacOS)
         #expect(failure.reason == CleanupFailureClassifierTests.finderDenied.message)
+        #expect(!failure.isTrashBin)
         #expect(report.failures.includesProtectedItems)
+    }
+
+    /// As in System Junk, which empties the Trash and then moves other items to it.
+    @Test func tellsTheTrashThatCouldNotBeEmptiedFromItemsThatCouldNotBeMoved() async {
+        var report = await TrashEmptyingService(emptier: DeniedEmptier()).empty([homeBin, diskBin])
+        report.merge(await CleanupService(remover: DeniedEverywhere()).clean([container]))
+
+        #expect(report.failures.map(\.isTrashBin) == [true, true, false])
+        #expect(report.failures.includesTrashBins)
+        #expect(report.failures.unmovedItemCount == 1)
+    }
+
+    @Test func onlyItemsThatCouldNotBeMovedCountAsUnmoved() {
+        let busy = CleanupFailure(item: container, kind: .inUse, reason: "")
+        let bin = CleanupFailure(item: homeBin, kind: .unknown, reason: "", isTrashBin: true)
+
+        #expect(![busy, busy].includesTrashBins)
+        #expect([busy, busy].unmovedItemCount == 2)
+        #expect([bin].includesTrashBins)
+        #expect([bin].unmovedItemCount == 0)
     }
 
     @Test func onlyProtectedItemsCallForFullDiskAccess() {
