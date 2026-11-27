@@ -506,6 +506,17 @@
         }
       }
     },
+    "Protection" : {
+      "comment" : "Sidebar section with features that review how safe the Mac is and look for malware.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protección"
+          }
+        }
+      }
+    },
     "Remove from the List" : {
       "comment" : "Tooltip and accessibility label of the button that takes a folder out of a list of folders in the Settings window.",
       "localizations" : {
