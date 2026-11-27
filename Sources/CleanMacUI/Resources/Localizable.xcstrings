@@ -594,6 +594,58 @@
         }
       }
     },
+    "The Trash couldn’t be emptied" : {
+      "comment" : "Title of the list of failures when the Trash couldn’t be emptied.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo vaciar la Papelera"
+          }
+        }
+      }
+    },
+    "The Trash couldn’t be emptied, and %lld items couldn’t be moved" : {
+      "comment" : "Title of the list of failures when the Trash couldn’t be emptied and other items failed to move to it. The argument is the number of items.",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash couldn’t be emptied, and %lld item couldn’t be moved"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "The Trash couldn’t be emptied, and %lld items couldn’t be moved"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "No se pudo vaciar la Papelera y %lld elemento no se pudo mover"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "No se pudo vaciar la Papelera y %lld elementos no se pudieron mover"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "The Trash was emptied for good, then %lld items moved to it. Empty it again to reclaim their space." : {
       "comment" : "Summary after a cleanup that emptied the Trash and then moved other items to it. The argument is the number of items moved.",
       "localizations" : {

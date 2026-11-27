@@ -1,7 +1,8 @@
 import CleanMacCore
 import SwiftUI
 
-/// Items that could not be removed, why in plain words, and where to go from there.
+/// Items that could not be removed, or Trash bins that could not be emptied, why in plain
+/// words, and where to go from there.
 ///
 /// When macOS protected any of them, a button opens the Full Disk Access settings, which
 /// lets CleanMac move such items on the next try. When CleanMac wasn't allowed to control
@@ -22,11 +23,7 @@ public struct CleanupFailureList: View {
         GlassCard {
             VStack(alignment: .leading, spacing: 10) {
                 Label {
-                    Text(
-                        "\(failures.count) items couldn’t be moved",
-                        bundle: .module,
-                        comment: "Title of the list of items that failed to move to the Trash."
-                    )
+                    title
                 } icon: {
                     Image(systemName: "exclamationmark.triangle.fill")
                 }
@@ -51,6 +48,31 @@ public struct CleanupFailureList: View {
                 }
             }
         }
+    }
+
+    /// What failed: items that couldn't be moved to the Trash, the Trash that couldn't be
+    /// emptied, or both.
+    private var title: Text {
+        let unmovedCount = failures.unmovedItemCount
+        guard failures.includesTrashBins else {
+            return Text(
+                "\(unmovedCount) items couldn’t be moved",
+                bundle: .module,
+                comment: "Title of the list of items that failed to move to the Trash."
+            )
+        }
+        guard unmovedCount > 0 else {
+            return Text(
+                "The Trash couldn’t be emptied",
+                bundle: .module,
+                comment: "Title of the list of failures when the Trash couldn’t be emptied."
+            )
+        }
+        return Text(
+            "The Trash couldn’t be emptied, and \(unmovedCount) items couldn’t be moved",
+            bundle: .module,
+            comment: "Title of the list of failures when the Trash couldn’t be emptied and other items failed to move to it. The argument is the number of items."
+        )
     }
 
     private var rows: some View {
