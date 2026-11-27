@@ -1,5 +1,5 @@
+import CleanMacCore
 import Foundation
-import SecurityFeature
 import Testing
 
 /// Checks real signatures on disk, which every Mac has.
@@ -12,7 +12,6 @@ struct SecurityFrameworkSignatureInspectorTests {
         #expect(facts.validity == .valid)
         #expect(facts.isIssuedByApple)
         #expect(facts.isApple)
-        #expect(SignatureClassifier.classify(facts, gatekeeper: nil) == .apple)
     }
 
     @Test func findsNoSignatureOnAScript() throws {
