@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Ring with a glowing arc that spins while the total amount of work is unknown.
 ///
-/// With Reduce Motion on, it shows a still ring instead.
+/// It only spins while its window is shown. With Reduce Motion on, it shows a still ring instead.
 public struct IndeterminateProgressRing: View {
     private static let period: TimeInterval = 1.4
     private static let arcLength = 0.3
@@ -23,8 +23,8 @@ public struct IndeterminateProgressRing: View {
             if reduceMotion {
                 stillRing
             } else {
-                TimelineView(.animation) { context in
-                    arc.rotationEffect(angle(at: context.date))
+                AnimationFrames { date in
+                    arc.rotationEffect(angle(at: date))
                 }
             }
         }
