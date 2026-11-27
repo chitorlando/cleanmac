@@ -35,19 +35,13 @@ struct DiskMapBrowserView: View {
         }
         .frame(maxWidth: 1100)
         .modifier(DiskMapKeyboardNavigation(viewModel: viewModel))
-        .confirmationDialog(confirmationTitle, isPresented: $isConfirmingRemoval) {
-            Button(role: .destructive) {
-                viewModel.remove()
-            } label: {
-                Text("Move to Trash", bundle: .module, comment: "Button that confirms moving the selected items to the Trash.")
-            }
-        } message: {
-            Text(
-                "They take up \(viewModel.selectedSize.formattedByteCount). You can put them back from the Trash.",
-                bundle: .module,
-                comment: "Message when confirming a removal from the disk map. The argument is a size, such as “1.2 GB”."
-            )
-        }
+        .trashConfirmation(
+            itemCount: viewModel.selectedCount,
+            size: viewModel.selectedSize,
+            isPresented: isConfirmingRemoval,
+            onConfirm: { viewModel.remove() },
+            onDismiss: { isConfirmingRemoval = false }
+        )
     }
 
     @ViewBuilder
@@ -74,14 +68,6 @@ struct DiskMapBrowserView: View {
                 )
             }
         }
-    }
-
-    private var confirmationTitle: Text {
-        Text(
-            "Move \(viewModel.selectedCount) items to the Trash?",
-            bundle: .module,
-            comment: "Title when confirming a removal from the disk map. The argument is the number of items."
-        )
     }
 
     private var removeTitle: Text {
